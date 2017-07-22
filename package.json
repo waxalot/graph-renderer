@@ -1,7 +1,7 @@
 {
   "name": "graph-renderer",
   "version": "0.0.1",
-  "description": "A graph visualizer.",
+  "description": "The graph-renderer is able to render a given model representation of a graph to an output format like SVG.",
   "main": "src/index.ts",
   "keywords": [
     "jquery",

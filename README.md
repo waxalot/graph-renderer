@@ -1,7 +1,7 @@
 # graph-renderer
 
 What's graph-renderer?\
-graph-renderer is a graph visualizer.
+The graph-renderer is able to render a given model representation of a graph to an output format like SVG.
 
 ## Demo
 For a full working demo click [here](https://codepen.io/waxalot/pen/wqwrrw).
