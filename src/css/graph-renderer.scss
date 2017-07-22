@@ -1,0 +1,24 @@
+.graph-renderer {
+    
+    svg {
+        width: 100%;
+        height: 100%;
+
+        path {
+            stroke-width: 4;
+	        stroke: #FFF;
+	        stroke-linecap: round;
+	        fill: none;
+        }
+
+        &.graph-node {
+            width: 100px;
+            height: 100px;
+        }
+
+        &.graph-node-disabled {
+            opacity: 0.2;
+        }
+    }
+    
+}
