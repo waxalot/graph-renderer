@@ -2,6 +2,7 @@ import { Graph, GraphNode, Point, Size } from "./models";
 import { IRenderersFactory, SVGRenderersFactory, IViewModelsFactory, SVGViewModelsFactory } from "./factories";
 import { IGraphViewModel } from "./viewModels";
 import { IRenderer } from "./renderers";
+import { IGraphRenderer } from "./renderers/iGraphRenderer";
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -27,7 +28,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // Get the renderers factory
     let renderersFactory: IRenderersFactory = new SVGRenderersFactory();
-    let graphRenderer: IRenderer<IGraphViewModel> = renderersFactory.createGraphRenderer();
+    let graphRenderer: IGraphRenderer = renderersFactory.createGraphRenderer();
+    graphRenderer.setContainerElement(containerElement);
     graphRenderer.render(graphVM);
 
 });

@@ -1,5 +1,5 @@
-import { IGraphViewModel, INodeViewModel, SVGNodeViewModel, SVGViewModel } from "./";
-import { Graph, Size } from "../models/index";
+import { IGraphViewModel, SVGNodeViewModel, SVGViewModel } from "./";
+import { Graph, Size } from "../models";
 import { Utils } from "../utils";
 
 
@@ -14,54 +14,80 @@ import { Utils } from "../utils";
 export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
 
     /**
-     * the SVG graph's size.
+     * Gets the graph's size.
      * 
      * @type {Size}
      * @memberof SVGGraphViewModel
      */
-    public size: Size;
-
-    private graph: Graph;
-    private nodes: Array<INodeViewModel>;
-
+    public get size(): Size {
+        return this.graph.size;
+    }
 
     /**
-     * Creates an instance of SVGGraphViewModel.
-     *
-     * @param {Graph} graph 
+     * Sets the graph's size.
+     * 
      * @memberof SVGGraphViewModel
      */
-    public constructor(graph: Graph) {
-        super();
-
-        if (!graph) {
-            Utils.throwReferenceError('graph');
-        }
-
-        this.nodes = new Array<INodeViewModel>();
-        this.size = new Size();
-
-        this.graph = graph;
+    public set size(value: Size) {
+        this.graph.size = value;
     }
 
 
     /**
-     * Returns an array with all graph nodes view-models.
+     * A collection of the graph's node view-models.
      * 
-     * @returns {Array<INodeViewModel>} 
+     * @type {Array<SVGNodeViewModel>}
      * @memberof SVGGraphViewModel
      */
-    public getNodes(): Array<INodeViewModel> {
-        // Check if the nodes need to be initialized
-        let graphNodes = this.graph.getNodes();
-        if (graphNodes && this.nodes.length !== graphNodes.length) {
-            graphNodes.forEach((tempNode) => {
-                this.nodes.push(new SVGNodeViewModel(tempNode));
-            });
+    public nodes: Array<SVGNodeViewModel>;
+
+    private graph: Graph;
+    
+
+    /**
+     * Creates an instance of SVGGraphViewModel.
+     *
+     * @memberof SVGGraphViewModel
+     */
+    public constructor() {
+        super();
+
+        this.nodes = new Array<SVGNodeViewModel>();
+    }
+
+
+    /**
+     * Initializes the graph view-model.
+     * 
+     * @param {Graph} graph 
+     * @memberof SVGGraphViewModel
+     */
+    public init(graph: Graph) {
+        if (!graph) {
+            Utils.throwReferenceError('graph');
         }
 
-        // Use concat to copy the array, so that the original array can't be changed.
-        return new Array<INodeViewModel>().concat(this.nodes);
+        this.graph = graph;
+
+        this.initNodes();
+    }
+
+
+    /**
+     * Initializes all graph nodes view-models.
+     * 
+     * @private
+     * @memberof SVGGraphViewModel
+     */
+    private initNodes(): void {
+        let graphNodes = this.graph.getNodes();
+        if (graphNodes && graphNodes.length > 0) {
+            graphNodes.forEach((tempNode) => {
+                let newNodeVM = new SVGNodeViewModel();
+                newNodeVM.init(tempNode);
+                this.nodes.push(newNodeVM);
+            });
+        }
     }
 
 }

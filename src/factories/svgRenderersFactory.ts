@@ -1,5 +1,5 @@
 import { IRenderersFactory } from "./iRenderersFactory";
-import { SVGGraphRenderer, SVGNodeRenderer, IRenderer } from "../renderers";
+import { SVGGraphRenderer, SVGNodeRenderer, IGraphRenderer, INodeRenderer } from "../renderers";
 import { IGraphViewModel, INodeViewModel } from "../viewModels";
 
 
@@ -15,10 +15,10 @@ export class SVGRenderersFactory implements IRenderersFactory {
     /**
      * Creates the graph renderer.
      * 
-     * @returns {IRenderer<IGraphViewModel>} 
+     * @returns {IGraphRenderer} 
      * @memberof SVGRenderersFactory
      */
-    createGraphRenderer(): IRenderer<IGraphViewModel> {
+    public createGraphRenderer(): IGraphRenderer {
         let nodeRenderer = this.createNodeRenderer();
         return new SVGGraphRenderer(nodeRenderer);
     }
@@ -27,10 +27,10 @@ export class SVGRenderersFactory implements IRenderersFactory {
     /**
      * Creates the node renderer.
      * 
-     * @returns {IRenderer<INodeViewModel>} 
+     * @returns {SVGNodeRenderer} 
      * @memberof SVGRenderersFactory
      */
-    createNodeRenderer(): IRenderer<INodeViewModel> {
+    public createNodeRenderer(): SVGNodeRenderer {
         return new SVGNodeRenderer();
     }
 

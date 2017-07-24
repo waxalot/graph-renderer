@@ -1,4 +1,4 @@
-import { GraphNode } from "./";
+import { GraphNode, Size } from "./";
 
 
 /**
@@ -8,6 +8,15 @@ import { GraphNode } from "./";
  * @class Graph
  */
 export class Graph {
+
+    /**
+     * The node's size.
+     * 
+     * @type {Size}
+     * @memberof GraphNode
+     */
+    public size: Size;
+
 
     /**
      * A collection of all graph nodes.

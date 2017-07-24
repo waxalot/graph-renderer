@@ -20,7 +20,9 @@ export class SVGViewModelsFactory implements IViewModelsFactory {
      * @memberof SVGViewModelsFactory
      */
     createGraphViewModel(graph: Graph): IGraphViewModel {
-        return new SVGGraphViewModel(graph);
+        let graphVM = new SVGGraphViewModel();
+        graphVM.init(graph);
+        return graphVM;
     }
 
 }

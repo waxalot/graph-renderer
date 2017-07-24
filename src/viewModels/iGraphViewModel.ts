@@ -1,4 +1,5 @@
-import { INodeViewModel, IViewModel } from "./";
+import { IViewModel } from "./";
+import { Size } from "../models";
 
 
 /**
@@ -11,11 +12,11 @@ import { INodeViewModel, IViewModel } from "./";
 export interface IGraphViewModel extends IViewModel {
 
     /**
-     * Gets all graph nodes view-models.
+     * The graph's size.
      * 
-     * @returns {Array<INodeViewModel>} 
+     * @returns {Size} 
      * @memberof IGraphViewModel
      */
-    getNodes(): Array<INodeViewModel>;
+    size: Size;
 
 }

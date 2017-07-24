@@ -1,5 +1,5 @@
 import { INodeViewModel, SVGViewModel } from "./";
-import { GraphNode, Size } from "../models";
+import { GraphNode, Size, Point } from "../models";
 import { Utils } from "../utils";
 
 
@@ -12,6 +12,26 @@ import { Utils } from "../utils";
  * @implements {INodeViewModel}
  */
 export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
+
+    /**
+     * Gets the node's position.
+     * 
+     * @type {Point}
+     * @memberof SVGNodeViewModel
+     */
+    get position(): Point {
+        return this.node.position;
+    }
+
+    /**
+     * Sets the node's position.
+     * 
+     * @memberof SVGNodeViewModel
+     */
+    set position(value: Point) {
+        this.node.position = value;
+    }
+
 
     /**
      * Gets the node's size.
@@ -39,12 +59,20 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
     /**
      * Creates an instance of SVGNodeViewModel.
      *
+     * @memberof SVGNodeViewModel
+     */
+    public constructor() {
+        super();
+    }
+
+
+    /**
+     * Initializes the node view-model.
+     * 
      * @param {GraphNode} node 
      * @memberof SVGNodeViewModel
      */
-    public constructor(node: GraphNode) {
-        super();
-
+    public init(node: GraphNode): void {
         if (!node) {
             Utils.throwReferenceError('node');
         }

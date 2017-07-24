@@ -1,5 +1,6 @@
 import { IRenderer } from "../renderers";
-import { IGraphViewModel, INodeViewModel } from "../viewModels";
+import { INodeViewModel } from "../viewModels";
+import { IGraphRenderer } from "../renderers/iGraphRenderer";
 
 
 /**
@@ -13,14 +14,14 @@ export interface IRenderersFactory {
     /**
      * Creates an instance of {IGraphRenderer}.
      * 
-     * @returns {IRenderer<IGraphViewModel>} 
+     * @returns {IGraphRenderer} 
      * @memberof IRenderersFactory
      */
-    createGraphRenderer(): IRenderer<IGraphViewModel>;
+    createGraphRenderer(): IGraphRenderer;
 
 
     /**
-     * Creates an instance of {INodeRenderer}.
+     * Creates an instance of IRenderer<INodeViewModel>.
      * 
      * @returns {IRenderer<INodeViewModel>} 
      * @memberof IRenderersFactory

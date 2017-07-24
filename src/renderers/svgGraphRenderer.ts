@@ -1,6 +1,8 @@
 import { SVGNodeRenderer, IRenderer } from "./";
 import { Utils } from "../utils";
-import { IGraphViewModel } from "../viewModels";
+import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
+import { IGraphRenderer } from "./iGraphRenderer";
+import { SVGUtils } from "./svgUtils";
 
 
 /**
@@ -8,10 +10,11 @@ import { IGraphViewModel } from "../viewModels";
  * 
  * @export
  * @class SVGGraphRenderer
- * @implements {IRenderer<IGraphViewModel>}
+ * @implements {IGraphRenderer}
  */
-export class SVGGraphRenderer implements IRenderer<IGraphViewModel> {
-    
+export class SVGGraphRenderer implements IGraphRenderer {
+
+    private containerElement: Element;
     private nodeRenderer: SVGNodeRenderer;
 
 
@@ -30,28 +33,59 @@ export class SVGGraphRenderer implements IRenderer<IGraphViewModel> {
 
 
     /**
-     * Renders the graph view-model.
+     * Sets the graph's container element.
      * 
-     * @param {IGraphViewModel} viewModel 
+     * @param {Element} containerElement 
      * @memberof SVGGraphRenderer
      */
-    public render(viewModel: IGraphViewModel): void {
-        
+    public setContainerElement(containerElement: Element): void {
+        if (!containerElement) {
+            Utils.throwReferenceError('containerElement');
+        }
+
+        this.containerElement = containerElement;
     }
 
 
-    // /**
-    //  * Creates a new SVG element.
-    //  * 
-    //  * @private
-    //  * @returns {SVGSVGElement} 
-    //  * @memberof SVGGraphRenderer
-    //  */
-    // private createTargetElement(): SVGSVGElement {
-    //     let svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    //     svgElement.classList.add('graph');
-    //     return svgElement;
-    // }
+    /**
+     * Renders the graph view-model.
+     * 
+     * @param {SVGGraphViewModel} viewModel 
+     * @memberof SVGGraphRenderer
+     */
+    public render(viewModel: SVGGraphViewModel): void {
+        if (!this.containerElement) {
+            throw new Error('No container element was set. Call setContainerElement() before!')
+        }
+
+        // Render the graph's target
+        let graphTargetElement = this.createTargetElement(viewModel);
+        this.containerElement.appendChild(graphTargetElement);
+
+        // Render all graph nodes
+        if (viewModel.nodes && viewModel.nodes.length > 0) {
+            viewModel.nodes.forEach((nodeVM) => {
+                this.nodeRenderer.setContainerElement(graphTargetElement);
+                this.nodeRenderer.render(nodeVM);
+            });
+        }
+    }
+
+
+    /**
+     * Creates a new SVG element.
+     * 
+     * @private
+     * @param {SVGGraphViewModel} viewModel 
+     * @returns {SVGSVGElement} 
+     * @memberof SVGGraphRenderer
+     */
+    private createTargetElement(viewModel: SVGGraphViewModel): SVGSVGElement {
+        let svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgElement.classList.add('graph');
+        SVGUtils.setGuidAttribute(svgElement, viewModel);
+        return svgElement;
+    }
 
     // /**
     //  * Gets the target element.
