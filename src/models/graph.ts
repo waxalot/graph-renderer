@@ -1,5 +1,4 @@
-import { GraphNode } from "./graphNode";
-import { Point } from "./point";
+import { GraphNode } from "./";
 
 
 /**
@@ -42,14 +41,14 @@ export class Graph {
 
 
     /**
-     * Adds a new connection between to given nodes.
+     * Returns an array with all graph nodes.
      * 
-     * @param {GraphNode} sourceNode 
-     * @param {GraphNode} targetNode 
+     * @returns {Array<GraphNode>} 
      * @memberof Graph
      */
-    public addConnection(sourceNode: GraphNode, targetNode: GraphNode): void {
-        sourceNode.addConnection(targetNode);
+    public getNodes(): Array<GraphNode> {
+        // Use concat to copy the array, so that the original array can't be changed.
+        return new Array<GraphNode>().concat(this.nodes);
     }
 
 }

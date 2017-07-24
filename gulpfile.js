@@ -12,7 +12,6 @@ var dirs = {
     src: 'src/',
     build: 'build/',
     dist: "dist/",
-    vendor: "vendor/",
     nodeModules: "node_modules/",
     tests: "tests/",
     config: "config/",
@@ -73,16 +72,6 @@ gulp.task("test", ["build:tests"], function (done) {
 /********************************************
  *  Publish 
  ********************************************/
-gulp.task("publish:jquery", function () {
-    return gulp.src(dirs.nodeModules + "jquery/dist/jquery.min.js")
-        .pipe(gulp.dest(dirs.dist + dirs.vendor + "jquery/"));
-});
-
-gulp.task("publish:jquery-ui", function () {
-    return gulp.src(dirs.nodeModules + "jquery-ui-dist/jquery-ui.min.js")
-        .pipe(gulp.dest(dirs.dist + dirs.vendor + "jquery-ui/"));
-});
-
 gulp.task("publish:demoPage", function () {
     return gulp.src("index.html")
         .pipe(gulp.dest(dirs.dist));
@@ -94,13 +83,13 @@ gulp.task("publish:sass", function () {
         .pipe(gulp.dest(dirs.dist + dirs.css));
 });
 
-gulp.task("publish", ["publish:demoPage", "publish:sass", "publish:jquery", "publish:jquery-ui"], function () {
+gulp.task("publish", ["publish:demoPage", "publish:sass"], function () {
     return gulp.src(dirs.src + 'index.ts')
         .pipe(webpack(require('./' + dirs.config + dirs.release + 'webpack.config.js')))
         .pipe(gulp.dest(dirs.dist + dirs.src));
 });
 
-gulp.task("publish:debug", function () {
+gulp.task("publish:debug", ["publish:demoPage", "publish:sass"], function () {
     return gulp.src(dirs.src + 'index.ts')
         .pipe(webpack(require('./' + dirs.config + dirs.debug + 'webpack.config.js')))
         .pipe(gulp.dest(dirs.dist + dirs.src));
