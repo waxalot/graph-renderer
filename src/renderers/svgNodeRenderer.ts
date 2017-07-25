@@ -2,6 +2,7 @@ import { SVGNodeViewModel } from "../viewModels";
 import { INodeRenderer } from "./";
 import { Utils } from "../utils";
 import { SVGUtils } from "./svgUtils";
+import { SVGRenderer } from "./svgRenderer";
 
 
 /**
@@ -11,7 +12,7 @@ import { SVGUtils } from "./svgUtils";
  * @class SVGNodeRenderer
  * @implements {INodeRenderer}
  */
-export class SVGNodeRenderer implements INodeRenderer {
+export class SVGNodeRenderer extends SVGRenderer<SVGNodeViewModel> implements INodeRenderer {
 
     /**
      * The node's container element.
@@ -50,7 +51,8 @@ export class SVGNodeRenderer implements INodeRenderer {
         }
 
         // Render the node's target
-        let nodeTargetElement = this.createTargetElement(viewModel);
+        let nodeTargetElement = this.createTargetElement<SVGRectElement>('rect', viewModel);
+        nodeTargetElement.classList.add('graph-node');
 
         // Set the position
         if (viewModel.position) {
@@ -65,22 +67,6 @@ export class SVGNodeRenderer implements INodeRenderer {
         }
 
         this.containerElement.appendChild(nodeTargetElement);
-    }
-
-
-    /**
-     * Creates the node's target element.
-     * 
-     * @private
-     * @param {SVGNodeViewModel} viewModel 
-     * @returns {SVGRectElement} 
-     * @memberof SVGNodeRenderer
-     */
-    private createTargetElement(viewModel: SVGNodeViewModel): SVGRectElement {
-        let targetElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        targetElement.classList.add('graph-node');
-        SVGUtils.setGuidAttribute(targetElement, viewModel);
-        return targetElement;
     }
 
 }

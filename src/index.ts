@@ -8,8 +8,8 @@ import { IGraphRenderer } from "./renderers/iGraphRenderer";
 document.addEventListener("DOMContentLoaded", function (event) {
 
     // Build graph
-    let node1 = new GraphNode(new Point(10, 10), new Size(10, 10));
-    let node2 = new GraphNode(new Point(100, 100), new Size(20, 20));
+    let node1 = new GraphNode(new Point(100, 100), new Size(50, 50));
+    let node2 = new GraphNode(new Point(400, 300), new Size(50, 50));
 
     node1.addConnection(node2);
 

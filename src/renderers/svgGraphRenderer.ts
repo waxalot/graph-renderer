@@ -3,6 +3,8 @@ import { Utils } from "../utils";
 import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
 import { IGraphRenderer } from "./iGraphRenderer";
 import { SVGUtils } from "./svgUtils";
+import { Renderer } from "./renderer";
+import { SVGRenderer } from "./svgRenderer";
 
 
 /**
@@ -12,7 +14,7 @@ import { SVGUtils } from "./svgUtils";
  * @class SVGGraphRenderer
  * @implements {IGraphRenderer}
  */
-export class SVGGraphRenderer implements IGraphRenderer {
+export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements IGraphRenderer {
 
     private containerElement: Element;
     private nodeRenderer: SVGNodeRenderer;
@@ -24,6 +26,8 @@ export class SVGGraphRenderer implements IGraphRenderer {
      * @memberof SVGGraphRenderer
      */
     public constructor(nodeRenderer: SVGNodeRenderer) {
+        super();
+
         if (!nodeRenderer) {
             throw new ReferenceError('The argument "nodeRenderer" is null or undefined.');
         }
@@ -59,7 +63,15 @@ export class SVGGraphRenderer implements IGraphRenderer {
         }
 
         // Render the graph's target
-        let graphTargetElement = this.createTargetElement(viewModel);
+        let graphTargetElement = this.createTargetElement<SVGSVGElement>('svg', viewModel);
+
+        // Define the viewport coordinate system.
+        graphTargetElement.setAttribute('width', '800');
+        graphTargetElement.setAttribute('height', '600');        
+        // Define the user coordinate system.
+        graphTargetElement.setAttribute('viewbox', '0 0 800, 600');
+
+        graphTargetElement.classList.add('graph');
         this.containerElement.appendChild(graphTargetElement);
 
         // Render all graph nodes
@@ -71,21 +83,6 @@ export class SVGGraphRenderer implements IGraphRenderer {
         }
     }
 
-
-    /**
-     * Creates a new SVG element.
-     * 
-     * @private
-     * @param {SVGGraphViewModel} viewModel 
-     * @returns {SVGSVGElement} 
-     * @memberof SVGGraphRenderer
-     */
-    private createTargetElement(viewModel: SVGGraphViewModel): SVGSVGElement {
-        let svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgElement.classList.add('graph');
-        SVGUtils.setGuidAttribute(svgElement, viewModel);
-        return svgElement;
-    }
 
     // /**
     //  * Gets the target element.

@@ -50,8 +50,8 @@
 	var factories_1 = __webpack_require__(11);
 	document.addEventListener("DOMContentLoaded", function (event) {
 	    // Build graph
-	    var node1 = new models_1.GraphNode(new models_1.Point(10, 10), new models_1.Size(10, 10));
-	    var node2 = new models_1.GraphNode(new models_1.Point(100, 100), new models_1.Size(20, 20));
+	    var node1 = new models_1.GraphNode(new models_1.Point(100, 100), new models_1.Size(50, 50));
+	    var node2 = new models_1.GraphNode(new models_1.Point(400, 300), new models_1.Size(50, 50));
 	    node1.addConnection(node2);
 	    var graph = new models_1.Graph();
 	    graph.addNode(node1);
@@ -381,7 +381,7 @@
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(12));
-	__export(__webpack_require__(18));
+	__export(__webpack_require__(20));
 
 
 /***/ }),
@@ -435,7 +435,7 @@
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(14));
-	__export(__webpack_require__(17));
+	__export(__webpack_require__(19));
 
 
 /***/ }),
@@ -443,9 +443,19 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var utils_1 = __webpack_require__(15);
-	var svgUtils_1 = __webpack_require__(16);
+	var svgRenderer_1 = __webpack_require__(16);
 	/**
 	 * The SVG based implementation of a node renderer.
 	 *
@@ -453,8 +463,10 @@
 	 * @class SVGNodeRenderer
 	 * @implements {INodeRenderer}
 	 */
-	var SVGNodeRenderer = (function () {
+	var SVGNodeRenderer = (function (_super) {
+	    __extends(SVGNodeRenderer, _super);
 	    function SVGNodeRenderer() {
+	        return _super !== null && _super.apply(this, arguments) || this;
 	    }
 	    /**
 	     * Sets the node's container element.
@@ -479,7 +491,8 @@
 	            throw new Error('No container element was set. Call setContainerElement() before!');
 	        }
 	        // Render the node's target
-	        var nodeTargetElement = this.createTargetElement(viewModel);
+	        var nodeTargetElement = this.createTargetElement('rect', viewModel);
+	        nodeTargetElement.classList.add('graph-node');
 	        // Set the position
 	        if (viewModel.position) {
 	            nodeTargetElement.setAttribute('x', viewModel.position.x.toFixed());
@@ -492,22 +505,8 @@
 	        }
 	        this.containerElement.appendChild(nodeTargetElement);
 	    };
-	    /**
-	     * Creates the node's target element.
-	     *
-	     * @private
-	     * @param {SVGNodeViewModel} viewModel
-	     * @returns {SVGRectElement}
-	     * @memberof SVGNodeRenderer
-	     */
-	    SVGNodeRenderer.prototype.createTargetElement = function (viewModel) {
-	        var targetElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-	        targetElement.classList.add('graph-node');
-	        svgUtils_1.SVGUtils.setGuidAttribute(targetElement, viewModel);
-	        return targetElement;
-	    };
 	    return SVGNodeRenderer;
-	}());
+	}(svgRenderer_1.SVGRenderer));
 	exports.SVGNodeRenderer = SVGNodeRenderer;
 
 
@@ -546,6 +545,95 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var renderer_1 = __webpack_require__(17);
+	var svgUtils_1 = __webpack_require__(18);
+	var utils_1 = __webpack_require__(15);
+	/**
+	 * The abstract base class for SVG based renderers.
+	 *
+	 * @export
+	 * @abstract
+	 * @class SVGRenderer
+	 * @extends {Renderer<ViewModelType>}
+	 * @implements {IRenderer<ViewModelType>}
+	 * @template ViewModelType
+	 */
+	var SVGRenderer = (function (_super) {
+	    __extends(SVGRenderer, _super);
+	    function SVGRenderer() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    /**
+	     * Creates a new SVG element.
+	     *
+	     * @protected
+	     * @template TargetElementType
+	     * @param {string} elementName
+	     * @param {SVGViewModel} viewModel
+	     * @returns {TargetElementType}
+	     * @memberof SVGRenderer
+	     */
+	    SVGRenderer.prototype.createTargetElement = function (elementName, viewModel) {
+	        if (!elementName) {
+	            utils_1.Utils.throwReferenceError('elementName');
+	        }
+	        else if (!viewModel) {
+	            utils_1.Utils.throwReferenceError('viewModel');
+	        }
+	        var svgElement;
+	        try {
+	            svgElement = document.createElementNS('http://www.w3.org/2000/svg', elementName);
+	            svgUtils_1.SVGUtils.setGuidAttribute(svgElement, viewModel);
+	        }
+	        catch (e) {
+	            svgElement = null;
+	        }
+	        return svgElement;
+	    };
+	    return SVGRenderer;
+	}(renderer_1.Renderer));
+	exports.SVGRenderer = SVGRenderer;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * The abstract base class for renderers.
+	 *
+	 * @export
+	 * @abstract
+	 * @class Renderer
+	 * @implements {IRenderer<ViewModelType>}
+	 * @template ViewModelType
+	 */
+	var Renderer = (function () {
+	    function Renderer() {
+	    }
+	    return Renderer;
+	}());
+	exports.Renderer = Renderer;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var utils_1 = __webpack_require__(15);
 	/**
@@ -580,13 +668,23 @@
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var utils_1 = __webpack_require__(15);
-	var svgUtils_1 = __webpack_require__(16);
+	var svgRenderer_1 = __webpack_require__(16);
 	/**
 	 * The SVG based implementation of a graph renderer.
 	 *
@@ -594,17 +692,20 @@
 	 * @class SVGGraphRenderer
 	 * @implements {IGraphRenderer}
 	 */
-	var SVGGraphRenderer = (function () {
+	var SVGGraphRenderer = (function (_super) {
+	    __extends(SVGGraphRenderer, _super);
 	    /**
 	     * Creates an instance of SVGGraphRenderer.
 	     * @param {SVGNodeRenderer} nodeRenderer
 	     * @memberof SVGGraphRenderer
 	     */
 	    function SVGGraphRenderer(nodeRenderer) {
+	        var _this = _super.call(this) || this;
 	        if (!nodeRenderer) {
 	            throw new ReferenceError('The argument "nodeRenderer" is null or undefined.');
 	        }
-	        this.nodeRenderer = nodeRenderer;
+	        _this.nodeRenderer = nodeRenderer;
+	        return _this;
 	    }
 	    /**
 	     * Sets the graph's container element.
@@ -630,7 +731,13 @@
 	            throw new Error('No container element was set. Call setContainerElement() before!');
 	        }
 	        // Render the graph's target
-	        var graphTargetElement = this.createTargetElement(viewModel);
+	        var graphTargetElement = this.createTargetElement('svg', viewModel);
+	        // Define the viewport coordinate system.
+	        graphTargetElement.setAttribute('width', '800');
+	        graphTargetElement.setAttribute('height', '600');
+	        // Define the user coordinate system.
+	        graphTargetElement.setAttribute('viewbox', '0 0 800, 600');
+	        graphTargetElement.classList.add('graph');
 	        this.containerElement.appendChild(graphTargetElement);
 	        // Render all graph nodes
 	        if (viewModel.nodes && viewModel.nodes.length > 0) {
@@ -640,32 +747,18 @@
 	            });
 	        }
 	    };
-	    /**
-	     * Creates a new SVG element.
-	     *
-	     * @private
-	     * @param {SVGGraphViewModel} viewModel
-	     * @returns {SVGSVGElement}
-	     * @memberof SVGGraphRenderer
-	     */
-	    SVGGraphRenderer.prototype.createTargetElement = function (viewModel) {
-	        var svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-	        svgElement.classList.add('graph');
-	        svgUtils_1.SVGUtils.setGuidAttribute(svgElement, viewModel);
-	        return svgElement;
-	    };
 	    return SVGGraphRenderer;
-	}());
+	}(svgRenderer_1.SVGRenderer));
 	exports.SVGGraphRenderer = SVGGraphRenderer;
 
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var viewModels_1 = __webpack_require__(19);
+	var viewModels_1 = __webpack_require__(21);
 	/**
 	 * The SVG based representation of a view-models factory.
 	 *
@@ -694,7 +787,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -702,13 +795,13 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(20));
-	__export(__webpack_require__(21));
 	__export(__webpack_require__(22));
+	__export(__webpack_require__(23));
+	__export(__webpack_require__(24));
 
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -735,7 +828,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -750,7 +843,7 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(19);
+	var _1 = __webpack_require__(21);
 	var utils_1 = __webpack_require__(15);
 	/**
 	 * The SVG based representation of a graph's view-model.
@@ -829,7 +922,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -844,7 +937,7 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(19);
+	var _1 = __webpack_require__(21);
 	var utils_1 = __webpack_require__(15);
 	/**
 	 * The SVG based representation of a node's view-model.
