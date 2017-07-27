@@ -1,5 +1,5 @@
 import { Point, Size } from "./";
-import { Connection } from "./connection";
+import { Edge } from "./edge";
 
 
 /**
@@ -31,10 +31,11 @@ export class GraphNode {
     /**
      * An array with all connections of the node's instance.
      * 
-     * @type {Array<Connection>}
+     * @private
+     * @type {Array<Edge>}
      * @memberof GraphNode
      */
-    public connections: Array<Connection>;
+    private connections: Array<Edge>;
 
 
     /**
@@ -52,19 +53,31 @@ export class GraphNode {
             this.size = new Size();
         }
 
-        this.connections = new Array<Connection>();
+        this.connections = new Array<Edge>();
     }
 
 
     /**
-     * Adds a new connection to the given node.
+     * Adds a new edge to the given node.
      * 
      * @param {GraphNode} targetNode 
      * @memberof GraphNode
      */
     public addConnection(targetNode: GraphNode): void {
-        let newConnection = new Connection(this, targetNode);
-        this.connections.push(newConnection);
+        let newEdge = new Edge(this, targetNode);
+        this.connections.push(newEdge);
+    }
+
+
+    /**
+     * Returns an array with all node connections.
+     * 
+     * @returns {Array<Edge>} 
+     * @memberof GraphNode
+     */
+    public getConnections(): Array<Edge> {
+        // Use concat to copy the array, so that the original array can't be changed.
+        return new Array<Edge>().concat(this.connections);
     }
 
 }

@@ -4,6 +4,6 @@ export * from './graph';
 export * from './graphNode';
 export * from './point';
 export * from './size';
-export * from './connection';
+export * from './edge';
 export * from './shapes';
 export * from './guid';

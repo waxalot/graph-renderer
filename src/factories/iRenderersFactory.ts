@@ -1,5 +1,5 @@
 import { IRenderer } from "../renderers";
-import { INodeViewModel } from "../viewModels";
+import { INodeViewModel, IEdgeViewModel } from "../viewModels";
 import { IGraphRenderer } from "../renderers/iGraphRenderer";
 
 
@@ -27,5 +27,14 @@ export interface IRenderersFactory {
      * @memberof IRenderersFactory
      */
     createNodeRenderer(): IRenderer<INodeViewModel>;
+
+
+    /**
+     * Creates an instance of IRenderer<IEdgeViewModel>.
+     * 
+     * @returns {IRenderer<IEdgeViewModel>} 
+     * @memberof IRenderersFactory
+     */
+    createEdgeRenderer(): IRenderer<IEdgeViewModel>;
 
 }

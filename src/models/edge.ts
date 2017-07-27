@@ -2,39 +2,39 @@ import { GraphNode } from "./";
 
 
 /**
- * A representation of a connection between two nodes.
+ * A representation of an edge between two nodes.
  * 
  * @export
- * @class Connection
+ * @class Edge
  */
-export class Connection {
+export class Edge {
 
     /**
-     * The source node of the connection.
+     * The source node of the edge.
      * 
-     * @private
+     * @public
      * @type {GraphNode}
-     * @memberof Connection
+     * @memberof Edge
      */
-    private sourceNode: GraphNode;
+    public sourceNode: GraphNode;
 
 
     /**
-     * The target node of the connection.
+     * The target node of the edge.
      * 
-     * @private
+     * @public
      * @type {GraphNode}
-     * @memberof Connection
+     * @memberof Edge
      */
-    private targetNode: GraphNode;
+    public targetNode: GraphNode;
 
 
     /**
-     * Creates an instance of Connection.
+     * Creates an instance of Edge.
      *
      * @param {GraphNode} sourceNode 
      * @param {GraphNode} targetNode 
-     * @memberof Connection
+     * @memberof Edge
      */
     public constructor(sourceNode: GraphNode, targetNode: GraphNode) {
         if (!sourceNode) {

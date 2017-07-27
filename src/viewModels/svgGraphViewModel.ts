@@ -1,4 +1,4 @@
-import { IGraphViewModel, SVGNodeViewModel, SVGViewModel } from "./";
+import { IGraphViewModel, SVGNodeViewModel, SVGViewModel, SVGEdgeViewModel } from "./";
 import { Graph, Size } from "../models";
 import { Utils } from "../utils";
 
@@ -41,8 +41,18 @@ export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
      */
     public nodes: Array<SVGNodeViewModel>;
 
+
+    /**
+     * A collection of the graph's edge view-models.
+     * 
+     * @type {Array<SVGEdgeViewModel>}
+     * @memberof SVGGraphViewModel
+     */
+    public connections: Array<SVGEdgeViewModel>;
+
+
     private graph: Graph;
-    
+
 
     /**
      * Creates an instance of SVGGraphViewModel.
@@ -53,6 +63,7 @@ export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
         super();
 
         this.nodes = new Array<SVGNodeViewModel>();
+        this.connections = new Array<SVGEdgeViewModel>();
     }
 
 

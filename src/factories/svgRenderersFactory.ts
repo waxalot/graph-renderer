@@ -1,6 +1,6 @@
 import { IRenderersFactory } from "./iRenderersFactory";
-import { SVGGraphRenderer, SVGNodeRenderer, IGraphRenderer, INodeRenderer } from "../renderers";
-import { IGraphViewModel, INodeViewModel } from "../viewModels";
+import { SVGGraphRenderer, SVGNodeRenderer, IGraphRenderer, INodeRenderer, SVGEdgeRenderer } from "../renderers";
+import { IGraphViewModel, INodeViewModel, IEdgeViewModel } from "../viewModels";
 
 
 /**
@@ -20,7 +20,8 @@ export class SVGRenderersFactory implements IRenderersFactory {
      */
     public createGraphRenderer(): IGraphRenderer {
         let nodeRenderer = this.createNodeRenderer();
-        return new SVGGraphRenderer(nodeRenderer);
+        let edgeRenderer = this.createEdgeRenderer();
+        return new SVGGraphRenderer(nodeRenderer, edgeRenderer);
     }
 
 
@@ -32,6 +33,17 @@ export class SVGRenderersFactory implements IRenderersFactory {
      */
     public createNodeRenderer(): SVGNodeRenderer {
         return new SVGNodeRenderer();
+    }
+
+
+    /**
+     * Creates the edge renderer.
+     * 
+     * @returns {SVGEdgeRenderer} 
+     * @memberof SVGRenderersFactory
+     */
+    public createEdgeRenderer(): SVGEdgeRenderer {
+        return new SVGEdgeRenderer();
     }
 
 }

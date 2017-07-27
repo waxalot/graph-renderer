@@ -1,4 +1,4 @@
-import { INodeViewModel, SVGViewModel } from "./";
+import { INodeViewModel, SVGViewModel, SVGEdgeViewModel } from "./";
 import { GraphNode, Size, Point } from "../models";
 import { Utils } from "../utils";
 
@@ -53,6 +53,15 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
     }
 
 
+    /**
+     * A collection of the node's edge view-models.
+     * 
+     * @type {Array<SVGEdgeViewModel>}
+     * @memberof SVGNodeViewModel
+     */
+    public connections: Array<SVGEdgeViewModel>;
+
+
     private node: GraphNode;
 
 
@@ -63,6 +72,8 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
      */
     public constructor() {
         super();
+
+        this.connections = new Array<SVGEdgeViewModel>();
     }
 
 
@@ -78,6 +89,26 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
         }
 
         this.node = node;
+
+        this.initEdges();
+    }
+
+
+    /**
+     * Initializes all edge view-models.
+     * 
+     * @private
+     * @memberof SVGNodeViewModel
+     */
+    private initEdges(): void {
+        let edges = this.node.getConnections();
+        if (edges && edges.length > 0) {
+            edges.forEach((tempEdge) => {
+                let newEdgeVM = new SVGEdgeViewModel();
+                newEdgeVM.init(tempEdge);
+                this.connections.push(newEdgeVM);
+            });
+        }
     }
 
 }

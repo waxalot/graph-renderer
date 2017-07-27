@@ -1,4 +1,4 @@
-import { IViewModel } from "./";
+import { IViewModel, IEdgeViewModel, INodeViewModel } from "./";
 import { Size } from "../models";
 
 
@@ -18,5 +18,23 @@ export interface IGraphViewModel extends IViewModel {
      * @memberof IGraphViewModel
      */
     size: Size;
+
+
+    /**
+     * A collection of the graph's node view-models.
+     * 
+     * @type {Array<INodeViewModel>}
+     * @memberof IGraphViewModel
+     */
+    nodes: Array<INodeViewModel>;
+
+
+    /**
+    * A collection of the graph's edge view-models.
+    * 
+    * @type {Array<IEdgeViewModel>}
+    * @memberof IGraphViewModel
+    */
+    connections: Array<IEdgeViewModel>;
 
 }

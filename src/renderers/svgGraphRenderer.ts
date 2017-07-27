@@ -1,10 +1,7 @@
-import { SVGNodeRenderer, IRenderer } from "./";
 import { Utils } from "../utils";
 import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
-import { IGraphRenderer } from "./iGraphRenderer";
 import { SVGUtils } from "./svgUtils";
-import { Renderer } from "./renderer";
-import { SVGRenderer } from "./svgRenderer";
+import { IGraphRenderer, Renderer, SVGRenderer, SVGNodeRenderer, IRenderer, SVGEdgeRenderer } from "./";
 
 
 /**
@@ -18,21 +15,27 @@ export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements 
 
     private containerElement: Element;
     private nodeRenderer: SVGNodeRenderer;
+    private edgeRenderer: SVGEdgeRenderer;
 
 
     /**
      * Creates an instance of SVGGraphRenderer.
+     *
      * @param {SVGNodeRenderer} nodeRenderer 
+     * @param {SVGEdgeRenderer} edgeRenderer 
      * @memberof SVGGraphRenderer
      */
-    public constructor(nodeRenderer: SVGNodeRenderer) {
+    public constructor(nodeRenderer: SVGNodeRenderer, edgeRenderer: SVGEdgeRenderer) {
         super();
 
         if (!nodeRenderer) {
             throw new ReferenceError('The argument "nodeRenderer" is null or undefined.');
+        } else if (!edgeRenderer) {
+            throw new ReferenceError('The argument "edgeRenderer" is null or undefined.');
         }
 
         this.nodeRenderer = nodeRenderer;
+        this.edgeRenderer = edgeRenderer;
     }
 
 
@@ -67,7 +70,7 @@ export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements 
 
         // Define the viewport coordinate system.
         graphTargetElement.setAttribute('width', '800');
-        graphTargetElement.setAttribute('height', '600');        
+        graphTargetElement.setAttribute('height', '600');
         // Define the user coordinate system.
         graphTargetElement.setAttribute('viewbox', '0 0 800, 600');
 
