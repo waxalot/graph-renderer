@@ -1,4 +1,4 @@
-import { INodeViewModel, SVGViewModel, SVGEdgeViewModel } from "./";
+import { INodeViewModel, SVGEdgeViewModel, SVGViewModel } from "./";
 import { GraphNode, Size, Point } from "../models";
 import { Utils } from "../utils";
 
@@ -11,7 +11,7 @@ import { Utils } from "../utils";
  * @extends {SVGViewModel}
  * @implements {INodeViewModel}
  */
-export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
+export class SVGNodeViewModel extends SVGViewModel<GraphNode> implements INodeViewModel {
 
     /**
      * Gets the node's position.
@@ -20,7 +20,7 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
      * @memberof SVGNodeViewModel
      */
     get position(): Point {
-        return this.node.position;
+        return this.model.position;
     }
 
     /**
@@ -29,40 +29,8 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
      * @memberof SVGNodeViewModel
      */
     set position(value: Point) {
-        this.node.position = value;
+        this.model.position = value;
     }
-
-
-    /**
-     * Gets the node's size.
-     * 
-     * @type {Size}
-     * @memberof SVGNodeViewModel
-     */
-    get size(): Size {
-        return this.node.size;
-    }
-
-    /**
-     * Sets the node's size.
-     * 
-     * @memberof SVGNodeViewModel
-     */
-    set size(value: Size) {
-        this.node.size = value;
-    }
-
-
-    /**
-     * A collection of the node's edge view-models.
-     * 
-     * @type {Array<SVGEdgeViewModel>}
-     * @memberof SVGNodeViewModel
-     */
-    public connections: Array<SVGEdgeViewModel>;
-
-
-    private node: GraphNode;
 
 
     /**
@@ -72,8 +40,6 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
      */
     public constructor() {
         super();
-
-        this.connections = new Array<SVGEdgeViewModel>();
     }
 
 
@@ -88,27 +54,7 @@ export class SVGNodeViewModel extends SVGViewModel implements INodeViewModel {
             Utils.throwReferenceError('node');
         }
 
-        this.node = node;
-
-        this.initEdges();
-    }
-
-
-    /**
-     * Initializes all edge view-models.
-     * 
-     * @private
-     * @memberof SVGNodeViewModel
-     */
-    private initEdges(): void {
-        let edges = this.node.getConnections();
-        if (edges && edges.length > 0) {
-            edges.forEach((tempEdge) => {
-                let newEdgeVM = new SVGEdgeViewModel();
-                newEdgeVM.init(tempEdge);
-                this.connections.push(newEdgeVM);
-            });
-        }
+        this.model = node;
     }
 
 }

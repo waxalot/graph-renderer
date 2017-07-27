@@ -47,7 +47,7 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var models_1 = __webpack_require__(1);
-	var factories_1 = __webpack_require__(11);
+	var factories_1 = __webpack_require__(12);
 	document.addEventListener("DOMContentLoaded", function (event) {
 	    // Build graph
 	    var node1 = new models_1.GraphNode(new models_1.Point(100, 100), new models_1.Size(50, 50));
@@ -80,240 +80,51 @@
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(2));
-	__export(__webpack_require__(3));
-	__export(__webpack_require__(5));
-	__export(__webpack_require__(6));
 	__export(__webpack_require__(4));
-	__export(__webpack_require__(8));
+	__export(__webpack_require__(5));
 	__export(__webpack_require__(7));
+	__export(__webpack_require__(8));
+	__export(__webpack_require__(6));
+	__export(__webpack_require__(3));
 	__export(__webpack_require__(9));
 	__export(__webpack_require__(10));
+	__export(__webpack_require__(11));
 
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
+	var size_1 = __webpack_require__(3);
 	/**
-	 * A representation of a Bezier curve.
+	 * The base class for all graph related models.
 	 *
 	 * @export
-	 * @class Curve
+	 * @abstract
+	 * @class GraphModel
 	 */
-	var Curve = (function () {
+	var GraphModel = (function () {
 	    /**
-	     * Creates an instance of Curve.
+	     * Creates an instance of GraphModel.
 	     *
-	     * @memberof Curve
+	     * @param {Size} [size]
+	     * @memberof GraphModel
 	     */
-	    function Curve() {
-	        this.segments = new Array();
+	    function GraphModel(size) {
+	        this.size = size;
+	        if (!this.size) {
+	            this.size = new size_1.Size();
+	        }
 	    }
-	    return Curve;
+	    return GraphModel;
 	}());
-	exports.Curve = Curve;
+	exports.GraphModel = GraphModel;
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var point_1 = __webpack_require__(4);
-	/**
-	 * A representation of a Bezier curve segment.
-	 *
-	 * @export
-	 * @class CurveSegment
-	 */
-	var CurveSegment = (function () {
-	    /**
-	     * Creates an instance of CurveSegment.
-	     *
-	     * @memberof CurveSegment
-	     */
-	    function CurveSegment() {
-	        this.startPos = new point_1.Point();
-	        this.endPos = new point_1.Point();
-	        this.ctrlPos1 = new point_1.Point();
-	        this.ctrlPos2 = new point_1.Point();
-	    }
-	    return CurveSegment;
-	}());
-	exports.CurveSegment = CurveSegment;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * A 2D point representation.
-	 *
-	 * @export
-	 * @class Point
-	 */
-	var Point = (function () {
-	    /**
-	     * Creates an instance of Point.
-	     *
-	     * @param {number} [x=0]
-	     * @param {number} [y=0]
-	     * @memberof Point
-	     */
-	    function Point(x, y) {
-	        if (x === void 0) { x = 0; }
-	        if (y === void 0) { y = 0; }
-	        this.x = x;
-	        this.y = y;
-	    }
-	    return Point;
-	}());
-	exports.Point = Point;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * A representation of a graph.
-	 *
-	 * @export
-	 * @class Graph
-	 */
-	var Graph = (function () {
-	    /**
-	     * Creates an instance of Graph.
-	     *
-	     * @memberof Graph
-	     */
-	    function Graph() {
-	        this.nodes = new Array();
-	    }
-	    /**
-	     * Adds a given node to the graph.
-	     *
-	     * @param {GraphNode} node
-	     * @memberof Graph
-	     */
-	    Graph.prototype.addNode = function (node) {
-	        this.nodes.push(node);
-	    };
-	    /**
-	     * Returns an array with all graph nodes.
-	     *
-	     * @returns {Array<GraphNode>}
-	     * @memberof Graph
-	     */
-	    Graph.prototype.getNodes = function () {
-	        // Use concat to copy the array, so that the original array can't be changed.
-	        return new Array().concat(this.nodes);
-	    };
-	    return Graph;
-	}());
-	exports.Graph = Graph;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(1);
-	var edge_1 = __webpack_require__(7);
-	/**
-	 * A representation of a graph node.
-	 *
-	 * @export
-	 * @class GraphNode
-	 */
-	var GraphNode = (function () {
-	    /**
-	     * Creates an instance of GraphNode.
-	     *
-	     * @param {Point} position
-	     * @param {Size} [size]
-	     * @memberof GraphNode
-	     */
-	    function GraphNode(position, size) {
-	        this.position = position;
-	        this.size = size;
-	        if (!this.size) {
-	            this.size = new _1.Size();
-	        }
-	        this.connections = new Array();
-	    }
-	    /**
-	     * Adds a new edge to the given node.
-	     *
-	     * @param {GraphNode} targetNode
-	     * @memberof GraphNode
-	     */
-	    GraphNode.prototype.addConnection = function (targetNode) {
-	        var newEdge = new edge_1.Edge(this, targetNode);
-	        this.connections.push(newEdge);
-	    };
-	    /**
-	     * Returns an array with all node connections.
-	     *
-	     * @returns {Array<Edge>}
-	     * @memberof GraphNode
-	     */
-	    GraphNode.prototype.getConnections = function () {
-	        // Use concat to copy the array, so that the original array can't be changed.
-	        return new Array().concat(this.connections);
-	    };
-	    return GraphNode;
-	}());
-	exports.GraphNode = GraphNode;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	/**
-	 * A representation of an edge between two nodes.
-	 *
-	 * @export
-	 * @class Edge
-	 */
-	var Edge = (function () {
-	    /**
-	     * Creates an instance of Edge.
-	     *
-	     * @param {GraphNode} sourceNode
-	     * @param {GraphNode} targetNode
-	     * @memberof Edge
-	     */
-	    function Edge(sourceNode, targetNode) {
-	        if (!sourceNode) {
-	            throw new ReferenceError('The argument "sourceNode" is null or undefined.');
-	        }
-	        else if (!targetNode) {
-	            throw new ReferenceError('The argument "targetNode" is null or undefined.');
-	        }
-	        this.sourceNode = sourceNode;
-	        this.targetNode = targetNode;
-	    }
-	    return Edge;
-	}());
-	exports.Edge = Edge;
-
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -344,7 +155,265 @@
 
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * A representation of a Bezier curve.
+	 *
+	 * @export
+	 * @class Curve
+	 */
+	var Curve = (function () {
+	    /**
+	     * Creates an instance of Curve.
+	     *
+	     * @memberof Curve
+	     */
+	    function Curve() {
+	        this.segments = new Array();
+	    }
+	    return Curve;
+	}());
+	exports.Curve = Curve;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var point_1 = __webpack_require__(6);
+	/**
+	 * A representation of a Bezier curve segment.
+	 *
+	 * @export
+	 * @class CurveSegment
+	 */
+	var CurveSegment = (function () {
+	    /**
+	     * Creates an instance of CurveSegment.
+	     *
+	     * @memberof CurveSegment
+	     */
+	    function CurveSegment() {
+	        this.startPos = new point_1.Point();
+	        this.endPos = new point_1.Point();
+	        this.ctrlPos1 = new point_1.Point();
+	        this.ctrlPos2 = new point_1.Point();
+	    }
+	    return CurveSegment;
+	}());
+	exports.CurveSegment = CurveSegment;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * A 2D point representation.
+	 *
+	 * @export
+	 * @class Point
+	 */
+	var Point = (function () {
+	    /**
+	     * Creates an instance of Point.
+	     *
+	     * @param {number} [x=0]
+	     * @param {number} [y=0]
+	     * @memberof Point
+	     */
+	    function Point(x, y) {
+	        if (x === void 0) { x = 0; }
+	        if (y === void 0) { y = 0; }
+	        this.x = x;
+	        this.y = y;
+	    }
+	    return Point;
+	}());
+	exports.Point = Point;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(1);
+	/**
+	 * A representation of a graph.
+	 *
+	 * @export
+	 * @class Graph
+	 */
+	var Graph = (function (_super) {
+	    __extends(Graph, _super);
+	    /**
+	     * Creates an instance of Graph.
+	     *
+	     * @memberof Graph
+	     */
+	    function Graph() {
+	        var _this = _super.call(this) || this;
+	        _this.nodes = new Array();
+	        return _this;
+	    }
+	    /**
+	     * Adds a given node to the graph.
+	     *
+	     * @param {GraphNode} node
+	     * @memberof Graph
+	     */
+	    Graph.prototype.addNode = function (node) {
+	        this.nodes.push(node);
+	    };
+	    /**
+	     * Returns an array with all graph nodes.
+	     *
+	     * @returns {Array<GraphNode>}
+	     * @memberof Graph
+	     */
+	    Graph.prototype.getNodes = function () {
+	        // Use concat to copy the array, so that the original array can't be changed.
+	        return new Array().concat(this.nodes);
+	    };
+	    return Graph;
+	}(_1.GraphModel));
+	exports.Graph = Graph;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(1);
+	/**
+	 * A representation of a graph node.
+	 *
+	 * @export
+	 * @class GraphNode
+	 */
+	var GraphNode = (function (_super) {
+	    __extends(GraphNode, _super);
+	    /**
+	     * Creates an instance of GraphNode.
+	     *
+	     * @param {Point} position
+	     * @param {Size} [size]
+	     * @memberof GraphNode
+	     */
+	    function GraphNode(position, size) {
+	        var _this = _super.call(this, size) || this;
+	        _this.position = position;
+	        _this.connections = new Array();
+	        return _this;
+	    }
+	    /**
+	     * Adds a new edge to the given node.
+	     *
+	     * @param {GraphNode} targetNode
+	     * @memberof GraphNode
+	     */
+	    GraphNode.prototype.addConnection = function (targetNode) {
+	        var newEdge = new _1.Edge(this, targetNode);
+	        this.connections.push(newEdge);
+	    };
+	    /**
+	     * Returns an array with all node connections.
+	     *
+	     * @returns {Array<Edge>}
+	     * @memberof GraphNode
+	     */
+	    GraphNode.prototype.getConnections = function () {
+	        // Use concat to copy the array, so that the original array can't be changed.
+	        return new Array().concat(this.connections);
+	    };
+	    return GraphNode;
+	}(_1.GraphModel));
+	exports.GraphNode = GraphNode;
+
+
+/***/ }),
 /* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(1);
+	/**
+	 * A representation of an edge between two nodes.
+	 *
+	 * @export
+	 * @class Edge
+	 */
+	var Edge = (function (_super) {
+	    __extends(Edge, _super);
+	    /**
+	     * Creates an instance of Edge.
+	     *
+	     * @param {GraphNode} sourceNode
+	     * @param {GraphNode} targetNode
+	     * @memberof Edge
+	     */
+	    function Edge(sourceNode, targetNode) {
+	        var _this = _super.call(this) || this;
+	        if (!sourceNode) {
+	            throw new ReferenceError('The argument "sourceNode" is null or undefined.');
+	        }
+	        else if (!targetNode) {
+	            throw new ReferenceError('The argument "targetNode" is null or undefined.');
+	        }
+	        _this.sourceNode = sourceNode;
+	        _this.targetNode = targetNode;
+	        return _this;
+	    }
+	    return Edge;
+	}(_1.GraphModel));
+	exports.Edge = Edge;
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -352,7 +421,7 @@
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -382,7 +451,7 @@
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -390,17 +459,17 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(12));
-	__export(__webpack_require__(21));
+	__export(__webpack_require__(13));
+	__export(__webpack_require__(22));
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var renderers_1 = __webpack_require__(13);
+	var renderers_1 = __webpack_require__(14);
 	/**
 	 * The SVG based representation of a renderers factory.
 	 *
@@ -446,7 +515,7 @@
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -454,15 +523,15 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(14));
 	__export(__webpack_require__(15));
-	__export(__webpack_require__(18));
+	__export(__webpack_require__(16));
 	__export(__webpack_require__(19));
 	__export(__webpack_require__(20));
+	__export(__webpack_require__(21));
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -485,7 +554,7 @@
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -500,9 +569,9 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var renderer_1 = __webpack_require__(14);
-	var svgUtils_1 = __webpack_require__(16);
-	var utils_1 = __webpack_require__(17);
+	var renderer_1 = __webpack_require__(15);
+	var svgUtils_1 = __webpack_require__(17);
+	var utils_1 = __webpack_require__(18);
 	/**
 	 * The abstract base class for SVG based renderers.
 	 *
@@ -551,12 +620,12 @@
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var utils_1 = __webpack_require__(17);
+	var utils_1 = __webpack_require__(18);
 	/**
 	 * A collection of SVG related util methods.
 	 *
@@ -589,7 +658,7 @@
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -619,7 +688,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -634,8 +703,8 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var utils_1 = __webpack_require__(17);
-	var svgRenderer_1 = __webpack_require__(15);
+	var utils_1 = __webpack_require__(18);
+	var svgRenderer_1 = __webpack_require__(16);
 	/**
 	 * The SVG based implementation of a node renderer.
 	 *
@@ -673,6 +742,11 @@
 	        // Render the node's target
 	        var nodeTargetElement = this.createTargetElement('rect', viewModel);
 	        nodeTargetElement.classList.add('graph-node');
+	        nodeTargetElement.classList.add('graph-draggable');
+	        // Set selection handler
+	        nodeTargetElement.onmousedown = viewModel.mouseDownHandler;
+	        // Set the initial transform matrix (identity matrix)
+	        nodeTargetElement.setAttribute('transform', 'matrix(1 0 0 1 0 0)');
 	        // Set the position
 	        if (viewModel.position) {
 	            nodeTargetElement.setAttribute('x', viewModel.position.x.toFixed());
@@ -691,7 +765,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -706,8 +780,8 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var utils_1 = __webpack_require__(17);
-	var _1 = __webpack_require__(13);
+	var utils_1 = __webpack_require__(18);
+	var _1 = __webpack_require__(14);
 	/**
 	 * The SVG based implementation of a graph renderer.
 	 *
@@ -768,6 +842,13 @@
 	        graphTargetElement.setAttribute('viewbox', '0 0 800, 600');
 	        graphTargetElement.classList.add('graph');
 	        this.containerElement.appendChild(graphTargetElement);
+	        // Render all graph edges
+	        if (viewModel.connections && viewModel.connections.length > 0) {
+	            viewModel.connections.forEach(function (edgeVM) {
+	                _this.edgeRenderer.setContainerElement(graphTargetElement);
+	                _this.edgeRenderer.render(edgeVM);
+	            });
+	        }
 	        // Render all graph nodes
 	        if (viewModel.nodes && viewModel.nodes.length > 0) {
 	            viewModel.nodes.forEach(function (nodeVM) {
@@ -782,7 +863,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -797,8 +878,8 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(13);
-	var utils_1 = __webpack_require__(17);
+	var _1 = __webpack_require__(14);
+	var utils_1 = __webpack_require__(18);
 	/**
 	 * The SVG based implementation of an edge renderer.
 	 *
@@ -834,8 +915,18 @@
 	            throw new Error('No container element was set. Call setContainerElement() before!');
 	        }
 	        // Render the edge's target
-	        var edgeTargetElement = this.createTargetElement('path', viewModel);
+	        var edgeTargetElement = this.createTargetElement('line', viewModel);
 	        edgeTargetElement.classList.add('graph-edge');
+	        // Set start point
+	        if (viewModel.startPoint) {
+	            edgeTargetElement.setAttribute('x1', viewModel.startPoint.x.toFixed());
+	            edgeTargetElement.setAttribute('y1', viewModel.startPoint.y.toFixed());
+	        }
+	        // Set end point
+	        if (viewModel.endPoint) {
+	            edgeTargetElement.setAttribute('x2', viewModel.endPoint.x.toFixed());
+	            edgeTargetElement.setAttribute('y2', viewModel.endPoint.y.toFixed());
+	        }
 	        this.containerElement.appendChild(edgeTargetElement);
 	    };
 	    return SVGEdgeRenderer;
@@ -844,12 +935,12 @@
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var viewModels_1 = __webpack_require__(22);
+	var viewModels_1 = __webpack_require__(23);
 	/**
 	 * The SVG based representation of a view-models factory.
 	 *
@@ -878,7 +969,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -886,14 +977,14 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(23));
 	__export(__webpack_require__(24));
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
+	__export(__webpack_require__(27));
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -912,15 +1003,110 @@
 	     * @memberof SVGViewModel
 	     */
 	    function SVGViewModel() {
+	        var _this = this;
+	        this.mouseDownHandler = function (e) {
+	            var selectedElement = e.srcElement;
+	            _this.currentMoveX = e.clientX;
+	            _this.currentMoveY = e.clientY;
+	            var tempCurrentMatrix = selectedElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
+	            var matrixEntriesCount = tempCurrentMatrix.length;
+	            for (var i = 0; i < matrixEntriesCount; i++) {
+	                _this.currentTransformMatrix[i] = parseFloat(tempCurrentMatrix[i]);
+	            }
+	            // Set drag handler
+	            selectedElement.onmousemove = function (e) {
+	                var dx = e.clientX - _this.currentMoveX;
+	                var dy = e.clientY - _this.currentMoveY;
+	                _this.currentTransformMatrix[4] += dx;
+	                _this.currentTransformMatrix[5] += dy;
+	                var newMatrix = 'matrix(' + _this.currentTransformMatrix.join(' ') + ')';
+	                selectedElement.setAttributeNS(null, 'transform', newMatrix);
+	                _this.currentMoveX = e.clientX;
+	                _this.currentMoveY = e.clientY;
+	            };
+	            // Set drop handler
+	            selectedElement.onmouseup = function (e) {
+	                selectedElement.onmousemove = null;
+	                selectedElement.onmouseout = null;
+	                selectedElement.onmouseup = null;
+	            };
+	            // Set leave handler
+	            // selectedElement.onmouseout =
+	        };
 	        this.guid = models_1.Guid.newGuid();
+	        this._currentMovePosition = new models_1.Point();
+	        this.currentTransformMatrix = new Array();
 	    }
+	    Object.defineProperty(SVGViewModel.prototype, "size", {
+	        /**
+	         * Gets the node's size.
+	         *
+	         * @type {Size}
+	         * @memberof SVGNodeViewModel
+	         */
+	        get: function () {
+	            return this.model.size;
+	        },
+	        /**
+	         * Sets the node's size.
+	         *
+	         * @memberof SVGNodeViewModel
+	         */
+	        set: function (value) {
+	            this.model.size = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(SVGViewModel.prototype, "currentMoveX", {
+	        /**
+	         * Gets the node's current move position x coordinate.
+	         *
+	         * @type {Point}
+	         * @memberof SVGViewModel
+	         */
+	        get: function () {
+	            return this._currentMovePosition.x;
+	        },
+	        /**
+	         * Sets the node's current move position x coordinate.
+	         *
+	         * @memberof SVGViewModel
+	         */
+	        set: function (value) {
+	            this._currentMovePosition.x = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(SVGViewModel.prototype, "currentMoveY", {
+	        /**
+	         * Gets the node's current move position y coordinate.
+	         *
+	         * @type {Point}
+	         * @memberof SVGViewModel
+	         */
+	        get: function () {
+	            return this._currentMovePosition.y;
+	        },
+	        /**
+	         * Sets the node's current move position y coordinate.
+	         *
+	         * @memberof SVGViewModel
+	         */
+	        set: function (value) {
+	            this._currentMovePosition.y = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    return SVGViewModel;
 	}());
 	exports.SVGViewModel = SVGViewModel;
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -935,8 +1121,8 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(22);
-	var utils_1 = __webpack_require__(17);
+	var _1 = __webpack_require__(23);
+	var utils_1 = __webpack_require__(18);
 	/**
 	 * The SVG based representation of a graph's view-model.
 	 *
@@ -958,27 +1144,6 @@
 	        _this.connections = new Array();
 	        return _this;
 	    }
-	    Object.defineProperty(SVGGraphViewModel.prototype, "size", {
-	        /**
-	         * Gets the graph's size.
-	         *
-	         * @type {Size}
-	         * @memberof SVGGraphViewModel
-	         */
-	        get: function () {
-	            return this.graph.size;
-	        },
-	        /**
-	         * Sets the graph's size.
-	         *
-	         * @memberof SVGGraphViewModel
-	         */
-	        set: function (value) {
-	            this.graph.size = value;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
 	    /**
 	     * Initializes the graph view-model.
 	     *
@@ -989,7 +1154,7 @@
 	        if (!graph) {
 	            utils_1.Utils.throwReferenceError('graph');
 	        }
-	        this.graph = graph;
+	        this.model = graph;
 	        this.initNodes();
 	    };
 	    /**
@@ -1000,133 +1165,28 @@
 	     */
 	    SVGGraphViewModel.prototype.initNodes = function () {
 	        var _this = this;
-	        var graphNodes = this.graph.getNodes();
+	        var graphNodes = this.model.getNodes();
 	        if (graphNodes && graphNodes.length > 0) {
 	            graphNodes.forEach(function (tempNode) {
+	                // Create the graph node view-model
 	                var newNodeVM = new _1.SVGNodeViewModel();
 	                newNodeVM.init(tempNode);
 	                _this.nodes.push(newNodeVM);
+	                // Create the node's connection view-models
+	                var edges = tempNode.getConnections();
+	                if (edges && edges.length > 0) {
+	                    edges.forEach(function (tempEdge) {
+	                        var newEdgeVM = new _1.SVGEdgeViewModel();
+	                        newEdgeVM.init(tempEdge);
+	                        _this.connections.push(newEdgeVM);
+	                    });
+	                }
 	            });
 	        }
 	    };
 	    return SVGGraphViewModel;
 	}(_1.SVGViewModel));
 	exports.SVGGraphViewModel = SVGGraphViewModel;
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || (function () {
-	    var extendStatics = Object.setPrototypeOf ||
-	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-	    return function (d, b) {
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(22);
-	var utils_1 = __webpack_require__(17);
-	/**
-	 * The SVG based representation of a node's view-model.
-	 *
-	 * @export
-	 * @class SVGNodeViewModel
-	 * @extends {SVGViewModel}
-	 * @implements {INodeViewModel}
-	 */
-	var SVGNodeViewModel = (function (_super) {
-	    __extends(SVGNodeViewModel, _super);
-	    /**
-	     * Creates an instance of SVGNodeViewModel.
-	     *
-	     * @memberof SVGNodeViewModel
-	     */
-	    function SVGNodeViewModel() {
-	        var _this = _super.call(this) || this;
-	        _this.connections = new Array();
-	        return _this;
-	    }
-	    Object.defineProperty(SVGNodeViewModel.prototype, "position", {
-	        /**
-	         * Gets the node's position.
-	         *
-	         * @type {Point}
-	         * @memberof SVGNodeViewModel
-	         */
-	        get: function () {
-	            return this.node.position;
-	        },
-	        /**
-	         * Sets the node's position.
-	         *
-	         * @memberof SVGNodeViewModel
-	         */
-	        set: function (value) {
-	            this.node.position = value;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(SVGNodeViewModel.prototype, "size", {
-	        /**
-	         * Gets the node's size.
-	         *
-	         * @type {Size}
-	         * @memberof SVGNodeViewModel
-	         */
-	        get: function () {
-	            return this.node.size;
-	        },
-	        /**
-	         * Sets the node's size.
-	         *
-	         * @memberof SVGNodeViewModel
-	         */
-	        set: function (value) {
-	            this.node.size = value;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    /**
-	     * Initializes the node view-model.
-	     *
-	     * @param {GraphNode} node
-	     * @memberof SVGNodeViewModel
-	     */
-	    SVGNodeViewModel.prototype.init = function (node) {
-	        if (!node) {
-	            utils_1.Utils.throwReferenceError('node');
-	        }
-	        this.node = node;
-	        this.initEdges();
-	    };
-	    /**
-	     * Initializes all edge view-models.
-	     *
-	     * @private
-	     * @memberof SVGNodeViewModel
-	     */
-	    SVGNodeViewModel.prototype.initEdges = function () {
-	        var _this = this;
-	        var edges = this.node.getConnections();
-	        if (edges && edges.length > 0) {
-	            edges.forEach(function (tempEdge) {
-	                var newEdgeVM = new _1.SVGEdgeViewModel();
-	                newEdgeVM.init(tempEdge);
-	                _this.connections.push(newEdgeVM);
-	            });
-	        }
-	    };
-	    return SVGNodeViewModel;
-	}(_1.SVGViewModel));
-	exports.SVGNodeViewModel = SVGNodeViewModel;
 
 
 /***/ }),
@@ -1145,8 +1205,83 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(22);
-	var utils_1 = __webpack_require__(17);
+	var _1 = __webpack_require__(23);
+	var utils_1 = __webpack_require__(18);
+	/**
+	 * The SVG based representation of a node's view-model.
+	 *
+	 * @export
+	 * @class SVGNodeViewModel
+	 * @extends {SVGViewModel}
+	 * @implements {INodeViewModel}
+	 */
+	var SVGNodeViewModel = (function (_super) {
+	    __extends(SVGNodeViewModel, _super);
+	    /**
+	     * Creates an instance of SVGNodeViewModel.
+	     *
+	     * @memberof SVGNodeViewModel
+	     */
+	    function SVGNodeViewModel() {
+	        return _super.call(this) || this;
+	    }
+	    Object.defineProperty(SVGNodeViewModel.prototype, "position", {
+	        /**
+	         * Gets the node's position.
+	         *
+	         * @type {Point}
+	         * @memberof SVGNodeViewModel
+	         */
+	        get: function () {
+	            return this.model.position;
+	        },
+	        /**
+	         * Sets the node's position.
+	         *
+	         * @memberof SVGNodeViewModel
+	         */
+	        set: function (value) {
+	            this.model.position = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /**
+	     * Initializes the node view-model.
+	     *
+	     * @param {GraphNode} node
+	     * @memberof SVGNodeViewModel
+	     */
+	    SVGNodeViewModel.prototype.init = function (node) {
+	        if (!node) {
+	            utils_1.Utils.throwReferenceError('node');
+	        }
+	        this.model = node;
+	    };
+	    return SVGNodeViewModel;
+	}(_1.SVGViewModel));
+	exports.SVGNodeViewModel = SVGNodeViewModel;
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(23);
+	var models_1 = __webpack_require__(1);
+	var utils_1 = __webpack_require__(18);
 	/**
 	 * The SVG based representation of an edge's view-model.
 	 *
@@ -1163,7 +1298,10 @@
 	     * @memberof SVGEdgeViewModel
 	     */
 	    function SVGEdgeViewModel() {
-	        return _super.call(this) || this;
+	        var _this = _super.call(this) || this;
+	        _this._startPoint = new models_1.Point();
+	        _this._endPoint = new models_1.Point();
+	        return _this;
 	    }
 	    Object.defineProperty(SVGEdgeViewModel.prototype, "startPoint", {
 	        /**
@@ -1173,7 +1311,9 @@
 	         * @memberof SVGEdgeViewModel
 	         */
 	        get: function () {
-	            return this.edge.sourceNode.position;
+	            this._startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
+	            this._startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
+	            return this._startPoint;
 	        },
 	        /**
 	         * Sets the edge's start point.
@@ -1181,7 +1321,9 @@
 	         * @memberof SVGEdgeViewModel
 	         */
 	        set: function (value) {
-	            this.edge.sourceNode.position = value;
+	            this._startPoint = value;
+	            this.model.sourceNode.position.x = this._startPoint.x - this.model.sourceNode.size.width * 0.5;
+	            this.model.sourceNode.position.y = this._startPoint.y - this.model.sourceNode.size.height * 0.5;
 	        },
 	        enumerable: true,
 	        configurable: true
@@ -1194,7 +1336,9 @@
 	         * @memberof SVGEdgeViewModel
 	         */
 	        get: function () {
-	            return this.edge.targetNode.position;
+	            this._endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
+	            this._endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
+	            return this._endPoint;
 	        },
 	        /**
 	         * Sets the edge's end point.
@@ -1202,7 +1346,9 @@
 	         * @memberof SVGEdgeViewModel
 	         */
 	        set: function (value) {
-	            this.edge.targetNode.position = value;
+	            this._endPoint = value;
+	            this.model.targetNode.position.x = this._endPoint.x - this.model.targetNode.size.width * 0.5;
+	            this.model.targetNode.position.y = this._endPoint.y - this.model.targetNode.size.height * 0.5;
 	        },
 	        enumerable: true,
 	        configurable: true
@@ -1217,7 +1363,7 @@
 	        if (!edge) {
 	            utils_1.Utils.throwReferenceError('edge');
 	        }
-	        this.edge = edge;
+	        this.model = edge;
 	    };
 	    return SVGEdgeViewModel;
 	}(_1.SVGViewModel));

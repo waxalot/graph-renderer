@@ -77,6 +77,14 @@ export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements 
         graphTargetElement.classList.add('graph');
         this.containerElement.appendChild(graphTargetElement);
 
+        // Render all graph edges
+        if (viewModel.connections && viewModel.connections.length > 0) {
+            viewModel.connections.forEach((edgeVM) => {
+                this.edgeRenderer.setContainerElement(graphTargetElement);
+                this.edgeRenderer.render(edgeVM);
+            });
+        }
+
         // Render all graph nodes
         if (viewModel.nodes && viewModel.nodes.length > 0) {
             viewModel.nodes.forEach((nodeVM) => {
@@ -84,6 +92,7 @@ export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements 
                 this.nodeRenderer.render(nodeVM);
             });
         }
+
     }
 
 
@@ -112,36 +121,6 @@ export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements 
     //     }
 
     //     return foundElement;
-    // }
-
-    // /**
-    //  * Updates the target element.
-    //  * 
-    //  * @param {SVGSVGElement} targetElement 
-    //  * @param {IGraphViewModel} viewModel 
-    //  * @memberof SVGGraphRenderer
-    //  */
-    // public update(targetElement: SVGSVGElement, viewModel: IGraphViewModel): void {
-    //     if (!viewModel) {
-    //         Utils.throwReferenceError('viewModel');
-    //     }
-
-
-    //     // // Render the graph
-    //     // let svgElement = graphVM.targetContainerElement.querySelector('svg');
-    //     // if (!svgElement) {
-    //     //     svgElement = this.createTargetElement();
-    //     //     graphVM.targetElement = svgElement;
-    //     //     graphVM.targetContainerElement.appendChild(svgElement);
-    //     // }
-
-    //     // // Render all nodes
-    //     // let tempNodes = graphVM.getNodes();
-    //     // if (tempNodes && tempNodes.length > 0) {
-    //     //     tempNodes.forEach((nodeVM) => {
-    //     //         this.nodeRenderer.render(nodeVM);
-    //     //     });
-    //     // }
-    // }
+    // }   
 
 }

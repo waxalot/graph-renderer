@@ -2,17 +2,22 @@ svg {
 
     &.graph {
         
-        &.graph-node-disabled {
-            opacity: 0.2;
+        & .graph-draggable {
+            cursor: move;
         }
 
-        path {
-            stroke-width: 4;
-            stroke: #FFFFFF;
-            stroke-linecap: round;
-            fill: none;
-        }
+        & .graph-node {           
 
+            &.disabled {
+                opacity: 0.2;
+            }
+
+        }
+    }
+
+    & .graph-edge {       
+        stroke-width: 2;
+        stroke: #FF0000;
     }
 
 }

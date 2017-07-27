@@ -49,10 +49,20 @@ export class SVGEdgeRenderer extends SVGRenderer<SVGEdgeViewModel> implements IE
         }
 
         // Render the edge's target
-        let edgeTargetElement = this.createTargetElement<SVGPathElement>('path', viewModel);
+        let edgeTargetElement = this.createTargetElement<SVGPathElement>('line', viewModel);
         edgeTargetElement.classList.add('graph-edge');
 
+        // Set start point
+        if (viewModel.startPoint) {
+            edgeTargetElement.setAttribute('x1', viewModel.startPoint.x.toFixed());
+            edgeTargetElement.setAttribute('y1', viewModel.startPoint.y.toFixed());
+        }
 
+        // Set end point
+        if (viewModel.endPoint) {
+            edgeTargetElement.setAttribute('x2', viewModel.endPoint.x.toFixed());
+            edgeTargetElement.setAttribute('y2', viewModel.endPoint.y.toFixed());
+        }
 
         this.containerElement.appendChild(edgeTargetElement);
     }

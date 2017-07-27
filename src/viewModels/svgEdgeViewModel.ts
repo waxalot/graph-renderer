@@ -11,7 +11,7 @@ import { Utils } from "../utils";
  * @extends {SVGViewModel}
  * @implements {IEdgeViewModel}
  */
-export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
+export class SVGEdgeViewModel extends SVGViewModel<Edge> implements IEdgeViewModel {
 
     /**
      * Gets the edge's start point.
@@ -20,7 +20,10 @@ export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
      * @memberof SVGEdgeViewModel
      */
     get startPoint(): Point {
-        return this.edge.sourceNode.position;
+        this._startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
+        this._startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
+
+        return this._startPoint;
     }
 
     /**
@@ -29,7 +32,10 @@ export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
      * @memberof SVGEdgeViewModel
      */
     set startPoint(value: Point) {
-        this.edge.sourceNode.position = value;
+        this._startPoint = value;
+
+        this.model.sourceNode.position.x = this._startPoint.x - this.model.sourceNode.size.width * 0.5;
+        this.model.sourceNode.position.y = this._startPoint.y - this.model.sourceNode.size.height * 0.5;
     }
 
 
@@ -40,7 +46,10 @@ export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
      * @memberof SVGEdgeViewModel
      */
     get endPoint(): Point {
-        return this.edge.targetNode.position;
+        this._endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
+        this._endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
+
+        return this._endPoint;
     }
 
     /**
@@ -49,11 +58,15 @@ export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
      * @memberof SVGEdgeViewModel
      */
     set endPoint(value: Point) {
-        this.edge.targetNode.position = value;
+        this._endPoint = value;
+
+        this.model.targetNode.position.x = this._endPoint.x - this.model.targetNode.size.width * 0.5;
+        this.model.targetNode.position.y = this._endPoint.y - this.model.targetNode.size.height * 0.5;
     }
 
 
-    private edge: Edge;
+    private _startPoint: Point;
+    private _endPoint: Point;
 
 
     /**
@@ -63,6 +76,9 @@ export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
      */
     public constructor() {
         super();
+
+        this._startPoint = new Point();
+        this._endPoint = new Point();
     }
 
 
@@ -77,7 +93,7 @@ export class SVGEdgeViewModel extends SVGViewModel implements IEdgeViewModel {
             Utils.throwReferenceError('edge');
         }
 
-        this.edge = edge;
+        this.model = edge;
     }
 
 }

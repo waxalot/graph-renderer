@@ -11,27 +11,7 @@ import { Utils } from "../utils";
  * @extends {SVGViewModel}
  * @implements {IGraphViewModel}
  */
-export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
-
-    /**
-     * Gets the graph's size.
-     * 
-     * @type {Size}
-     * @memberof SVGGraphViewModel
-     */
-    public get size(): Size {
-        return this.graph.size;
-    }
-
-    /**
-     * Sets the graph's size.
-     * 
-     * @memberof SVGGraphViewModel
-     */
-    public set size(value: Size) {
-        this.graph.size = value;
-    }
-
+export class SVGGraphViewModel extends SVGViewModel<Graph> implements IGraphViewModel {
 
     /**
      * A collection of the graph's node view-models.
@@ -49,9 +29,6 @@ export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
      * @memberof SVGGraphViewModel
      */
     public connections: Array<SVGEdgeViewModel>;
-
-
-    private graph: Graph;
 
 
     /**
@@ -78,7 +55,7 @@ export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
             Utils.throwReferenceError('graph');
         }
 
-        this.graph = graph;
+        this.model = graph;
 
         this.initNodes();
     }
@@ -91,12 +68,24 @@ export class SVGGraphViewModel extends SVGViewModel implements IGraphViewModel {
      * @memberof SVGGraphViewModel
      */
     private initNodes(): void {
-        let graphNodes = this.graph.getNodes();
+        let graphNodes = this.model.getNodes();
         if (graphNodes && graphNodes.length > 0) {
             graphNodes.forEach((tempNode) => {
+
+                // Create the graph node view-model
                 let newNodeVM = new SVGNodeViewModel();
                 newNodeVM.init(tempNode);
                 this.nodes.push(newNodeVM);
+
+                // Create the node's connection view-models
+                let edges = tempNode.getConnections();
+                if (edges && edges.length > 0) {
+                    edges.forEach((tempEdge) => {
+                        let newEdgeVM = new SVGEdgeViewModel();
+                        newEdgeVM.init(tempEdge);
+                        this.connections.push(newEdgeVM);
+                    });
+                }
             });
         }
     }

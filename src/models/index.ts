@@ -1,3 +1,4 @@
+export * from './graphModel';
 export * from './curve';
 export * from './curveSegment';
 export * from './graph';

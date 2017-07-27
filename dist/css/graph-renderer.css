@@ -1,8 +1,9 @@
-svg.graph.graph-node-disabled {
+svg.graph .graph-draggable {
+  cursor: move; }
+
+svg.graph .graph-node.disabled {
   opacity: 0.2; }
 
-svg.graph path {
-  stroke-width: 4;
-  stroke: #FFFFFF;
-  stroke-linecap: round;
-  fill: none; }
+svg .graph-edge {
+  stroke-width: 2;
+  stroke: #FF0000; }

@@ -53,6 +53,13 @@ export class SVGNodeRenderer extends SVGRenderer<SVGNodeViewModel> implements IN
         // Render the node's target
         let nodeTargetElement = this.createTargetElement<SVGRectElement>('rect', viewModel);
         nodeTargetElement.classList.add('graph-node');
+        nodeTargetElement.classList.add('graph-draggable');
+
+        // Set selection handler
+        nodeTargetElement.onmousedown = viewModel.mouseDownHandler;
+
+        // Set the initial transform matrix (identity matrix)
+        nodeTargetElement.setAttribute('transform', 'matrix(1 0 0 1 0 0)');
 
         // Set the position
         if (viewModel.position) {

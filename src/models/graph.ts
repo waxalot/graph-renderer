@@ -1,4 +1,4 @@
-import { GraphNode, Size } from "./";
+import { GraphNode, Size, GraphModel } from "./";
 
 
 /**
@@ -7,16 +7,7 @@ import { GraphNode, Size } from "./";
  * @export
  * @class Graph
  */
-export class Graph {
-
-    /**
-     * The node's size.
-     * 
-     * @type {Size}
-     * @memberof GraphNode
-     */
-    public size: Size;
-
+export class Graph extends GraphModel {
 
     /**
      * A collection of all graph nodes.
@@ -34,6 +25,8 @@ export class Graph {
      * @memberof Graph
      */
     public constructor() {
+        super();
+
         this.nodes = new Array<GraphNode>();
     }
 

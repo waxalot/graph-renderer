@@ -3,6 +3,7 @@ import { Renderer } from "./renderer";
 import { SVGViewModel } from "../viewModels";
 import { SVGUtils } from "./svgUtils";
 import { Utils } from "../utils";
+import { GraphModel } from "../models";
 
 
 /**
@@ -27,7 +28,7 @@ export abstract class SVGRenderer<ViewModelType> extends Renderer<ViewModelType>
      * @returns {TargetElementType} 
      * @memberof SVGRenderer
      */
-    protected createTargetElement<TargetElementType extends SVGElement>(elementName: string, viewModel: SVGViewModel): TargetElementType {
+    protected createTargetElement<TargetElementType extends SVGElement>(elementName: string, viewModel: SVGViewModel<GraphModel>): TargetElementType {
         if (!elementName) {
             Utils.throwReferenceError('elementName');
         } else if (!viewModel) {

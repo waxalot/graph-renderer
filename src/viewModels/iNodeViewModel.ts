@@ -1,4 +1,4 @@
-import { Size, Point } from "../models";
+import { Point } from "../models";
 import { IViewModel } from "./";
 
 
@@ -18,14 +18,5 @@ export interface INodeViewModel extends IViewModel {
      * @memberof INodeViewModel
      */
     position: Point;
-
-
-    /**
-     * The node's size.
-     * 
-     * @returns {Size} 
-     * @memberof INodeViewModel
-     */
-    size: Size;
 
 }

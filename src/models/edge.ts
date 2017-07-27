@@ -1,4 +1,4 @@
-import { GraphNode } from "./";
+import { GraphNode, GraphModel } from "./";
 
 
 /**
@@ -7,7 +7,7 @@ import { GraphNode } from "./";
  * @export
  * @class Edge
  */
-export class Edge {
+export class Edge extends GraphModel {
 
     /**
      * The source node of the edge.
@@ -37,6 +37,8 @@ export class Edge {
      * @memberof Edge
      */
     public constructor(sourceNode: GraphNode, targetNode: GraphNode) {
+        super();
+
         if (!sourceNode) {
             throw new ReferenceError('The argument "sourceNode" is null or undefined.');
         } else if (!targetNode) {

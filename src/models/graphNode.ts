@@ -1,5 +1,4 @@
-import { Point, Size } from "./";
-import { Edge } from "./edge";
+import { Point, Size, Edge, GraphModel } from "./";
 
 
 /**
@@ -8,24 +7,15 @@ import { Edge } from "./edge";
  * @export
  * @class GraphNode
  */
-export class GraphNode {
+export class GraphNode extends GraphModel {
 
     /**
-     * The node's position.
+     * The item's position.
      * 
      * @type {Point}
-     * @memberof GraphNode
+     * @memberof GraphItem
      */
     public position: Point;
-
-
-    /**
-     * The node's size.
-     * 
-     * @type {Size}
-     * @memberof GraphNode
-     */
-    public size: Size;
 
 
     /**
@@ -46,12 +36,9 @@ export class GraphNode {
      * @memberof GraphNode
      */
     public constructor(position: Point, size?: Size) {
-        this.position = position;
+        super(size);
 
-        this.size = size;
-        if (!this.size) {
-            this.size = new Size();
-        }
+        this.position = position;
 
         this.connections = new Array<Edge>();
     }
