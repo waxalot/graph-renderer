@@ -6,3 +6,5 @@ export * from './svgViewModel';
 export * from './svgGraphViewModel';
 export * from './svgNodeViewModel';
 export * from './svgEdgeViewModel';
+export * from './iEdgeRouter';
+export * from './rectangularEdgeRouter';

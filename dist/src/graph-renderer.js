@@ -48,6 +48,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var models_1 = __webpack_require__(1);
 	var factories_1 = __webpack_require__(12);
+	var viewModels_1 = __webpack_require__(23);
 	document.addEventListener("DOMContentLoaded", function (event) {
 	    // Build graph
 	    var node1 = new models_1.GraphNode(new models_1.Point(100, 100), new models_1.Size(50, 50));
@@ -60,8 +61,10 @@
 	    var containerElement = document.getElementById('graph-container');
 	    // Get the view-models factory
 	    var viewModelsFactory = new factories_1.SVGViewModelsFactory();
+	    // Create the used edge router
+	    var edgeRouter = new viewModels_1.RectangularEdgeRouter();
 	    // Create the graph's view-model
-	    var graphVM = viewModelsFactory.createGraphViewModel(graph);
+	    var graphVM = viewModelsFactory.createGraphViewModel(graph, edgeRouter);
 	    // Get the renderers factory
 	    var renderersFactory = new factories_1.SVGRenderersFactory();
 	    var graphRenderer = renderersFactory.createGraphRenderer();
@@ -951,11 +954,12 @@
 	     * Creates an instance of {IGraphViewModel}.
 	     *
 	     * @param {Graph} graph
+	     * @param {IEdgeRouter} edgeRouter
 	     * @returns {IGraphViewModel}
 	     * @memberof SVGViewModelsFactory
 	     */
-	    SVGViewModelsFactory.prototype.createGraphViewModel = function (graph) {
-	        var graphVM = new viewModels_1.SVGGraphViewModel();
+	    SVGViewModelsFactory.prototype.createGraphViewModel = function (graph, edgeRouter) {
+	        var graphVM = new viewModels_1.SVGGraphViewModel(edgeRouter);
 	        graphVM.init(graph);
 	        return graphVM;
 	    };
@@ -977,6 +981,7 @@
 	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
 	__export(__webpack_require__(27));
+	__export(__webpack_require__(28));
 
 
 /***/ }),
@@ -1132,12 +1137,14 @@
 	    /**
 	     * Creates an instance of SVGGraphViewModel.
 	     *
+	     * @param {IEdgeRouter} edgeRouter
 	     * @memberof SVGGraphViewModel
 	     */
-	    function SVGGraphViewModel() {
+	    function SVGGraphViewModel(edgeRouter) {
 	        var _this = _super.call(this) || this;
 	        _this.nodes = new Array();
 	        _this.connections = new Array();
+	        _this.edgeRouter = edgeRouter;
 	        return _this;
 	    }
 	    /**
@@ -1173,7 +1180,8 @@
 	                if (edges && edges.length > 0) {
 	                    edges.forEach(function (tempEdge) {
 	                        var newEdgeVM = new _1.SVGEdgeViewModel();
-	                        newEdgeVM.init(tempEdge);
+	                        newEdgeVM.setEdgeRouter(_this.edgeRouter);
+	                        newEdgeVM.init(tempEdge, _this);
 	                        _this.connections.push(newEdgeVM);
 	                    });
 	                }
@@ -1302,14 +1310,31 @@
 	     * Initializes the edge view-model.
 	     *
 	     * @param {Edge} edge
+	     * @param {SVGGraphViewModel} graphViewModel
 	     * @memberof SVGEdgeViewModel
 	     */
-	    SVGEdgeViewModel.prototype.init = function (edge) {
+	    SVGEdgeViewModel.prototype.init = function (edge, graphViewModel) {
 	        if (!edge) {
 	            utils_1.Utils.throwReferenceError('edge');
 	        }
+	        else if (!graphViewModel) {
+	            utils_1.Utils.throwReferenceError('graphViewModel');
+	        }
 	        this.model = edge;
+	        this.graphViewModel = graphViewModel;
 	        this.initPoints();
+	    };
+	    /**
+	     * Sets the edge router.
+	     *
+	     * @param {IEdgeRouter} edgeRouter
+	     * @memberof SVGEdgeViewModel
+	     */
+	    SVGEdgeViewModel.prototype.setEdgeRouter = function (edgeRouter) {
+	        if (!edgeRouter) {
+	            utils_1.Utils.throwReferenceError('edgeRouter');
+	        }
+	        this.edgeRouter = edgeRouter;
 	    };
 	    /**
 	     * Initializes the points array.
@@ -1318,18 +1343,62 @@
 	     * @memberof SVGEdgeViewModel
 	     */
 	    SVGEdgeViewModel.prototype.initPoints = function () {
+	        var _this = this;
 	        var startPoint = new models_1.Point();
 	        startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
 	        startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
-	        this.points.push(startPoint);
 	        var endPoint = new models_1.Point();
 	        endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
 	        endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
-	        var intermediatePoint = this.getRectangularIntermediatePoint(startPoint, endPoint);
-	        if (intermediatePoint) {
-	            this.points.push(intermediatePoint);
+	        if (!this.edgeRouter) {
+	            utils_1.Utils.throwReferenceError('No edge router was set. Call setEdgeRouter() before!');
+	            return;
 	        }
+	        var intermediatePoints = this.edgeRouter.createEdgePoints(startPoint, endPoint, this.graphViewModel);
+	        // Add the start point
+	        this.points.push(startPoint);
+	        // Add all found intermediate points
+	        intermediatePoints.forEach(function (tempPoint) {
+	            _this.points.push(tempPoint);
+	        });
+	        // Add the end point
 	        this.points.push(endPoint);
+	    };
+	    return SVGEdgeViewModel;
+	}(_1.SVGViewModel));
+	exports.SVGEdgeViewModel = SVGEdgeViewModel;
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var models_1 = __webpack_require__(1);
+	/**
+	 * An implementation of {IEdgeRouter} to create points for rectangular edges.
+	 *
+	 * @export
+	 * @class RectangularEdgeRouter
+	 * @implements {IEdgeRouter}
+	 */
+	var RectangularEdgeRouter = (function () {
+	    function RectangularEdgeRouter() {
+	    }
+	    /**
+	     * Creates all required points for the visualization of a rectangular edge.
+	     *
+	     * @param {Point} startPoint
+	     * @param {Point} endPoint
+	     * @param {IGraphViewModel} graphViewModel
+	     * @returns {Array<Point>}
+	     * @memberof RectangularEdgeRouter
+	     */
+	    RectangularEdgeRouter.prototype.createEdgePoints = function (startPoint, endPoint, graphViewModel) {
+	        var result = new Array();
+	        result.push(this.createRectangularIntermediatePoint(startPoint, endPoint));
+	        return result;
 	    };
 	    /**
 	     * Creates a rectangular intermediate point for two given points.
@@ -1340,15 +1409,15 @@
 	     * @returns {Point}
 	     * @memberof SVGEdgeViewModel
 	     */
-	    SVGEdgeViewModel.prototype.getRectangularIntermediatePoint = function (point1, point2) {
+	    RectangularEdgeRouter.prototype.createRectangularIntermediatePoint = function (point1, point2) {
 	        var result = new models_1.Point();
 	        result.x = point1.x + (point2.x - point1.x);
 	        result.y = point1.y;
 	        return result;
 	    };
-	    return SVGEdgeViewModel;
-	}(_1.SVGViewModel));
-	exports.SVGEdgeViewModel = SVGEdgeViewModel;
+	    return RectangularEdgeRouter;
+	}());
+	exports.RectangularEdgeRouter = RectangularEdgeRouter;
 
 
 /***/ })

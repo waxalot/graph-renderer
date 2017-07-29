@@ -1,5 +1,5 @@
 import { IViewModelsFactory } from "./";
-import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
+import { IGraphViewModel, SVGGraphViewModel, IEdgeRouter } from "../viewModels";
 import { Graph } from "../models";
 
 
@@ -16,11 +16,12 @@ export class SVGViewModelsFactory implements IViewModelsFactory {
      * Creates an instance of {IGraphViewModel}.
      * 
      * @param {Graph} graph 
+     * @param {IEdgeRouter} edgeRouter 
      * @returns {IGraphViewModel} 
      * @memberof SVGViewModelsFactory
      */
-    createGraphViewModel(graph: Graph): IGraphViewModel {
-        let graphVM = new SVGGraphViewModel();
+    public createGraphViewModel(graph: Graph, edgeRouter: IEdgeRouter): IGraphViewModel {
+        let graphVM = new SVGGraphViewModel(edgeRouter);
         graphVM.init(graph);
         return graphVM;
     }

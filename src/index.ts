@@ -1,6 +1,6 @@
 import { Graph, GraphNode, Point, Size } from "./models";
 import { IRenderersFactory, SVGRenderersFactory, IViewModelsFactory, SVGViewModelsFactory } from "./factories";
-import { IGraphViewModel } from "./viewModels";
+import { IGraphViewModel, IEdgeRouter, RectangularEdgeRouter } from "./viewModels";
 import { IRenderer } from "./renderers";
 import { IGraphRenderer } from "./renderers/iGraphRenderer";
 
@@ -23,8 +23,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Get the view-models factory
     let viewModelsFactory: IViewModelsFactory = new SVGViewModelsFactory();
 
+    // Create the used edge router
+    let edgeRouter: IEdgeRouter = new RectangularEdgeRouter();
+
     // Create the graph's view-model
-    let graphVM = viewModelsFactory.createGraphViewModel(graph);
+    let graphVM = viewModelsFactory.createGraphViewModel(graph, edgeRouter);
 
     // Get the renderers factory
     let renderersFactory: IRenderersFactory = new SVGRenderersFactory();

@@ -1,4 +1,4 @@
-import { IGraphViewModel, SVGNodeViewModel, SVGViewModel, SVGEdgeViewModel } from "./";
+import { IGraphViewModel, SVGNodeViewModel, SVGViewModel, SVGEdgeViewModel, IEdgeRouter } from "./";
 import { Graph, Size } from "../models";
 import { Utils } from "../utils";
 
@@ -32,15 +32,28 @@ export class SVGGraphViewModel extends SVGViewModel<Graph> implements IGraphView
 
 
     /**
-     * Creates an instance of SVGGraphViewModel.
-     *
+     * The edge router.
+     * 
+     * @private
+     * @type {IEdgeRouter}
      * @memberof SVGGraphViewModel
      */
-    public constructor() {
+    private edgeRouter: IEdgeRouter;
+
+
+    /**
+     * Creates an instance of SVGGraphViewModel.
+     * 
+     * @param {IEdgeRouter} edgeRouter 
+     * @memberof SVGGraphViewModel
+     */
+    public constructor(edgeRouter: IEdgeRouter) {
         super();
 
         this.nodes = new Array<SVGNodeViewModel>();
         this.connections = new Array<SVGEdgeViewModel>();
+
+        this.edgeRouter = edgeRouter;
     }
 
 
@@ -82,7 +95,8 @@ export class SVGGraphViewModel extends SVGViewModel<Graph> implements IGraphView
                 if (edges && edges.length > 0) {
                     edges.forEach((tempEdge) => {
                         let newEdgeVM = new SVGEdgeViewModel();
-                        newEdgeVM.init(tempEdge);
+                        newEdgeVM.setEdgeRouter(this.edgeRouter);
+                        newEdgeVM.init(tempEdge, this);
                         this.connections.push(newEdgeVM);
                     });
                 }

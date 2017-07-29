@@ -1,4 +1,4 @@
-import { IViewModel } from "./";
+import { IEdgeRouter, IViewModel } from "./";
 import { Point } from "../models/index";
 
 
@@ -18,5 +18,14 @@ export interface IEdgeViewModel extends IViewModel {
      * @memberof IEdgeViewModel
      */
     points: Array<Point>;
-   
+
+
+    /**
+     * Sets the edge router.
+     * 
+     * @param {IEdgeRouter} edgeRouter 
+     * @memberof IEdgeViewModel
+     */
+    setEdgeRouter(edgeRouter: IEdgeRouter): void;
+
 }

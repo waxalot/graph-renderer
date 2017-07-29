@@ -1,4 +1,4 @@
-import { IGraphViewModel } from "../viewModels";
+import { IGraphViewModel, IEdgeRouter } from "../viewModels";
 import { Graph } from "../models";
 
 
@@ -14,9 +14,10 @@ export interface IViewModelsFactory {
      * Creates an instance of {IGraphViewModel}.
      * 
      * @param {Graph} graph 
+     * @param {IEdgeRouter} edgeRouter 
      * @returns {IGraphViewModel} 
      * @memberof IViewModelsFactory
      */
-    createGraphViewModel(graph: Graph): IGraphViewModel;
+    createGraphViewModel(graph: Graph, edgeRouter: IEdgeRouter): IGraphViewModel;
 
 }
