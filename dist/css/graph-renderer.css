@@ -6,4 +6,5 @@ svg.graph .graph-node.disabled {
 
 svg .graph-edge {
   stroke-width: 9;
-  stroke: #FF0000; }
+  stroke: #FF0000;
+  fill: none; }

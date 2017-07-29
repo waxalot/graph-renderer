@@ -67,8 +67,33 @@ export class SVGEdgeViewModel extends SVGViewModel<Edge> implements IEdgeViewMod
         let endPoint = new Point();
         endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
         endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
-        this.points.push(endPoint);
 
+        let intermediatePoint = this.getRectangularIntermediatePoint(startPoint, endPoint);
+        if (intermediatePoint) {
+            this.points.push(intermediatePoint);
+        }
+
+        this.points.push(endPoint);
+    }
+
+
+    /**
+     * Creates a rectangular intermediate point for two given points.
+     * 
+     * @private
+     * @param {Point} point1 
+     * @param {Point} point2 
+     * @returns {Point} 
+     * @memberof SVGEdgeViewModel
+     */
+    private getRectangularIntermediatePoint(point1: Point, point2: Point): Point {
+
+        let result = new Point();
+
+        result.x = point1.x + (point2.x - point1.x);
+        result.y = point1.y;
+
+        return result;
     }
 
 }

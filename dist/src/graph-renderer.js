@@ -914,7 +914,7 @@
 	        if (!this.containerElement) {
 	            throw new Error('No container element was set. Call setContainerElement() before!');
 	        }
-	        // Render the edge's target
+	        // Render the edge's target element.
 	        var edgeTargetElement = this.createTargetElement('polyline', viewModel);
 	        edgeTargetElement.classList.add('graph-edge');
 	        var pointsAttrValue = '';
@@ -1325,7 +1325,26 @@
 	        var endPoint = new models_1.Point();
 	        endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
 	        endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
+	        var intermediatePoint = this.getRectangularIntermediatePoint(startPoint, endPoint);
+	        if (intermediatePoint) {
+	            this.points.push(intermediatePoint);
+	        }
 	        this.points.push(endPoint);
+	    };
+	    /**
+	     * Creates a rectangular intermediate point for two given points.
+	     *
+	     * @private
+	     * @param {Point} point1
+	     * @param {Point} point2
+	     * @returns {Point}
+	     * @memberof SVGEdgeViewModel
+	     */
+	    SVGEdgeViewModel.prototype.getRectangularIntermediatePoint = function (point1, point2) {
+	        var result = new models_1.Point();
+	        result.x = point1.x + (point2.x - point1.x);
+	        result.y = point1.y;
+	        return result;
 	    };
 	    return SVGEdgeViewModel;
 	}(_1.SVGViewModel));
