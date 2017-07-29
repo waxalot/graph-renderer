@@ -12,20 +12,11 @@ import { Point } from "../models/index";
 export interface IEdgeViewModel extends IViewModel {
 
     /**
-     * The start point of the edge.
+     * An array with all (start, end, intermediate) points.
      * 
-     * @type {Point}
+     * @type {Array<Point>}
      * @memberof IEdgeViewModel
      */
-    startPoint: Point;
-
-
-    /**
-     * The end point of the edge.
-     * 
-     * @type {Point}
-     * @memberof IEdgeViewModel
-     */
-    endPoint: Point;
-
+    points: Array<Point>;
+   
 }

@@ -915,18 +915,14 @@
 	            throw new Error('No container element was set. Call setContainerElement() before!');
 	        }
 	        // Render the edge's target
-	        var edgeTargetElement = this.createTargetElement('line', viewModel);
+	        var edgeTargetElement = this.createTargetElement('polyline', viewModel);
 	        edgeTargetElement.classList.add('graph-edge');
-	        // Set start point
-	        if (viewModel.startPoint) {
-	            edgeTargetElement.setAttribute('x1', viewModel.startPoint.x.toFixed());
-	            edgeTargetElement.setAttribute('y1', viewModel.startPoint.y.toFixed());
-	        }
-	        // Set end point
-	        if (viewModel.endPoint) {
-	            edgeTargetElement.setAttribute('x2', viewModel.endPoint.x.toFixed());
-	            edgeTargetElement.setAttribute('y2', viewModel.endPoint.y.toFixed());
-	        }
+	        var pointsAttrValue = '';
+	        viewModel.points.forEach(function (tempPoint) {
+	            pointsAttrValue += tempPoint.x.toFixed() + ',' + tempPoint.y.toFixed();
+	            pointsAttrValue += ' ';
+	        });
+	        edgeTargetElement.setAttribute('points', pointsAttrValue);
 	        this.containerElement.appendChild(edgeTargetElement);
 	    };
 	    return SVGEdgeRenderer;
@@ -1299,60 +1295,9 @@
 	     */
 	    function SVGEdgeViewModel() {
 	        var _this = _super.call(this) || this;
-	        _this._startPoint = new models_1.Point();
-	        _this._endPoint = new models_1.Point();
+	        _this.points = new Array();
 	        return _this;
 	    }
-	    Object.defineProperty(SVGEdgeViewModel.prototype, "startPoint", {
-	        /**
-	         * Gets the edge's start point.
-	         *
-	         * @type {Point}
-	         * @memberof SVGEdgeViewModel
-	         */
-	        get: function () {
-	            this._startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
-	            this._startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
-	            return this._startPoint;
-	        },
-	        /**
-	         * Sets the edge's start point.
-	         *
-	         * @memberof SVGEdgeViewModel
-	         */
-	        set: function (value) {
-	            this._startPoint = value;
-	            this.model.sourceNode.position.x = this._startPoint.x - this.model.sourceNode.size.width * 0.5;
-	            this.model.sourceNode.position.y = this._startPoint.y - this.model.sourceNode.size.height * 0.5;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(SVGEdgeViewModel.prototype, "endPoint", {
-	        /**
-	         * Gets the edge's end point.
-	         *
-	         * @type {Point}
-	         * @memberof SVGEdgeViewModel
-	         */
-	        get: function () {
-	            this._endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
-	            this._endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
-	            return this._endPoint;
-	        },
-	        /**
-	         * Sets the edge's end point.
-	         *
-	         * @memberof SVGEdgeViewModel
-	         */
-	        set: function (value) {
-	            this._endPoint = value;
-	            this.model.targetNode.position.x = this._endPoint.x - this.model.targetNode.size.width * 0.5;
-	            this.model.targetNode.position.y = this._endPoint.y - this.model.targetNode.size.height * 0.5;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
 	    /**
 	     * Initializes the edge view-model.
 	     *
@@ -1364,6 +1309,23 @@
 	            utils_1.Utils.throwReferenceError('edge');
 	        }
 	        this.model = edge;
+	        this.initPoints();
+	    };
+	    /**
+	     * Initializes the points array.
+	     *
+	     * @private
+	     * @memberof SVGEdgeViewModel
+	     */
+	    SVGEdgeViewModel.prototype.initPoints = function () {
+	        var startPoint = new models_1.Point();
+	        startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
+	        startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
+	        this.points.push(startPoint);
+	        var endPoint = new models_1.Point();
+	        endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
+	        endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
+	        this.points.push(endPoint);
 	    };
 	    return SVGEdgeViewModel;
 	}(_1.SVGViewModel));

@@ -14,59 +14,12 @@ import { Utils } from "../utils";
 export class SVGEdgeViewModel extends SVGViewModel<Edge> implements IEdgeViewModel {
 
     /**
-     * Gets the edge's start point.
+     * An array with all (start, end, intermediate) points.
      * 
-     * @type {Point}
+     * @type {Array<Point>}
      * @memberof SVGEdgeViewModel
      */
-    get startPoint(): Point {
-        this._startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
-        this._startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
-
-        return this._startPoint;
-    }
-
-    /**
-     * Sets the edge's start point.
-     * 
-     * @memberof SVGEdgeViewModel
-     */
-    set startPoint(value: Point) {
-        this._startPoint = value;
-
-        this.model.sourceNode.position.x = this._startPoint.x - this.model.sourceNode.size.width * 0.5;
-        this.model.sourceNode.position.y = this._startPoint.y - this.model.sourceNode.size.height * 0.5;
-    }
-
-
-    /**
-     * Gets the edge's end point.
-     * 
-     * @type {Point}
-     * @memberof SVGEdgeViewModel
-     */
-    get endPoint(): Point {
-        this._endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
-        this._endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
-
-        return this._endPoint;
-    }
-
-    /**
-     * Sets the edge's end point.
-     * 
-     * @memberof SVGEdgeViewModel
-     */
-    set endPoint(value: Point) {
-        this._endPoint = value;
-
-        this.model.targetNode.position.x = this._endPoint.x - this.model.targetNode.size.width * 0.5;
-        this.model.targetNode.position.y = this._endPoint.y - this.model.targetNode.size.height * 0.5;
-    }
-
-
-    private _startPoint: Point;
-    private _endPoint: Point;
+    public points: Array<Point>;
 
 
     /**
@@ -77,8 +30,7 @@ export class SVGEdgeViewModel extends SVGViewModel<Edge> implements IEdgeViewMod
     public constructor() {
         super();
 
-        this._startPoint = new Point();
-        this._endPoint = new Point();
+        this.points = new Array<Point>();
     }
 
 
@@ -94,6 +46,29 @@ export class SVGEdgeViewModel extends SVGViewModel<Edge> implements IEdgeViewMod
         }
 
         this.model = edge;
+
+        this.initPoints();
+    }
+
+
+    /**
+     * Initializes the points array.
+     * 
+     * @private
+     * @memberof SVGEdgeViewModel
+     */
+    private initPoints() {
+
+        let startPoint = new Point();
+        startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
+        startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
+        this.points.push(startPoint);
+
+        let endPoint = new Point();
+        endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
+        endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
+        this.points.push(endPoint);
+
     }
 
 }
