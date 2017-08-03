@@ -19,7 +19,7 @@ export class SVGRenderersFactory implements IRenderersFactory {
      * @returns {IGraphRenderer<VisualGraph>} 
      * @memberof SVGRenderersFactory
      */
-    public createGraphRenderer(): IGraphRenderer<VisualGraph> {
+    public createGraphRenderer(): IGraphRenderer<VisualGraph, VisualGraphNode> {
         let nodeRenderer = this.createNodeRenderer();
         let edgeRenderer = this.createEdgeRenderer();
         return new SVGGraphRenderer(nodeRenderer, edgeRenderer);

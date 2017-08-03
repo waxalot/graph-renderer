@@ -1,5 +1,5 @@
 import { INodeViewModel, SVGEdgeViewModel, SVGViewModel } from "./";
-import { GraphNode, Size, Point, VisualGraphNode } from "../models";
+import { GraphNode, Size, Point, VisualGraphNode, IGraphNode } from "../models";
 import { Utils } from "../utils";
 
 
@@ -16,10 +16,10 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
     /**
      * The graph node model.
      * 
-     * @type {T}
+     * @type {IGraphNode<T>}
      * @memberof SVGViewModel
      */
-    public model: T;
+    public model: IGraphNode<T>;
 
 
     /**
@@ -30,7 +30,7 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGNodeViewModel
      */
     get size(): Size {
-        return this.model.size;
+        return this.model.value.size;
     }
 
 
@@ -42,7 +42,7 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGViewModel
      */
     get width(): number {
-        return this.model.size.width;
+        return this.model.value.size.width;
     }
 
     /**
@@ -51,7 +51,7 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGViewModel
      */
     set width(value: number) {
-        this.model.size.width = value;
+        this.model.value.size.width = value;
     }
 
 
@@ -63,7 +63,7 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGViewModel
      */
     get height(): number {
-        return this.model.size.height;
+        return this.model.value.size.height;
     }
 
     /**
@@ -72,7 +72,7 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGViewModel
      */
     set height(value: number) {
-        this.model.size.height = value;
+        this.model.value.size.height = value;
     }
 
 
@@ -83,7 +83,7 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGNodeViewModel
      */
     get position(): Point {
-        return this.model.position;
+        return this.model.value.position;
     }
 
     /**
@@ -92,10 +92,10 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @memberof SVGNodeViewModel
      */
     set position(value: Point) {
-        this.model.position = value;
+        this.model.value.position = value;
     }
 
-    
+
     /**
      * The current transform matrix.
      * 
@@ -153,8 +153,10 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      *
      * @memberof SVGNodeViewModel
      */
-    public constructor() {
+    public constructor(graphNode: IGraphNode<T>) {
         super();
+
+        this.model = graphNode;
 
         this._currentMovePosition = new Point();
         this.currentTransformMatrix = new Array<number>();

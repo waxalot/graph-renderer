@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     node2.size = new Size(50, 50);
 
     // Build graph
-    let graph = new Graph();
+    let graph = new Graph<VisualGraphNode>();
     let graphNode1 = graph.addNode(node1);
     let graphNode2 = graph.addNode(node2);
     graph.addDirectedEdge(graphNode1, graphNode2);
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // Get the renderers factory
     let renderersFactory: IRenderersFactory = new SVGRenderersFactory();
-    let graphRenderer: IGraphRenderer<VisualGraph> = renderersFactory.createGraphRenderer();
+    let graphRenderer: IGraphRenderer<VisualGraph, VisualGraphNode> = renderersFactory.createGraphRenderer();
     graphRenderer.setContainerElement(containerElement);
     graphRenderer.render(graphVM);
 

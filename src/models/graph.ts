@@ -16,7 +16,7 @@ export class Graph<T> {
      * @type {NodeList<T>}
      * @memberof Graph
      */
-    private nodes: NodeList<T>;
+    public nodes: NodeList<T>;
 
 
     /**
@@ -108,19 +108,14 @@ export class Graph<T> {
 
         // Try to remove all edges to this node
         let tempNode: GraphNode<any>;
-        let iteratorResult: { done: boolean, value?: GraphNode<any> };
-        do {
-            iteratorResult = this.nodes.next()
-            if (!iteratorResult.done && iteratorResult.value) {
-                tempNode = iteratorResult.value;
-                let index = tempNode.neighbors.indexOf(nodeToRemove);
-                if (index > -1) {
-                    // Remove the reference to the node and associated cost
-                    tempNode.neighbors.removeAt(index);
-                    tempNode.costs.splice(index, 1);
-                }
+        this.nodes.forEach((tempNode) => {
+            let index = tempNode.neighbors.indexOf(nodeToRemove);
+            if (index > -1) {
+                // Remove the reference to the node and associated cost
+                tempNode.neighbors.removeAt(index);
+                tempNode.costs.splice(index, 1);
             }
-        } while (!iteratorResult.done);
+        });
 
         return true;
     }

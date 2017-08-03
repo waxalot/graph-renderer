@@ -1,4 +1,4 @@
-import { VisualGraphNode, Point, Size } from "../models";
+import { VisualGraphNode, Point, Size, IGraphNode } from "../models";
 import { IViewModel } from "./";
 
 
@@ -15,10 +15,10 @@ export interface INodeViewModel<T extends VisualGraphNode> extends IViewModel<T>
     /**
      * The related model instance.
      * 
-     * @type {T}
+     * @type {IGraphNode<T>}
      * @memberof IViewModel
      */
-    model: T;
+    model: IGraphNode<T>;
 
 
     /**

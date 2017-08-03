@@ -1,4 +1,4 @@
-import { GraphNode } from "../../models/graphNode";
+import { GraphNode } from "../../models";
 import { expect } from 'chai';
 
 

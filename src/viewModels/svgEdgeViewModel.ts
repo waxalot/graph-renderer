@@ -12,7 +12,7 @@ import { Utils } from "../utils";
  * @implements {IEdgeViewModel<T>}
  * @template T 
  */
-export class SVGEdgeViewModel<T extends VisualGraphNode> extends SVGViewModel<T> implements IEdgeViewModel<T> {
+export class SVGEdgeViewModel<TNode extends VisualGraphNode> extends SVGViewModel<TNode> implements IEdgeViewModel<TNode> {
 
     /**
      * The start node's view-model.
@@ -20,7 +20,7 @@ export class SVGEdgeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @type {SVGNodeViewModel<T>}
      * @memberof SVGEdgeViewModel
      */
-    public startNodeViewModel: SVGNodeViewModel<T>;
+    public startNodeViewModel: SVGNodeViewModel<TNode>;
 
 
     /**
@@ -29,7 +29,7 @@ export class SVGEdgeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @type {SVGNodeViewModel<T>}
      * @memberof SVGEdgeViewModel
      */
-    public endNodeViewModel: SVGNodeViewModel<T>;
+    public endNodeViewModel: SVGNodeViewModel<TNode>;
 
 
     /**
@@ -48,7 +48,7 @@ export class SVGEdgeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * @type {SVGGraphViewModel<VisualGraph>}
      * @memberof SVGEdgeViewModel
      */
-    private graphViewModel: SVGGraphViewModel<VisualGraph>;
+    private graphViewModel: SVGGraphViewModel<VisualGraph, TNode>;
 
 
     /**

@@ -17,7 +17,7 @@ export interface IRenderersFactory {
      * @returns {IGraphRenderer<VisualGraph>} 
      * @memberof IRenderersFactory
      */
-    createGraphRenderer(): IGraphRenderer<VisualGraph>;
+    createGraphRenderer(): IGraphRenderer<VisualGraph, VisualGraphNode>;
 
 
     /**

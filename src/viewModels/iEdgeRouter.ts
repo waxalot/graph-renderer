@@ -1,4 +1,4 @@
-import { Point, VisualGraph } from "../models";
+import { Point, VisualGraph, VisualGraphNode } from "../models";
 import { IGraphViewModel } from "./";
 
 
@@ -19,6 +19,6 @@ export interface IEdgeRouter {
      * @returns {Array<Point>} 
      * @memberof IEdgeRouter
      */
-    createEdgePoints(startPoint: Point, endPoint: Point, graphViewModel: IGraphViewModel<VisualGraph>): Array<Point>;
+    createEdgePoints(startPoint: Point, endPoint: Point, graphViewModel: IGraphViewModel<VisualGraph, VisualGraphNode>): Array<Point>;
     
 }

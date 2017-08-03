@@ -10,9 +10,12 @@ import { VisualGraph, VisualGraphNode } from "../models";
  * 
  * @export
  * @class SVGGraphRenderer
- * @implements {IGraphRenderer}
+ * @extends {SVGRenderer<T, SVGGraphViewModel<T, TNode>>}
+ * @implements {IGraphRenderer<T, TNode>}
+ * @template T 
+ * @template TNode 
  */
-export class SVGGraphRenderer<T extends VisualGraph> extends SVGRenderer<T, SVGGraphViewModel<T>> implements IGraphRenderer<T> {
+export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNode> extends SVGRenderer<T, SVGGraphViewModel<T, TNode>> implements IGraphRenderer<T, TNode> {
 
     private containerElement: Element;
     private nodeRenderer: SVGNodeRenderer<VisualGraphNode>;
@@ -61,7 +64,7 @@ export class SVGGraphRenderer<T extends VisualGraph> extends SVGRenderer<T, SVGG
      * @param {SVGGraphViewModel} viewModel 
      * @memberof SVGGraphRenderer
      */
-    public render(viewModel: SVGGraphViewModel<T>): void {
+    public render(viewModel: SVGGraphViewModel<T, TNode>): void {
         if (!this.containerElement) {
             throw new Error('No container element was set. Call setContainerElement() before!')
         }

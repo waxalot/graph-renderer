@@ -9,24 +9,25 @@ import { VisualGraphNode, GraphNode, Graph, VisualGraph } from "../models";
  * @interface IGraphViewModel
  * @extends {IViewModel<T>}
  * @template T 
+ * @template TNode 
  */
-export interface IGraphViewModel<T extends VisualGraph> extends IViewModel<T> {
+export interface IGraphViewModel<T extends VisualGraph, TNode extends VisualGraphNode> extends IViewModel<T> {
 
     /**
      * The related model instance.
      * 
-     * @type {T}
+     * @type {Graph<TNode>}
      * @memberof IViewModel
      */
-    model: T;
+    model: Graph<TNode>;
 
 
     /**
      * A collection of the graph's node view-models.
      * 
-     * @type {Array<INodeViewModel<VisualGraphNode>>}
+     * @type {Array<INodeViewModel<TNode>>}
      * @memberof IGraphViewModel
      */
-    nodes: Array<INodeViewModel<VisualGraphNode>>;
+    nodes: Array<INodeViewModel<TNode>>;
 
 }

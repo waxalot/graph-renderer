@@ -11,24 +11,24 @@ import { Utils } from "../utils";
  * @extends {SVGViewModel}
  * @implements {IGraphViewModel}
  */
-export class SVGGraphViewModel<T extends VisualGraph> extends SVGViewModel<T> implements IGraphViewModel<T> {
+export class SVGGraphViewModel<T extends VisualGraph, TNode extends VisualGraphNode> extends SVGViewModel<T> implements IGraphViewModel<T, TNode> {
 
     /**
      * The graph model.
      * 
-     * @type {T}
+     * @type {TNode}
      * @memberof SVGGraphViewModel
      */
-    public model: T;
+    public model: Graph<TNode>;
 
 
     /**
      * A collection of the graph's node view-models.
      * 
-     * @type {Array<SVGNodeViewModel<VisualGraphNode>>}
+     * @type {Array<SVGNodeViewModel<TNode>>}
      * @memberof SVGGraphViewModel
      */
-    public nodes: Array<SVGNodeViewModel<VisualGraphNode>>;
+    public nodes: Array<SVGNodeViewModel<TNode>>;
 
 
     /**
@@ -53,16 +53,21 @@ export class SVGGraphViewModel<T extends VisualGraph> extends SVGViewModel<T> im
     /**
      * Creates an instance of SVGGraphViewModel.
      * 
+     * @param {Graph<TNode>} graph 
      * @param {IEdgeRouter} edgeRouter 
      * @memberof SVGGraphViewModel
      */
-    public constructor(edgeRouter: IEdgeRouter) {
+    public constructor(graph: Graph<TNode>, edgeRouter: IEdgeRouter) {
         super();
 
-        this.nodes = new Array<SVGNodeViewModel<VisualGraphNode>>();
-        this.connections = new Array<SVGEdgeViewModel<VisualGraphNode>>();
+        this.model = graph;
+
+        this.nodes = new Array<SVGNodeViewModel<TNode>>();
+        this.connections = new Array<SVGEdgeViewModel<TNode>>();
 
         this.edgeRouter = edgeRouter;
+
+        this.initViewModel();
     }
 
 
@@ -73,18 +78,32 @@ export class SVGGraphViewModel<T extends VisualGraph> extends SVGViewModel<T> im
      * @memberof SVGGraphViewModel
      */
     protected initViewModel(): void {
+        // Create nodes view-models
         this.initNodes();
     }
 
 
     /**
-     * Initializes all graph nodes view-models.
+     * Initializes all nodes view-models.
      * 
      * @private
      * @memberof SVGGraphViewModel
      */
     private initNodes(): void {
-        // let graphNodes = this.model.nodes;
+
+        // Create all required nodes view-models by traversing the model graph.
+        let graphNodes = this.model.nodes;
+        if (graphNodes && graphNodes.count > 0) {
+
+            graphNodes.forEach((tempNode) => {
+
+                // Create the graph node view-model
+                let newNodeVM = new SVGNodeViewModel(tempNode);
+                this.nodes.push(newNodeVM);
+            });
+
+        }
+
         // if (graphNodes && graphNodes.length > 0) {
         //     graphNodes.forEach((tempNode) => {
 

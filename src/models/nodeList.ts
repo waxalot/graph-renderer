@@ -1,4 +1,4 @@
-import { GraphNode } from "./";
+import { IGraphNode, VisualGraphNode } from "./";
 
 
 /**
@@ -9,17 +9,14 @@ import { GraphNode } from "./";
  */
 export class NodeList<T> {
 
-    private currentIndex: number = 0;
-
-
     /**
      * The list of nodes.
      * 
      * @private
-     * @type {Array<GraphNode<T>>}
+     * @type {Array<IGraphNode<T>>}
      * @memberof NodeList
      */
-    private list: Array<GraphNode<T>>;
+    private list: Array<IGraphNode<T>>;
 
 
     /**
@@ -39,17 +36,30 @@ export class NodeList<T> {
      * @memberof NodeList
      */
     public constructor() {
-        this.list = new Array<GraphNode<T>>();
+        this.list = new Array<IGraphNode<T>>();
+    }
+
+
+    /**
+     * The forEach implementation for the list of nodes.
+     * 
+     * @memberof NodeList
+     */
+    public forEach = (callback: (node: IGraphNode<T>) => void) => {
+        let nodesCount = this.list.length;
+        for (let i = 0; i < nodesCount; i++) {
+            callback(this.list[i]);
+        }
     }
 
 
     /**
      * Adds the given node to the node list.
      * 
-     * @param {GraphNode} node 
+     * @param {IGraphNode} node 
      * @memberof NodeList
      */
-    public add(node: GraphNode<T>): void {
+    public add(node: IGraphNode<T>): void {
         this.list.push(node);
     }
 
@@ -57,10 +67,10 @@ export class NodeList<T> {
     /**
      * Removes a given node from the node list.
      * 
-     * @param {GraphNode} node 
+     * @param {IGraphNode} node 
      * @memberof NodeList
      */
-    public remove(node: GraphNode<T>): void {
+    public remove(node: IGraphNode<T>): void {
         let nodeIndex = this.list.indexOf(node);
         if (nodeIndex > -1) {
             this.list.splice(nodeIndex, 1);
@@ -85,10 +95,10 @@ export class NodeList<T> {
      * Finds a node by the given guid.
      * 
      * @param {string} guid 
-     * @returns {GraphNode} 
+     * @returns {IGraphNode} 
      * @memberof NodeList
      */
-    public findByGuid(guid: string): GraphNode<T> {
+    public findByGuid(guid: string): IGraphNode<T> {
         // Search the list for the value
         this.list.forEach((item) => {
             if (item.guid === guid) {
@@ -102,34 +112,13 @@ export class NodeList<T> {
 
 
     /**
-     * Returns the next node in the list.
-     * 
-     * @param {*} [value] 
-     * @returns {{ done: boolean, value?: GraphNode }} 
-     * @memberof NodeList
-     */
-    public next(value?: any): { done: boolean, value?: GraphNode<T> } {
-        if (this.currentIndex < this.list.length) {
-            return {
-                done: false,
-                value: this.list[this.currentIndex++]
-            };
-        } else {
-            return {
-                done: true
-            };
-        }
-    }
-
-
-    /**
      * Returns the index of the given node.
      * 
-     * @param {GraphNode<T>} node 
+     * @param {IGraphNode<T>} node 
      * @returns {number} 
      * @memberof NodeList
      */
-    public indexOf(node: GraphNode<T>): number {
+    public indexOf(node: IGraphNode<T>): number {
         return this.list.indexOf(node);
     }
 
