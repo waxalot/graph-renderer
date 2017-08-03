@@ -1,4 +1,5 @@
-import { IViewModel, IEdgeViewModel, INodeViewModel } from "./";
+import { INodeViewModel, IViewModel } from "./";
+import { VisualGraphNode, GraphNode, Graph, VisualGraph } from "../models";
 
 
 /**
@@ -6,25 +7,26 @@ import { IViewModel, IEdgeViewModel, INodeViewModel } from "./";
  * 
  * @export
  * @interface IGraphViewModel
- * @extends {IViewModel}
+ * @extends {IViewModel<T>}
+ * @template T 
  */
-export interface IGraphViewModel extends IViewModel {
+export interface IGraphViewModel<T extends VisualGraph> extends IViewModel<T> {
+
+    /**
+     * The related model instance.
+     * 
+     * @type {T}
+     * @memberof IViewModel
+     */
+    model: T;
+
 
     /**
      * A collection of the graph's node view-models.
      * 
-     * @type {Array<INodeViewModel>}
+     * @type {Array<INodeViewModel<VisualGraphNode>>}
      * @memberof IGraphViewModel
      */
-    nodes: Array<INodeViewModel>;
-
-
-    /**
-    * A collection of the graph's edge view-models.
-    * 
-    * @type {Array<IEdgeViewModel>}
-    * @memberof IGraphViewModel
-    */
-    connections: Array<IEdgeViewModel>;
+    nodes: Array<INodeViewModel<VisualGraphNode>>;
 
 }

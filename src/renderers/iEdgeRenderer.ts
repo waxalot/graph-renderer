@@ -1,5 +1,6 @@
 import { IRenderer } from "./";
 import { IEdgeViewModel } from "../viewModels";
+import { VisualGraphNode } from "../models/visualGraphNode";
 
 
 /**
@@ -7,7 +8,8 @@ import { IEdgeViewModel } from "../viewModels";
  * 
  * @export
  * @interface IEdgeRenderer
- * @extends {IRenderer<IEdgeViewModel>}
+ * @extends {IRenderer<IEdgeViewModel<T>>}
+ * @template T 
  */
-export interface IEdgeRenderer extends IRenderer<IEdgeViewModel> {
+export interface IEdgeRenderer<T extends VisualGraphNode> extends IRenderer<IEdgeViewModel<T>> {
 }

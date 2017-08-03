@@ -1,6 +1,7 @@
 import { IEdgeRenderer, SVGRenderer } from "./";
 import { SVGEdgeViewModel } from "../viewModels";
 import { Utils } from "../utils";
+import { VisualGraphNode } from "../models";
 
 
 /**
@@ -10,7 +11,7 @@ import { Utils } from "../utils";
  * @class SVGEdgeRenderer
  * @implements {IEdgeRenderer}
  */
-export class SVGEdgeRenderer extends SVGRenderer<SVGEdgeViewModel> implements IEdgeRenderer {
+export class SVGEdgeRenderer<T extends VisualGraphNode> extends SVGRenderer<T, SVGEdgeViewModel<T>> implements IEdgeRenderer<T> {
 
     /**
      * The edge's container element.
@@ -43,7 +44,7 @@ export class SVGEdgeRenderer extends SVGRenderer<SVGEdgeViewModel> implements IE
      * @param {SVGEdgeViewModel} viewModel 
      * @memberof SVGEdgeRenderer
      */
-    public render(viewModel: SVGEdgeViewModel): void {
+    public render(viewModel: SVGEdgeViewModel<T>): void {
         if (!this.containerElement) {
             throw new Error('No container element was set. Call setContainerElement() before!')
         }

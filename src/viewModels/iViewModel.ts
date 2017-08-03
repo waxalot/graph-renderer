@@ -1,29 +1,18 @@
-import { Size } from "../models";
-
-
 /**
  * This interface describes a view-model.
  * 
  * @export
  * @interface IViewModel
+ * @template T 
  */
-export interface IViewModel {
+export interface IViewModel<T> {
 
     /**
-     * Indicates whether the item is selected.
+     * The view-models' identifier.
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof IViewModel
      */
-    isSelected: boolean;
-
-
-    /**
-     * The node's size.
-     * 
-     * @returns {Size} 
-     * @memberof INodeViewModel
-     */
-    size: Size;
+    guid: string;
 
 }

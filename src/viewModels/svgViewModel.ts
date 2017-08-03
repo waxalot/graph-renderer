@@ -1,6 +1,7 @@
-import { Guid, Point, Size, GraphModel } from "../models";
+import { Guid } from "../models";
 import { IViewModel } from "./";
 import { Utils } from "../utils";
+import { DataBinder } from "../dataBinding";
 
 
 /**
@@ -9,16 +10,18 @@ import { Utils } from "../utils";
  * @export
  * @abstract
  * @class SVGViewModel
+ * @implements {IViewModel<T>}
+ * @template T 
  */
-export abstract class SVGViewModel<ModelType extends GraphModel> implements IViewModel {
+export abstract class SVGViewModel<T> implements IViewModel<T> {
 
     /**
-     * Indicates whether the view-model is selected.
+     * The data binder.
      * 
-     * @type {boolean}
+     * @type {DataBinder}
      * @memberof SVGViewModel
      */
-    public isSelected: boolean;
+    public dataBinder: DataBinder;
 
 
     /**
@@ -31,78 +34,13 @@ export abstract class SVGViewModel<ModelType extends GraphModel> implements IVie
 
 
     /**
-     * Gets the node's size.
-     * 
-     * @type {Size}
-     * @memberof SVGNodeViewModel
-     */
-    get size(): Size {
-        return this.model.size;
-    }
-
-    /**
-     * Sets the node's size.
-     * 
-     * @memberof SVGNodeViewModel
-     */
-    set size(value: Size) {
-        this.model.size = value;
-    }
-
-
-    /**
-     * The current transform matrix.
-     * 
-     * @type {Array<number>}
-     * @memberof SVGViewModel
-     */
-    public currentTransformMatrix: Array<number>;
-
-    private _currentMovePosition: Point;
-
-
-
-    /**
-     * Gets the node's current move position x coordinate.
-     * 
-     * @type {Point}
-     * @memberof SVGViewModel
-     */
-    get currentMoveX(): number {
-        return this._currentMovePosition.x;
-    }
-
-    /**
-     * Sets the node's current move position x coordinate.
-     * 
-     * @memberof SVGViewModel
-     */
-    set currentMoveX(value: number) {
-        this._currentMovePosition.x = value;
-    }
-
-
-    /**
-     * Gets the node's current move position y coordinate.
-     * 
-     * @type {Point}
-     * @memberof SVGViewModel
-     */
-    get currentMoveY(): number {
-        return this._currentMovePosition.y;
-    }
-
-    /**
-     * Sets the node's current move position y coordinate.
-     * 
-     * @memberof SVGViewModel
-     */
-    set currentMoveY(value: number) {
-        this._currentMovePosition.y = value;
-    }
-
-
-    protected model: ModelType;
+    * The data bind change message.
+    * 
+    * @protected
+    * @type {string}
+    * @memberof SVGViewModel
+    */
+    private dataBindChangeMessage: string;
 
 
     /**
@@ -112,44 +50,43 @@ export abstract class SVGViewModel<ModelType extends GraphModel> implements IVie
     public constructor() {
         this.guid = Guid.newGuid();
 
-        this._currentMovePosition = new Point();
-        this.currentTransformMatrix = new Array<number>();
+        this.dataBinder = new DataBinder(this.guid);
+        this.dataBindChangeMessage = this.guid + ':change';
     }
 
 
-    public mouseDownHandler = (e: MouseEvent) => {
-        let selectedElement = <SVGRectElement>e.srcElement;
-        this.currentMoveX = e.clientX;
-        this.currentMoveY = e.clientY;
+    /**
+     * Initializes the view-model instance.
+     * 
+     * @protected
+     * @abstract
+     * @memberof SVGViewModel
+     */
+    protected abstract initViewModel(): void;
 
-        let tempCurrentMatrix = selectedElement.getAttributeNS(null, 'transform').slice(7, -1).split(' ');
-        let matrixEntriesCount = tempCurrentMatrix.length;
-        for (let i = 0; i < matrixEntriesCount; i++) {
-            this.currentTransformMatrix[i] = parseFloat(tempCurrentMatrix[i]);
-        }
 
-        // Set drag handler
-        selectedElement.onmousemove = (e: MouseEvent) => {
-            let dx = e.clientX - this.currentMoveX;
-            let dy = e.clientY - this.currentMoveY;
-            this.currentTransformMatrix[4] += dx;
-            this.currentTransformMatrix[5] += dy;
-
-            let newMatrix = 'matrix(' + this.currentTransformMatrix.join(' ') + ')';
-            selectedElement.setAttributeNS(null, 'transform', newMatrix);
-
-            this.currentMoveX = e.clientX;
-            this.currentMoveY = e.clientY;
-        };
-
-        // Set drop handler
-        selectedElement.onmouseup = (e: MouseEvent) => {
-            selectedElement.onmousemove = null;
-            selectedElement.onmouseout = null;
-            selectedElement.onmouseup = null;
-        };
-
-        // Set leave handler
-        // selectedElement.onmouseout =
+    /**
+     * Returns the data bind change message for this instance.
+     * 
+     * @public
+     * @returns {string} 
+     * @memberof SVGViewModel
+     */
+    public getDataBindChangeMessage(): string {
+        return this.dataBindChangeMessage;
     }
+
+
+    /**
+     * Triggers the data binder for the given property.
+     * 
+     * @protected
+     * @param {string} propertyName 
+     * @param {*} value 
+     * @memberof SVGViewModel
+     */
+    protected triggerDataBinder(propertyName: string, value: any) {
+        this.dataBinder.publish(this.dataBindChangeMessage, propertyName, value, this);
+    }
+
 }

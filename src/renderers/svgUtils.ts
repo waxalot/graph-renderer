@@ -1,6 +1,5 @@
 import { Utils } from "../utils";
-import { SVGViewModel } from "../viewModels";
-import { GraphModel } from "../models";
+import { IViewModel } from "../viewModels";
 
 
 /**
@@ -15,11 +14,12 @@ export class SVGUtils {
      * Sets the Guid attribute.
      * 
      * @static
+     * @template T 
      * @param {Element} targetElement 
-     * @param {SVGViewModel} viewModel 
+     * @param {IViewModel<T>} viewModel 
      * @memberof SVGUtils
      */
-    public static setGuidAttribute(targetElement: Element, viewModel: SVGViewModel<GraphModel>): void {
+    public static setGuidAttribute<T>(targetElement: Element, viewModel: IViewModel<T>): void {
         if (!targetElement) {
             Utils.throwReferenceError('targetElement');
         } else if (!viewModel) {

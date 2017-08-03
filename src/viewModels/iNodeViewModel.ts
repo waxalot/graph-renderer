@@ -1,4 +1,4 @@
-import { Point } from "../models";
+import { VisualGraphNode, Point, Size } from "../models";
 import { IViewModel } from "./";
 
 
@@ -7,9 +7,19 @@ import { IViewModel } from "./";
  * 
  * @export
  * @interface INodeViewModel
- * @extends {IViewModel}
+ * @extends {IViewModel<T>}
+ * @template T 
  */
-export interface INodeViewModel extends IViewModel {
+export interface INodeViewModel<T extends VisualGraphNode> extends IViewModel<T> {
+
+    /**
+     * The related model instance.
+     * 
+     * @type {T}
+     * @memberof IViewModel
+     */
+    model: T;
+
 
     /**
      * The node's position.
@@ -18,5 +28,14 @@ export interface INodeViewModel extends IViewModel {
      * @memberof INodeViewModel
      */
     position: Point;
+
+
+    /**
+     * The node's size.
+     * 
+     * @type {Size}
+     * @memberof INodeViewModel
+     */
+    size: Size;
 
 }

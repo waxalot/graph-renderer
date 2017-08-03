@@ -1,6 +1,7 @@
-import { IRenderersFactory } from "./iRenderersFactory";
+import { IRenderersFactory } from "./";
 import { SVGGraphRenderer, SVGNodeRenderer, IGraphRenderer, INodeRenderer, SVGEdgeRenderer } from "../renderers";
 import { IGraphViewModel, INodeViewModel, IEdgeViewModel } from "../viewModels";
+import { VisualGraph, VisualGraphNode } from "../models";
 
 
 /**
@@ -15,10 +16,10 @@ export class SVGRenderersFactory implements IRenderersFactory {
     /**
      * Creates the graph renderer.
      * 
-     * @returns {IGraphRenderer} 
+     * @returns {IGraphRenderer<VisualGraph>} 
      * @memberof SVGRenderersFactory
      */
-    public createGraphRenderer(): IGraphRenderer {
+    public createGraphRenderer(): IGraphRenderer<VisualGraph> {
         let nodeRenderer = this.createNodeRenderer();
         let edgeRenderer = this.createEdgeRenderer();
         return new SVGGraphRenderer(nodeRenderer, edgeRenderer);
@@ -28,10 +29,10 @@ export class SVGRenderersFactory implements IRenderersFactory {
     /**
      * Creates the node renderer.
      * 
-     * @returns {SVGNodeRenderer} 
+     * @returns {SVGNodeRenderer<VisualGraphNode>} 
      * @memberof SVGRenderersFactory
      */
-    public createNodeRenderer(): SVGNodeRenderer {
+    public createNodeRenderer(): SVGNodeRenderer<VisualGraphNode> {
         return new SVGNodeRenderer();
     }
 
@@ -39,10 +40,10 @@ export class SVGRenderersFactory implements IRenderersFactory {
     /**
      * Creates the edge renderer.
      * 
-     * @returns {SVGEdgeRenderer} 
+     * @returns {SVGEdgeRenderer<VisualGraphNode>} 
      * @memberof SVGRenderersFactory
      */
-    public createEdgeRenderer(): SVGEdgeRenderer {
+    public createEdgeRenderer(): SVGEdgeRenderer<VisualGraphNode> {
         return new SVGEdgeRenderer();
     }
 

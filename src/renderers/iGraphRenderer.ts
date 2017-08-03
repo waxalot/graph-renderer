@@ -1,5 +1,6 @@
 import { IGraphViewModel } from "../viewModels";
 import { IRenderer } from "./";
+import { VisualGraph } from "../models";
 
 
 /**
@@ -7,9 +8,10 @@ import { IRenderer } from "./";
  * 
  * @export
  * @interface IGraphRenderer
- * @extends {IRenderer<IGraphViewModel>}
+ * @extends {IRenderer<IGraphViewModel<T>>}
+ * @template T 
  */
-export interface IGraphRenderer extends IRenderer<IGraphViewModel> {
+export interface IGraphRenderer<T extends VisualGraph> extends IRenderer<IGraphViewModel<T>> {
 
     /**
      * Sets the graph's container element.

@@ -1,5 +1,5 @@
 import { IGraphViewModel, SVGNodeViewModel, SVGViewModel, SVGEdgeViewModel, IEdgeRouter } from "./";
-import { Graph, Size } from "../models";
+import { Graph, Size, VisualGraph, VisualGraphNode } from "../models";
 import { Utils } from "../utils";
 
 
@@ -11,24 +11,33 @@ import { Utils } from "../utils";
  * @extends {SVGViewModel}
  * @implements {IGraphViewModel}
  */
-export class SVGGraphViewModel extends SVGViewModel<Graph> implements IGraphViewModel {
+export class SVGGraphViewModel<T extends VisualGraph> extends SVGViewModel<T> implements IGraphViewModel<T> {
+
+    /**
+     * The graph model.
+     * 
+     * @type {T}
+     * @memberof SVGGraphViewModel
+     */
+    public model: T;
+
 
     /**
      * A collection of the graph's node view-models.
      * 
-     * @type {Array<SVGNodeViewModel>}
+     * @type {Array<SVGNodeViewModel<VisualGraphNode>>}
      * @memberof SVGGraphViewModel
      */
-    public nodes: Array<SVGNodeViewModel>;
+    public nodes: Array<SVGNodeViewModel<VisualGraphNode>>;
 
 
     /**
      * A collection of the graph's edge view-models.
      * 
-     * @type {Array<SVGEdgeViewModel>}
+     * @type {Array<SVGEdgeViewModel<VisualGraphNode>>}
      * @memberof SVGGraphViewModel
      */
-    public connections: Array<SVGEdgeViewModel>;
+    public connections: Array<SVGEdgeViewModel<VisualGraphNode>>;
 
 
     /**
@@ -50,26 +59,20 @@ export class SVGGraphViewModel extends SVGViewModel<Graph> implements IGraphView
     public constructor(edgeRouter: IEdgeRouter) {
         super();
 
-        this.nodes = new Array<SVGNodeViewModel>();
-        this.connections = new Array<SVGEdgeViewModel>();
+        this.nodes = new Array<SVGNodeViewModel<VisualGraphNode>>();
+        this.connections = new Array<SVGEdgeViewModel<VisualGraphNode>>();
 
         this.edgeRouter = edgeRouter;
     }
 
 
     /**
-     * Initializes the graph view-model.
+     * Initializes the view-model.
      * 
-     * @param {Graph} graph 
+     * @protected
      * @memberof SVGGraphViewModel
      */
-    public init(graph: Graph) {
-        if (!graph) {
-            Utils.throwReferenceError('graph');
-        }
-
-        this.model = graph;
-
+    protected initViewModel(): void {
         this.initNodes();
     }
 
@@ -81,27 +84,27 @@ export class SVGGraphViewModel extends SVGViewModel<Graph> implements IGraphView
      * @memberof SVGGraphViewModel
      */
     private initNodes(): void {
-        let graphNodes = this.model.getNodes();
-        if (graphNodes && graphNodes.length > 0) {
-            graphNodes.forEach((tempNode) => {
+        // let graphNodes = this.model.nodes;
+        // if (graphNodes && graphNodes.length > 0) {
+        //     graphNodes.forEach((tempNode) => {
 
-                // Create the graph node view-model
-                let newNodeVM = new SVGNodeViewModel();
-                newNodeVM.init(tempNode);
-                this.nodes.push(newNodeVM);
+        //         // // Create the graph node view-model
+        //         // let newNodeVM = new SVGNodeViewModel();
+        //         // newNodeVM.init(tempNode);
+        //         // this.nodes.push(newNodeVM);
 
-                // Create the node's connection view-models
-                let edges = tempNode.getConnections();
-                if (edges && edges.length > 0) {
-                    edges.forEach((tempEdge) => {
-                        let newEdgeVM = new SVGEdgeViewModel();
-                        newEdgeVM.setEdgeRouter(this.edgeRouter);
-                        newEdgeVM.init(tempEdge, this);
-                        this.connections.push(newEdgeVM);
-                    });
-                }
-            });
-        }
+        //         // // Create the node's connection view-models
+        //         // let edges = tempNode.getConnections();
+        //         // if (edges && edges.length > 0) {
+        //         //     edges.forEach((tempEdge) => {
+        //         //         let newEdgeVM = new SVGEdgeViewModel();
+        //         //         newEdgeVM.setEdgeRouter(this.edgeRouter);
+        //         //         newEdgeVM.init(tempEdge, newNodeVM, null, this);
+        //         //         this.connections.push(newEdgeVM);
+        //         //     });
+        //         // }
+        //     });
+        // }
     }
 
 }

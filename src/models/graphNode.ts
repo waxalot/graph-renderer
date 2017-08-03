@@ -1,4 +1,4 @@
-import { Point, Size, Edge, GraphModel } from "./";
+import { GraphItem, NodeList } from "./";
 
 
 /**
@@ -6,65 +6,50 @@ import { Point, Size, Edge, GraphModel } from "./";
  * 
  * @export
  * @class GraphNode
+ * @extends {GraphItem}
+ * @template T 
  */
-export class GraphNode extends GraphModel {
+export class GraphNode<T> extends GraphItem {
 
     /**
-     * The item's position.
+     * The node's value.
      * 
-     * @type {Point}
-     * @memberof GraphItem
-     */
-    public position: Point;
-
-
-    /**
-     * An array with all connections of the node's instance.
-     * 
-     * @private
-     * @type {Array<Edge>}
+     * @type {T}
      * @memberof GraphNode
      */
-    private connections: Array<Edge>;
+    public value: T;
+
+
+    /**
+     * The costs of the node.
+     * 
+     * @public
+     * @type {Array<number>}
+     * @memberof GraphNode
+     */
+    public costs: Array<number>;
+
+
+    /**
+     * The node list with all neighbor nodes.
+     * 
+     * @public
+     * @type {NodeList<T>}
+     * @memberof GraphNode
+     */
+    public neighbors: NodeList<T>;
 
 
     /**
      * Creates an instance of GraphNode.
      *
-     * @param {Point} position 
-     * @param {Size} [size] 
      * @memberof GraphNode
      */
-    public constructor(position: Point, size?: Size) {
-        super(size);
+    public constructor() {
+        super();
 
-        this.position = position;
-
-        this.connections = new Array<Edge>();
-    }
-
-
-    /**
-     * Adds a new edge to the given node.
-     * 
-     * @param {GraphNode} targetNode 
-     * @memberof GraphNode
-     */
-    public addConnection(targetNode: GraphNode): void {
-        let newEdge = new Edge(this, targetNode);
-        this.connections.push(newEdge);
-    }
-
-
-    /**
-     * Returns an array with all node connections.
-     * 
-     * @returns {Array<Edge>} 
-     * @memberof GraphNode
-     */
-    public getConnections(): Array<Edge> {
-        // Use concat to copy the array, so that the original array can't be changed.
-        return new Array<Edge>().concat(this.connections);
+        this.costs = new Array<number>();
+        this.neighbors = new NodeList<T>();
     }
 
 }

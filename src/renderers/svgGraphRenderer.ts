@@ -2,6 +2,7 @@ import { Utils } from "../utils";
 import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
 import { SVGUtils } from "./svgUtils";
 import { IGraphRenderer, Renderer, SVGRenderer, SVGNodeRenderer, IRenderer, SVGEdgeRenderer } from "./";
+import { VisualGraph, VisualGraphNode } from "../models";
 
 
 /**
@@ -11,21 +12,21 @@ import { IGraphRenderer, Renderer, SVGRenderer, SVGNodeRenderer, IRenderer, SVGE
  * @class SVGGraphRenderer
  * @implements {IGraphRenderer}
  */
-export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements IGraphRenderer {
+export class SVGGraphRenderer<T extends VisualGraph> extends SVGRenderer<T, SVGGraphViewModel<T>> implements IGraphRenderer<T> {
 
     private containerElement: Element;
-    private nodeRenderer: SVGNodeRenderer;
-    private edgeRenderer: SVGEdgeRenderer;
+    private nodeRenderer: SVGNodeRenderer<VisualGraphNode>;
+    private edgeRenderer: SVGEdgeRenderer<VisualGraphNode>;
 
 
     /**
      * Creates an instance of SVGGraphRenderer.
      *
-     * @param {SVGNodeRenderer} nodeRenderer 
-     * @param {SVGEdgeRenderer} edgeRenderer 
+     * @param {SVGNodeRenderer<VisualGraphNode>} nodeRenderer 
+     * @param {SVGEdgeRenderer<VisualGraphEdge>} edgeRenderer 
      * @memberof SVGGraphRenderer
      */
-    public constructor(nodeRenderer: SVGNodeRenderer, edgeRenderer: SVGEdgeRenderer) {
+    public constructor(nodeRenderer: SVGNodeRenderer<VisualGraphNode>, edgeRenderer: SVGEdgeRenderer<VisualGraphNode>) {
         super();
 
         if (!nodeRenderer) {
@@ -60,7 +61,7 @@ export class SVGGraphRenderer extends SVGRenderer<SVGGraphViewModel> implements 
      * @param {SVGGraphViewModel} viewModel 
      * @memberof SVGGraphRenderer
      */
-    public render(viewModel: SVGGraphViewModel): void {
+    public render(viewModel: SVGGraphViewModel<T>): void {
         if (!this.containerElement) {
             throw new Error('No container element was set. Call setContainerElement() before!')
         }

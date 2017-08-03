@@ -3,6 +3,7 @@ import { INodeRenderer } from "./";
 import { Utils } from "../utils";
 import { SVGUtils } from "./svgUtils";
 import { SVGRenderer } from "./svgRenderer";
+import { VisualGraphNode } from "../models/visualGraphNode";
 
 
 /**
@@ -10,9 +11,11 @@ import { SVGRenderer } from "./svgRenderer";
  * 
  * @export
  * @class SVGNodeRenderer
- * @implements {INodeRenderer}
+ * @extends {SVGRenderer<T>}
+ * @implements {INodeRenderer<SVGNodeViewModel<T>>}
+ * @template T 
  */
-export class SVGNodeRenderer extends SVGRenderer<SVGNodeViewModel> implements INodeRenderer {
+export class SVGNodeRenderer<T extends VisualGraphNode> extends SVGRenderer<T, SVGNodeViewModel<T>> implements INodeRenderer<T> {
 
     /**
      * The node's container element.
@@ -42,10 +45,10 @@ export class SVGNodeRenderer extends SVGRenderer<SVGNodeViewModel> implements IN
     /**
      * Renders the node view-model.
      * 
-     * @param {SVGNodeViewModel} viewModel 
+     * @param {SVGNodeViewModel<T>} viewModel 
      * @memberof SVGNodeRenderer
      */
-    public render(viewModel: SVGNodeViewModel): void {
+    public render(viewModel: SVGNodeViewModel<T>): void {
         if (!this.containerElement) {
             throw new Error('No container element was set. Call setContainerElement() before!')
         }
@@ -67,10 +70,20 @@ export class SVGNodeRenderer extends SVGRenderer<SVGNodeViewModel> implements IN
             nodeTargetElement.setAttribute('y', viewModel.position.y.toFixed());
         }
 
-        // Set the size
-        if (viewModel.size) {
-            nodeTargetElement.setAttribute('width', viewModel.size.width.toFixed());
-            nodeTargetElement.setAttribute('height', viewModel.size.height.toFixed());
+        if (viewModel.width) {
+            let attributeName = 'width';
+            nodeTargetElement.setAttribute(attributeName, viewModel.width.toFixed());
+            // Data bind to the view-model's width property
+            let vmPropertyName = 'width';
+            nodeTargetElement.setAttribute('data-bind-' + viewModel.guid + '-' + attributeName, vmPropertyName);
+        }
+
+        if (viewModel.height) {
+            let attributeName = 'height';
+            nodeTargetElement.setAttribute(attributeName, viewModel.height.toFixed());
+            // Data bind to the view-model's height property
+            let vmPropertyName = 'height';
+            nodeTargetElement.setAttribute('data-bind-' + viewModel.guid + '-' + attributeName, vmPropertyName);
         }
 
         this.containerElement.appendChild(nodeTargetElement);

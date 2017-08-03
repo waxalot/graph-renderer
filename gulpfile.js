@@ -13,7 +13,7 @@ var dirs = {
     build: 'build/',
     dist: "dist/",
     nodeModules: "node_modules/",
-    tests: "tests/",
+    tests: "src/tests/",
     config: "config/",
     release: "release/",
     debug: "debug/",

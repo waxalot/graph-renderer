@@ -1,5 +1,5 @@
 import { IEdgeRouter, IGraphViewModel } from "./";
-import { Point } from "../models";
+import { Point, VisualGraph } from "../models";
 
 
 /**
@@ -16,11 +16,11 @@ export class RectangularEdgeRouter implements IEdgeRouter {
      * 
      * @param {Point} startPoint 
      * @param {Point} endPoint 
-     * @param {IGraphViewModel} graphViewModel 
+     * @param {IGraphViewModel<VisualGraph>} graphViewModel 
      * @returns {Array<Point>} 
      * @memberof RectangularEdgeRouter
      */
-    public createEdgePoints(startPoint: Point, endPoint: Point, graphViewModel: IGraphViewModel): Array<Point> {
+    public createEdgePoints(startPoint: Point, endPoint: Point, graphViewModel: IGraphViewModel<VisualGraph>): Array<Point> {
         let result = new Array<Point>();
 
         result.push(this.createRectangularIntermediatePoint(startPoint, endPoint));

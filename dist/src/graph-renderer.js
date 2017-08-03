@@ -47,16 +47,21 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var models_1 = __webpack_require__(1);
-	var factories_1 = __webpack_require__(12);
-	var viewModels_1 = __webpack_require__(23);
+	var factories_1 = __webpack_require__(14);
+	var viewModels_1 = __webpack_require__(25);
 	document.addEventListener("DOMContentLoaded", function (event) {
+	    // Build nodes
+	    var node1 = new models_1.VisualGraphNode();
+	    node1.position = new models_1.Point(100, 100);
+	    node1.size = new models_1.Size(50, 50);
+	    var node2 = new models_1.VisualGraphNode();
+	    node2.position = new models_1.Point(400, 300);
+	    node2.size = new models_1.Size(50, 50);
 	    // Build graph
-	    var node1 = new models_1.GraphNode(new models_1.Point(100, 100), new models_1.Size(50, 50));
-	    var node2 = new models_1.GraphNode(new models_1.Point(400, 300), new models_1.Size(50, 50));
-	    node1.addConnection(node2);
 	    var graph = new models_1.Graph();
-	    graph.addNode(node1);
-	    graph.addNode(node2);
+	    var graphNode1 = graph.addNode(node1);
+	    var graphNode2 = graph.addNode(node2);
+	    graph.addDirectedEdge(graphNode1, graphNode2);
 	    // Get the graph's target element
 	    var containerElement = document.getElementById('graph-container');
 	    // Get the view-models factory
@@ -83,82 +88,198 @@
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
 	__export(__webpack_require__(2));
-	__export(__webpack_require__(4));
-	__export(__webpack_require__(5));
-	__export(__webpack_require__(7));
-	__export(__webpack_require__(8));
-	__export(__webpack_require__(6));
 	__export(__webpack_require__(3));
+	__export(__webpack_require__(5));
+	__export(__webpack_require__(6));
+	__export(__webpack_require__(8));
 	__export(__webpack_require__(9));
+	__export(__webpack_require__(7));
 	__export(__webpack_require__(10));
 	__export(__webpack_require__(11));
+	__export(__webpack_require__(4));
+	__export(__webpack_require__(12));
+	__export(__webpack_require__(13));
 
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var size_1 = __webpack_require__(3);
-	/**
-	 * The base class for all graph related models.
-	 *
-	 * @export
-	 * @abstract
-	 * @class GraphModel
-	 */
-	var GraphModel = (function () {
-	    /**
-	     * Creates an instance of GraphModel.
-	     *
-	     * @param {Size} [size]
-	     * @memberof GraphModel
-	     */
-	    function GraphModel(size) {
-	        this.size = size;
-	        if (!this.size) {
-	            this.size = new size_1.Size();
-	        }
-	    }
-	    return GraphModel;
-	}());
-	exports.GraphModel = GraphModel;
-
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/**
-	 * A 2D size representation.
+	 * This class represents a collection of graph nodes.
 	 *
 	 * @export
-	 * @class Size
+	 * @class NodeList
 	 */
-	var Size = (function () {
+	var NodeList = (function () {
 	    /**
-	     * Creates an instance of Size.
+	     * Creates an instance of NodeList.
 	     *
-	     * @param {number} [width=0]
-	     * @param {number} [height=0]
-	     * @memberof Size
+	     * @memberof NodeList
 	     */
-	    function Size(width, height) {
-	        if (width === void 0) { width = 0; }
-	        if (height === void 0) { height = 0; }
-	        this.width = width;
-	        this.height = height;
+	    function NodeList() {
+	        this.currentIndex = 0;
+	        this.list = new Array();
 	    }
-	    return Size;
+	    Object.defineProperty(NodeList.prototype, "count", {
+	        /**
+	         * Returns the number of list entries.
+	         *
+	         * @returns {number}
+	         * @memberof NodeList
+	         */
+	        get: function () {
+	            return this.list.length;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    /**
+	     * Adds the given node to the node list.
+	     *
+	     * @param {GraphNode} node
+	     * @memberof NodeList
+	     */
+	    NodeList.prototype.add = function (node) {
+	        this.list.push(node);
+	    };
+	    /**
+	     * Removes a given node from the node list.
+	     *
+	     * @param {GraphNode} node
+	     * @memberof NodeList
+	     */
+	    NodeList.prototype.remove = function (node) {
+	        var nodeIndex = this.list.indexOf(node);
+	        if (nodeIndex > -1) {
+	            this.list.splice(nodeIndex, 1);
+	        }
+	    };
+	    /**
+	     * Removes the node at the given index.
+	     *
+	     * @param {number} index
+	     * @memberof NodeList
+	     */
+	    NodeList.prototype.removeAt = function (index) {
+	        if (index > -1 && index < this.list.length) {
+	            this.list.splice(index, 1);
+	        }
+	    };
+	    /**
+	     * Finds a node by the given guid.
+	     *
+	     * @param {string} guid
+	     * @returns {GraphNode}
+	     * @memberof NodeList
+	     */
+	    NodeList.prototype.findByGuid = function (guid) {
+	        // Search the list for the value
+	        this.list.forEach(function (item) {
+	            if (item.guid === guid) {
+	                return item;
+	            }
+	        });
+	        // If we reached here, we didn't find a matching item
+	        return null;
+	    };
+	    /**
+	     * Returns the next node in the list.
+	     *
+	     * @param {*} [value]
+	     * @returns {{ done: boolean, value?: GraphNode }}
+	     * @memberof NodeList
+	     */
+	    NodeList.prototype.next = function (value) {
+	        if (this.currentIndex < this.list.length) {
+	            return {
+	                done: false,
+	                value: this.list[this.currentIndex++]
+	            };
+	        }
+	        else {
+	            return {
+	                done: true
+	            };
+	        }
+	    };
+	    /**
+	     * Returns the index of the given node.
+	     *
+	     * @param {GraphNode<T>} node
+	     * @returns {number}
+	     * @memberof NodeList
+	     */
+	    NodeList.prototype.indexOf = function (node) {
+	        return this.list.indexOf(node);
+	    };
+	    return NodeList;
 	}());
-	exports.Size = Size;
+	exports.NodeList = NodeList;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var guid_1 = __webpack_require__(4);
+	/**
+	 * The base class for all graph related models.
+	 *
+	 * @export
+	 * @abstract
+	 * @class GraphItem
+	 */
+	var GraphItem = (function () {
+	    /**
+	     * Creates an instance of GraphItem.
+	     *
+	     * @memberof GraphItem
+	     */
+	    function GraphItem() {
+	        this.guid = guid_1.Guid.newGuid();
+	    }
+	    return GraphItem;
+	}());
+	exports.GraphItem = GraphItem;
 
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Guid = (function () {
+	    function Guid() {
+	    }
+	    /**
+	     * Creates a new Guid.
+	     *
+	     * @static
+	     * @returns {string}
+	     * @memberof Guid
+	     */
+	    Guid.newGuid = function () {
+	        return Guid.s4() + Guid.s4() + '-' + Guid.s4() + '-' + Guid.s4() + '-' +
+	            Guid.s4() + '-' + Guid.s4() + Guid.s4() + Guid.s4();
+	    };
+	    Guid.s4 = function () {
+	        return Math.floor((1 + Math.random()) * 0x10000)
+	            .toString(16)
+	            .substring(1);
+	    };
+	    return Guid;
+	}());
+	exports.Guid = Guid;
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -184,12 +305,12 @@
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var point_1 = __webpack_require__(6);
+	var point_1 = __webpack_require__(7);
 	/**
 	 * A representation of a Bezier curve segment.
 	 *
@@ -214,7 +335,7 @@
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -245,20 +366,10 @@
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || (function () {
-	    var extendStatics = Object.setPrototypeOf ||
-	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-	    return function (d, b) {
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var _1 = __webpack_require__(1);
 	/**
@@ -267,103 +378,100 @@
 	 * @export
 	 * @class Graph
 	 */
-	var Graph = (function (_super) {
-	    __extends(Graph, _super);
+	var Graph = (function () {
 	    /**
 	     * Creates an instance of Graph.
 	     *
 	     * @memberof Graph
 	     */
 	    function Graph() {
-	        var _this = _super.call(this) || this;
-	        _this.nodes = new Array();
-	        return _this;
+	        this.nodes = new _1.NodeList();
 	    }
 	    /**
-	     * Adds a given node to the graph.
+	     *  Adds a new node with the given value to the graph.
 	     *
-	     * @param {GraphNode} node
+	     * @template T
+	     * @param {T} value
 	     * @memberof Graph
 	     */
-	    Graph.prototype.addNode = function (node) {
-	        this.nodes.push(node);
+	    Graph.prototype.addNode = function (value) {
+	        var newNode = new _1.GraphNode();
+	        newNode.value = value;
+	        this.nodes.add(newNode);
+	        return newNode;
 	    };
 	    /**
-	     * Returns an array with all graph nodes.
+	     * Adds a directed edge to the graph.
 	     *
-	     * @returns {Array<GraphNode>}
+	     * @param {GraphNode<T>} from
+	     * @param {GraphNode<T>} to
+	     * @param {number} [cost]
 	     * @memberof Graph
 	     */
-	    Graph.prototype.getNodes = function () {
-	        // Use concat to copy the array, so that the original array can't be changed.
-	        return new Array().concat(this.nodes);
+	    Graph.prototype.addDirectedEdge = function (from, to, cost) {
+	        from.neighbors.add(to);
+	        from.costs.push(cost);
+	    };
+	    /**
+	     * Adds an undirected edge to the graph.
+	     *
+	     * @param {GraphNode<T>} from
+	     * @param {GraphNode<T>} to
+	     * @param {number} [cost=0]
+	     * @memberof Graph
+	     */
+	    Graph.prototype.addUndirectedEdge = function (from, to, cost) {
+	        if (cost === void 0) { cost = 0; }
+	        from.neighbors.add(to);
+	        from.costs.push(cost);
+	        to.neighbors.add(from);
+	        from.costs.push(cost);
+	    };
+	    /**
+	     * Determines whether the graph contains a node with the given guid.
+	     *
+	     * @param {strig} guid
+	     * @returns {boolean}
+	     * @memberof Graph
+	     */
+	    Graph.prototype.contains = function (guid) {
+	        return this.nodes.findByGuid(guid) != null;
+	    };
+	    /**
+	     * Removes the node with the given guid from the graph.
+	     *
+	     * @param {string} guid
+	     * @returns {boolean}
+	     * @memberof Graph
+	     */
+	    Graph.prototype.remove = function (guid) {
+	        // First remove the node from the nodeset
+	        var nodeToRemove = this.nodes.findByGuid(guid);
+	        if (!nodeToRemove) {
+	            // Node was not found
+	            return false;
+	        }
+	        this.nodes.remove(nodeToRemove);
+	        // Try to remove all edges to this node
+	        var tempNode;
+	        var iteratorResult;
+	        do {
+	            iteratorResult = this.nodes.next();
+	            if (!iteratorResult.done && iteratorResult.value) {
+	                tempNode = iteratorResult.value;
+	                var index = tempNode.neighbors.indexOf(nodeToRemove);
+	                if (index > -1) {
+	                    // Remove the reference to the node and associated cost
+	                    tempNode.neighbors.removeAt(index);
+	                    tempNode.costs.splice(index, 1);
+	                }
+	            }
+	        } while (!iteratorResult.done);
+	        return true;
 	    };
 	    return Graph;
-	}(_1.GraphModel));
+	}());
 	exports.Graph = Graph;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || (function () {
-	    var extendStatics = Object.setPrototypeOf ||
-	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-	    return function (d, b) {
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(1);
-	/**
-	 * A representation of a graph node.
-	 *
-	 * @export
-	 * @class GraphNode
-	 */
-	var GraphNode = (function (_super) {
-	    __extends(GraphNode, _super);
-	    /**
-	     * Creates an instance of GraphNode.
-	     *
-	     * @param {Point} position
-	     * @param {Size} [size]
-	     * @memberof GraphNode
-	     */
-	    function GraphNode(position, size) {
-	        var _this = _super.call(this, size) || this;
-	        _this.position = position;
-	        _this.connections = new Array();
-	        return _this;
-	    }
-	    /**
-	     * Adds a new edge to the given node.
-	     *
-	     * @param {GraphNode} targetNode
-	     * @memberof GraphNode
-	     */
-	    GraphNode.prototype.addConnection = function (targetNode) {
-	        var newEdge = new _1.Edge(this, targetNode);
-	        this.connections.push(newEdge);
-	    };
-	    /**
-	     * Returns an array with all node connections.
-	     *
-	     * @returns {Array<Edge>}
-	     * @memberof GraphNode
-	     */
-	    GraphNode.prototype.getConnections = function () {
-	        // Use concat to copy the array, so that the original array can't be changed.
-	        return new Array().concat(this.connections);
-	    };
-	    return GraphNode;
-	}(_1.GraphModel));
-	exports.GraphNode = GraphNode;
 
 
 /***/ }),
@@ -384,35 +492,29 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var _1 = __webpack_require__(1);
 	/**
-	 * A representation of an edge between two nodes.
+	 * A representation of a graph node.
 	 *
 	 * @export
-	 * @class Edge
+	 * @class GraphNode
+	 * @extends {GraphItem}
+	 * @template T
 	 */
-	var Edge = (function (_super) {
-	    __extends(Edge, _super);
+	var GraphNode = (function (_super) {
+	    __extends(GraphNode, _super);
 	    /**
-	     * Creates an instance of Edge.
+	     * Creates an instance of GraphNode.
 	     *
-	     * @param {GraphNode} sourceNode
-	     * @param {GraphNode} targetNode
-	     * @memberof Edge
+	     * @memberof GraphNode
 	     */
-	    function Edge(sourceNode, targetNode) {
+	    function GraphNode() {
 	        var _this = _super.call(this) || this;
-	        if (!sourceNode) {
-	            throw new ReferenceError('The argument "sourceNode" is null or undefined.');
-	        }
-	        else if (!targetNode) {
-	            throw new ReferenceError('The argument "targetNode" is null or undefined.');
-	        }
-	        _this.sourceNode = sourceNode;
-	        _this.targetNode = targetNode;
+	        _this.costs = new Array();
+	        _this.neighbors = new _1.NodeList();
 	        return _this;
 	    }
-	    return Edge;
-	}(_1.GraphModel));
-	exports.Edge = Edge;
+	    return GraphNode;
+	}(_1.GraphItem));
+	exports.GraphNode = GraphNode;
 
 
 /***/ }),
@@ -421,6 +523,29 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * A 2D size representation.
+	 *
+	 * @export
+	 * @class Size
+	 */
+	var Size = (function () {
+	    /**
+	     * Creates an instance of Size.
+	     *
+	     * @param {number} [width=0]
+	     * @param {number} [height=0]
+	     * @memberof Size
+	     */
+	    function Size(width, height) {
+	        if (width === void 0) { width = 0; }
+	        if (height === void 0) { height = 0; }
+	        this.width = width;
+	        this.height = height;
+	    }
+	    return Size;
+	}());
+	exports.Size = Size;
 
 
 /***/ }),
@@ -429,32 +554,50 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var Guid = (function () {
-	    function Guid() {
-	    }
-	    /**
-	     * Creates a new Guid.
-	     *
-	     * @static
-	     * @returns {string}
-	     * @memberof Guid
-	     */
-	    Guid.newGuid = function () {
-	        return Guid.s4() + Guid.s4() + '-' + Guid.s4() + '-' + Guid.s4() + '-' +
-	            Guid.s4() + '-' + Guid.s4() + Guid.s4() + Guid.s4();
-	    };
-	    Guid.s4 = function () {
-	        return Math.floor((1 + Math.random()) * 0x10000)
-	            .toString(16)
-	            .substring(1);
-	    };
-	    return Guid;
-	}());
-	exports.Guid = Guid;
 
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * The visual representation of a graph.
+	 *
+	 * @export
+	 * @class VisualGraph
+	 */
+	var VisualGraph = (function () {
+	    function VisualGraph() {
+	    }
+	    return VisualGraph;
+	}());
+	exports.VisualGraph = VisualGraph;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * The visual representation of a graph's node.
+	 *
+	 * @export
+	 * @class VisualGraphNode
+	 */
+	var VisualGraphNode = (function () {
+	    function VisualGraphNode() {
+	    }
+	    return VisualGraphNode;
+	}());
+	exports.VisualGraphNode = VisualGraphNode;
+
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -462,17 +605,17 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(13));
-	__export(__webpack_require__(22));
+	__export(__webpack_require__(15));
+	__export(__webpack_require__(24));
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var renderers_1 = __webpack_require__(14);
+	var renderers_1 = __webpack_require__(16);
 	/**
 	 * The SVG based representation of a renderers factory.
 	 *
@@ -486,7 +629,7 @@
 	    /**
 	     * Creates the graph renderer.
 	     *
-	     * @returns {IGraphRenderer}
+	     * @returns {IGraphRenderer<VisualGraph>}
 	     * @memberof SVGRenderersFactory
 	     */
 	    SVGRenderersFactory.prototype.createGraphRenderer = function () {
@@ -497,7 +640,7 @@
 	    /**
 	     * Creates the node renderer.
 	     *
-	     * @returns {SVGNodeRenderer}
+	     * @returns {SVGNodeRenderer<VisualGraphNode>}
 	     * @memberof SVGRenderersFactory
 	     */
 	    SVGRenderersFactory.prototype.createNodeRenderer = function () {
@@ -506,7 +649,7 @@
 	    /**
 	     * Creates the edge renderer.
 	     *
-	     * @returns {SVGEdgeRenderer}
+	     * @returns {SVGEdgeRenderer<VisualGraphNode>}
 	     * @memberof SVGRenderersFactory
 	     */
 	    SVGRenderersFactory.prototype.createEdgeRenderer = function () {
@@ -518,7 +661,7 @@
 
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -526,15 +669,15 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(15));
-	__export(__webpack_require__(16));
-	__export(__webpack_require__(19));
-	__export(__webpack_require__(20));
+	__export(__webpack_require__(17));
+	__export(__webpack_require__(18));
 	__export(__webpack_require__(21));
+	__export(__webpack_require__(22));
+	__export(__webpack_require__(23));
 
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -557,7 +700,7 @@
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -572,9 +715,9 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var renderer_1 = __webpack_require__(15);
-	var svgUtils_1 = __webpack_require__(17);
-	var utils_1 = __webpack_require__(18);
+	var renderer_1 = __webpack_require__(17);
+	var svgUtils_1 = __webpack_require__(19);
+	var utils_1 = __webpack_require__(20);
 	/**
 	 * The abstract base class for SVG based renderers.
 	 *
@@ -583,6 +726,7 @@
 	 * @class SVGRenderer
 	 * @extends {Renderer<ViewModelType>}
 	 * @implements {IRenderer<ViewModelType>}
+	 * @template T
 	 * @template ViewModelType
 	 */
 	var SVGRenderer = (function (_super) {
@@ -623,12 +767,12 @@
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var utils_1 = __webpack_require__(18);
+	var utils_1 = __webpack_require__(20);
 	/**
 	 * A collection of SVG related util methods.
 	 *
@@ -642,8 +786,9 @@
 	     * Sets the Guid attribute.
 	     *
 	     * @static
+	     * @template T
 	     * @param {Element} targetElement
-	     * @param {SVGViewModel} viewModel
+	     * @param {IViewModel<T>} viewModel
 	     * @memberof SVGUtils
 	     */
 	    SVGUtils.setGuidAttribute = function (targetElement, viewModel) {
@@ -661,7 +806,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -691,7 +836,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -706,14 +851,16 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var utils_1 = __webpack_require__(18);
-	var svgRenderer_1 = __webpack_require__(16);
+	var utils_1 = __webpack_require__(20);
+	var svgRenderer_1 = __webpack_require__(18);
 	/**
 	 * The SVG based implementation of a node renderer.
 	 *
 	 * @export
 	 * @class SVGNodeRenderer
-	 * @implements {INodeRenderer}
+	 * @extends {SVGRenderer<T>}
+	 * @implements {INodeRenderer<SVGNodeViewModel<T>>}
+	 * @template T
 	 */
 	var SVGNodeRenderer = (function (_super) {
 	    __extends(SVGNodeRenderer, _super);
@@ -735,7 +882,7 @@
 	    /**
 	     * Renders the node view-model.
 	     *
-	     * @param {SVGNodeViewModel} viewModel
+	     * @param {SVGNodeViewModel<T>} viewModel
 	     * @memberof SVGNodeRenderer
 	     */
 	    SVGNodeRenderer.prototype.render = function (viewModel) {
@@ -755,10 +902,19 @@
 	            nodeTargetElement.setAttribute('x', viewModel.position.x.toFixed());
 	            nodeTargetElement.setAttribute('y', viewModel.position.y.toFixed());
 	        }
-	        // Set the size
-	        if (viewModel.size) {
-	            nodeTargetElement.setAttribute('width', viewModel.size.width.toFixed());
-	            nodeTargetElement.setAttribute('height', viewModel.size.height.toFixed());
+	        if (viewModel.width) {
+	            var attributeName = 'width';
+	            nodeTargetElement.setAttribute(attributeName, viewModel.width.toFixed());
+	            // Data bind to the view-model's width property
+	            var vmPropertyName = 'width';
+	            nodeTargetElement.setAttribute('data-bind-' + viewModel.guid + '-' + attributeName, vmPropertyName);
+	        }
+	        if (viewModel.height) {
+	            var attributeName = 'height';
+	            nodeTargetElement.setAttribute(attributeName, viewModel.height.toFixed());
+	            // Data bind to the view-model's height property
+	            var vmPropertyName = 'height';
+	            nodeTargetElement.setAttribute('data-bind-' + viewModel.guid + '-' + attributeName, vmPropertyName);
 	        }
 	        this.containerElement.appendChild(nodeTargetElement);
 	    };
@@ -768,7 +924,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -783,8 +939,8 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var utils_1 = __webpack_require__(18);
-	var _1 = __webpack_require__(14);
+	var utils_1 = __webpack_require__(20);
+	var _1 = __webpack_require__(16);
 	/**
 	 * The SVG based implementation of a graph renderer.
 	 *
@@ -797,8 +953,8 @@
 	    /**
 	     * Creates an instance of SVGGraphRenderer.
 	     *
-	     * @param {SVGNodeRenderer} nodeRenderer
-	     * @param {SVGEdgeRenderer} edgeRenderer
+	     * @param {SVGNodeRenderer<VisualGraphNode>} nodeRenderer
+	     * @param {SVGEdgeRenderer<VisualGraphEdge>} edgeRenderer
 	     * @memberof SVGGraphRenderer
 	     */
 	    function SVGGraphRenderer(nodeRenderer, edgeRenderer) {
@@ -866,7 +1022,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -881,8 +1037,8 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(14);
-	var utils_1 = __webpack_require__(18);
+	var _1 = __webpack_require__(16);
+	var utils_1 = __webpack_require__(20);
 	/**
 	 * The SVG based implementation of an edge renderer.
 	 *
@@ -934,12 +1090,12 @@
 
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var viewModels_1 = __webpack_require__(23);
+	var viewModels_1 = __webpack_require__(25);
 	/**
 	 * The SVG based representation of a view-models factory.
 	 *
@@ -960,7 +1116,7 @@
 	     */
 	    SVGViewModelsFactory.prototype.createGraphViewModel = function (graph, edgeRouter) {
 	        var graphVM = new viewModels_1.SVGGraphViewModel(edgeRouter);
-	        graphVM.init(graph);
+	        //graphVM.init(graph);
 	        return graphVM;
 	    };
 	    return SVGViewModelsFactory;
@@ -969,7 +1125,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -977,26 +1133,29 @@
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	__export(__webpack_require__(24));
-	__export(__webpack_require__(25));
 	__export(__webpack_require__(26));
-	__export(__webpack_require__(27));
-	__export(__webpack_require__(28));
+	__export(__webpack_require__(30));
+	__export(__webpack_require__(31));
+	__export(__webpack_require__(32));
+	__export(__webpack_require__(33));
 
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var models_1 = __webpack_require__(1);
+	var dataBinding_1 = __webpack_require__(27);
 	/**
 	 * The base class of all SVG based view-models.
 	 *
 	 * @export
 	 * @abstract
 	 * @class SVGViewModel
+	 * @implements {IViewModel<T>}
+	 * @template T
 	 */
 	var SVGViewModel = (function () {
 	    /**
@@ -1004,8 +1163,304 @@
 	     * @memberof SVGViewModel
 	     */
 	    function SVGViewModel() {
+	        this.guid = models_1.Guid.newGuid();
+	        this.dataBinder = new dataBinding_1.DataBinder(this.guid);
+	        this.dataBindChangeMessage = this.guid + ':change';
+	    }
+	    /**
+	     * Returns the data bind change message for this instance.
+	     *
+	     * @public
+	     * @returns {string}
+	     * @memberof SVGViewModel
+	     */
+	    SVGViewModel.prototype.getDataBindChangeMessage = function () {
+	        return this.dataBindChangeMessage;
+	    };
+	    /**
+	     * Triggers the data binder for the given property.
+	     *
+	     * @protected
+	     * @param {string} propertyName
+	     * @param {*} value
+	     * @memberof SVGViewModel
+	     */
+	    SVGViewModel.prototype.triggerDataBinder = function (propertyName, value) {
+	        this.dataBinder.publish(this.dataBindChangeMessage, propertyName, value, this);
+	    };
+	    return SVGViewModel;
+	}());
+	exports.SVGViewModel = SVGViewModel;
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	__export(__webpack_require__(28));
+	__export(__webpack_require__(29));
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(27);
+	/**
+	 * The view-model to DOM data binder.
+	 *
+	 * @export
+	 * @class DataBinder
+	 */
+	var DataBinder = (function () {
+	    /**
+	     * Creates an instance of DataBinder.
+	     * @memberof DataBinder
+	     */
+	    function DataBinder(guid) {
 	        var _this = this;
-	        this.mouseDownHandler = function (e) {
+	        /**
+	         * The pubSub message handler.
+	         *
+	         * @private
+	         * @memberof DataBinder
+	         */
+	        this.messageHandler = function (evtMsg, propertyName, newValue) {
+	            var elements = document.querySelectorAll('[' + _this.dataAttribute + '=' + propertyName + ']');
+	            var tagName;
+	            var tempElement;
+	            var elementsCounts = elements.length;
+	            for (var i = 0; i < elementsCounts; i++) {
+	                tempElement = elements[i];
+	                tempElement.setAttribute(propertyName, newValue);
+	            }
+	        };
+	        this.pubSub = new _1.DataBindPubSub();
+	        this.dataAttribute = 'data-bind-' + guid;
+	        this.message = guid + ':change';
+	        if (document.addEventListener) {
+	            document.addEventListener("change", function (evt) {
+	                console.log(evt);
+	            }, false);
+	        }
+	    }
+	    /**
+	     * Publishes the given message.
+	     *
+	     * @param {string} message
+	     * @param {string} propertyName
+	     * @param {*} value
+	     * @param {*} initiator
+	     * @memberof DataBinder
+	     */
+	    DataBinder.prototype.publish = function (message, propertyName, value, initiator) {
+	        this.pubSub.publish(message, propertyName, value, initiator);
+	    };
+	    /**
+	     * Subscribes the given callback to the given message.
+	     *
+	     * @param {string} message
+	     * @param {IPubSubCallback} callback
+	     * @memberof DataBinder
+	     */
+	    DataBinder.prototype.subscribe = function (message, callback) {
+	        this.pubSub.subscribe(message, callback);
+	    };
+	    /**
+	     * Initializes the data binder.
+	     *
+	     * @private
+	     * @memberof DataBinder
+	     */
+	    DataBinder.prototype.init = function () {
+	        // Subscribe to the change of all bound elements
+	        this.pubSub.subscribe(this.message, this.messageHandler);
+	    };
+	    return DataBinder;
+	}());
+	exports.DataBinder = DataBinder;
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/**
+	 * The PubSub implementation for the data binder.
+	 *
+	 * @export
+	 * @class DataBindPubSub
+	 */
+	var DataBindPubSub = (function () {
+	    /**
+	     * Creates an instance of DataBindPubSub.
+	     *
+	     * @memberof DataBindPubSub
+	     */
+	    function DataBindPubSub() {
+	        this.callbacks = {};
+	    }
+	    /**
+	     * Subscribes a callback related to the given message.
+	     *
+	     * @param {string} message
+	     * @param {IPubSubCallback} callback
+	     * @memberof DataBindPubSub
+	     */
+	    DataBindPubSub.prototype.subscribe = function (message, callback) {
+	        if (!this.callbacks[message]) {
+	            this.callbacks[message] = new Array();
+	        }
+	        this.callbacks[message].push(callback);
+	    };
+	    /**
+	     * Publishes the arguments related to the given message.
+	     *
+	     * @param {string} message
+	     * @param {string} propertyName
+	     * @param {*} value
+	     * @param {*} initiator
+	     * @memberof DataBindPubSub
+	     */
+	    DataBindPubSub.prototype.publish = function (message, propertyName, value, initiator) {
+	        if (this.callbacks[message]) {
+	            var callbacksCount = this.callbacks[message].length;
+	            for (var i = 0; i < callbacksCount; i++) {
+	                this.callbacks[message][i](propertyName, value, initiator);
+	            }
+	        }
+	    };
+	    return DataBindPubSub;
+	}());
+	exports.DataBindPubSub = DataBindPubSub;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(25);
+	/**
+	 * The SVG based representation of a graph's view-model.
+	 *
+	 * @export
+	 * @class SVGGraphViewModel
+	 * @extends {SVGViewModel}
+	 * @implements {IGraphViewModel}
+	 */
+	var SVGGraphViewModel = (function (_super) {
+	    __extends(SVGGraphViewModel, _super);
+	    /**
+	     * Creates an instance of SVGGraphViewModel.
+	     *
+	     * @param {IEdgeRouter} edgeRouter
+	     * @memberof SVGGraphViewModel
+	     */
+	    function SVGGraphViewModel(edgeRouter) {
+	        var _this = _super.call(this) || this;
+	        _this.nodes = new Array();
+	        _this.connections = new Array();
+	        _this.edgeRouter = edgeRouter;
+	        return _this;
+	    }
+	    /**
+	     * Initializes the view-model.
+	     *
+	     * @protected
+	     * @memberof SVGGraphViewModel
+	     */
+	    SVGGraphViewModel.prototype.initViewModel = function () {
+	        this.initNodes();
+	    };
+	    /**
+	     * Initializes all graph nodes view-models.
+	     *
+	     * @private
+	     * @memberof SVGGraphViewModel
+	     */
+	    SVGGraphViewModel.prototype.initNodes = function () {
+	        // let graphNodes = this.model.nodes;
+	        // if (graphNodes && graphNodes.length > 0) {
+	        //     graphNodes.forEach((tempNode) => {
+	        //         // // Create the graph node view-model
+	        //         // let newNodeVM = new SVGNodeViewModel();
+	        //         // newNodeVM.init(tempNode);
+	        //         // this.nodes.push(newNodeVM);
+	        //         // // Create the node's connection view-models
+	        //         // let edges = tempNode.getConnections();
+	        //         // if (edges && edges.length > 0) {
+	        //         //     edges.forEach((tempEdge) => {
+	        //         //         let newEdgeVM = new SVGEdgeViewModel();
+	        //         //         newEdgeVM.setEdgeRouter(this.edgeRouter);
+	        //         //         newEdgeVM.init(tempEdge, newNodeVM, null, this);
+	        //         //         this.connections.push(newEdgeVM);
+	        //         //     });
+	        //         // }
+	        //     });
+	        // }
+	    };
+	    return SVGGraphViewModel;
+	}(_1.SVGViewModel));
+	exports.SVGGraphViewModel = SVGGraphViewModel;
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _1 = __webpack_require__(25);
+	var models_1 = __webpack_require__(1);
+	/**
+	 * The SVG based representation of a node's view-model.
+	 *
+	 * @export
+	 * @class SVGNodeViewModel
+	 * @extends {SVGViewModel}
+	 * @implements {INodeViewModel}
+	 */
+	var SVGNodeViewModel = (function (_super) {
+	    __extends(SVGNodeViewModel, _super);
+	    /**
+	     * Creates an instance of SVGNodeViewModel.
+	     *
+	     * @memberof SVGNodeViewModel
+	     */
+	    function SVGNodeViewModel() {
+	        var _this = _super.call(this) || this;
+	        _this.mouseDownHandler = function (e) {
 	            var selectedElement = e.srcElement;
 	            _this.currentMoveX = e.clientX;
 	            _this.currentMoveY = e.clientY;
@@ -1034,201 +1489,68 @@
 	            // Set leave handler
 	            // selectedElement.onmouseout =
 	        };
-	        this.guid = models_1.Guid.newGuid();
-	        this._currentMovePosition = new models_1.Point();
-	        this.currentTransformMatrix = new Array();
+	        _this._currentMovePosition = new models_1.Point();
+	        _this.currentTransformMatrix = new Array();
+	        return _this;
 	    }
-	    Object.defineProperty(SVGViewModel.prototype, "size", {
+	    Object.defineProperty(SVGNodeViewModel.prototype, "size", {
 	        /**
 	         * Gets the node's size.
 	         *
+	         * @readonly
 	         * @type {Size}
 	         * @memberof SVGNodeViewModel
 	         */
 	        get: function () {
 	            return this.model.size;
 	        },
-	        /**
-	         * Sets the node's size.
-	         *
-	         * @memberof SVGNodeViewModel
-	         */
-	        set: function (value) {
-	            this.model.size = value;
-	        },
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(SVGViewModel.prototype, "currentMoveX", {
+	    Object.defineProperty(SVGNodeViewModel.prototype, "width", {
 	        /**
-	         * Gets the node's current move position x coordinate.
+	         * Gets the node's width.
 	         *
-	         * @type {Point}
+	         * @readonly
+	         * @type {number}
 	         * @memberof SVGViewModel
 	         */
 	        get: function () {
-	            return this._currentMovePosition.x;
+	            return this.model.size.width;
 	        },
 	        /**
-	         * Sets the node's current move position x coordinate.
+	         * Sets the node's width.
 	         *
 	         * @memberof SVGViewModel
 	         */
 	        set: function (value) {
-	            this._currentMovePosition.x = value;
+	            this.model.size.width = value;
 	        },
 	        enumerable: true,
 	        configurable: true
 	    });
-	    Object.defineProperty(SVGViewModel.prototype, "currentMoveY", {
+	    Object.defineProperty(SVGNodeViewModel.prototype, "height", {
 	        /**
-	         * Gets the node's current move position y coordinate.
+	         * Gets the node's height.
 	         *
-	         * @type {Point}
+	         * @readonly
+	         * @type {number}
 	         * @memberof SVGViewModel
 	         */
 	        get: function () {
-	            return this._currentMovePosition.y;
+	            return this.model.size.height;
 	        },
 	        /**
-	         * Sets the node's current move position y coordinate.
+	         * Sets the node's height.
 	         *
 	         * @memberof SVGViewModel
 	         */
 	        set: function (value) {
-	            this._currentMovePosition.y = value;
+	            this.model.size.height = value;
 	        },
 	        enumerable: true,
 	        configurable: true
 	    });
-	    return SVGViewModel;
-	}());
-	exports.SVGViewModel = SVGViewModel;
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || (function () {
-	    var extendStatics = Object.setPrototypeOf ||
-	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-	    return function (d, b) {
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(23);
-	var utils_1 = __webpack_require__(18);
-	/**
-	 * The SVG based representation of a graph's view-model.
-	 *
-	 * @export
-	 * @class SVGGraphViewModel
-	 * @extends {SVGViewModel}
-	 * @implements {IGraphViewModel}
-	 */
-	var SVGGraphViewModel = (function (_super) {
-	    __extends(SVGGraphViewModel, _super);
-	    /**
-	     * Creates an instance of SVGGraphViewModel.
-	     *
-	     * @param {IEdgeRouter} edgeRouter
-	     * @memberof SVGGraphViewModel
-	     */
-	    function SVGGraphViewModel(edgeRouter) {
-	        var _this = _super.call(this) || this;
-	        _this.nodes = new Array();
-	        _this.connections = new Array();
-	        _this.edgeRouter = edgeRouter;
-	        return _this;
-	    }
-	    /**
-	     * Initializes the graph view-model.
-	     *
-	     * @param {Graph} graph
-	     * @memberof SVGGraphViewModel
-	     */
-	    SVGGraphViewModel.prototype.init = function (graph) {
-	        if (!graph) {
-	            utils_1.Utils.throwReferenceError('graph');
-	        }
-	        this.model = graph;
-	        this.initNodes();
-	    };
-	    /**
-	     * Initializes all graph nodes view-models.
-	     *
-	     * @private
-	     * @memberof SVGGraphViewModel
-	     */
-	    SVGGraphViewModel.prototype.initNodes = function () {
-	        var _this = this;
-	        var graphNodes = this.model.getNodes();
-	        if (graphNodes && graphNodes.length > 0) {
-	            graphNodes.forEach(function (tempNode) {
-	                // Create the graph node view-model
-	                var newNodeVM = new _1.SVGNodeViewModel();
-	                newNodeVM.init(tempNode);
-	                _this.nodes.push(newNodeVM);
-	                // Create the node's connection view-models
-	                var edges = tempNode.getConnections();
-	                if (edges && edges.length > 0) {
-	                    edges.forEach(function (tempEdge) {
-	                        var newEdgeVM = new _1.SVGEdgeViewModel();
-	                        newEdgeVM.setEdgeRouter(_this.edgeRouter);
-	                        newEdgeVM.init(tempEdge, _this);
-	                        _this.connections.push(newEdgeVM);
-	                    });
-	                }
-	            });
-	        }
-	    };
-	    return SVGGraphViewModel;
-	}(_1.SVGViewModel));
-	exports.SVGGraphViewModel = SVGGraphViewModel;
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || (function () {
-	    var extendStatics = Object.setPrototypeOf ||
-	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-	    return function (d, b) {
-	        extendStatics(d, b);
-	        function __() { this.constructor = d; }
-	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	    };
-	})();
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(23);
-	var utils_1 = __webpack_require__(18);
-	/**
-	 * The SVG based representation of a node's view-model.
-	 *
-	 * @export
-	 * @class SVGNodeViewModel
-	 * @extends {SVGViewModel}
-	 * @implements {INodeViewModel}
-	 */
-	var SVGNodeViewModel = (function (_super) {
-	    __extends(SVGNodeViewModel, _super);
-	    /**
-	     * Creates an instance of SVGNodeViewModel.
-	     *
-	     * @memberof SVGNodeViewModel
-	     */
-	    function SVGNodeViewModel() {
-	        return _super.call(this) || this;
-	    }
 	    Object.defineProperty(SVGNodeViewModel.prototype, "position", {
 	        /**
 	         * Gets the node's position.
@@ -1250,17 +1572,50 @@
 	        enumerable: true,
 	        configurable: true
 	    });
-	    /**
-	     * Initializes the node view-model.
-	     *
-	     * @param {GraphNode} node
-	     * @memberof SVGNodeViewModel
-	     */
-	    SVGNodeViewModel.prototype.init = function (node) {
-	        if (!node) {
-	            utils_1.Utils.throwReferenceError('node');
-	        }
-	        this.model = node;
+	    Object.defineProperty(SVGNodeViewModel.prototype, "currentMoveX", {
+	        /**
+	         * Gets the node's current move position x coordinate.
+	         *
+	         * @type {Point}
+	         * @memberof SVGViewModel
+	         */
+	        get: function () {
+	            return this._currentMovePosition.x;
+	        },
+	        /**
+	         * Sets the node's current move position x coordinate.
+	         *
+	         * @memberof SVGViewModel
+	         */
+	        set: function (value) {
+	            this._currentMovePosition.x = value;
+	            this.triggerDataBinder('currentMoveX', this._currentMovePosition.x);
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(SVGNodeViewModel.prototype, "currentMoveY", {
+	        /**
+	         * Gets the node's current move position y coordinate.
+	         *
+	         * @type {Point}
+	         * @memberof SVGViewModel
+	         */
+	        get: function () {
+	            return this._currentMovePosition.y;
+	        },
+	        /**
+	         * Sets the node's current move position y coordinate.
+	         *
+	         * @memberof SVGViewModel
+	         */
+	        set: function (value) {
+	            this._currentMovePosition.y = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    SVGNodeViewModel.prototype.initViewModel = function () {
 	    };
 	    return SVGNodeViewModel;
 	}(_1.SVGViewModel));
@@ -1268,7 +1623,7 @@
 
 
 /***/ }),
-/* 27 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1283,16 +1638,17 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _1 = __webpack_require__(23);
+	var _1 = __webpack_require__(25);
 	var models_1 = __webpack_require__(1);
-	var utils_1 = __webpack_require__(18);
+	var utils_1 = __webpack_require__(20);
 	/**
 	 * The SVG based representation of an edge's view-model.
 	 *
 	 * @export
 	 * @class SVGEdgeViewModel
-	 * @extends {SVGViewModel}
-	 * @implements {IEdgeViewModel}
+	 * @extends {SVGViewModel<T>}
+	 * @implements {IEdgeViewModel<T>}
+	 * @template T
 	 */
 	var SVGEdgeViewModel = (function (_super) {
 	    __extends(SVGEdgeViewModel, _super);
@@ -1307,22 +1663,43 @@
 	        return _this;
 	    }
 	    /**
-	     * Initializes the edge view-model.
+	     * Initializes the view-model.
 	     *
-	     * @param {Edge} edge
-	     * @param {SVGGraphViewModel} graphViewModel
+	     * @protected
 	     * @memberof SVGEdgeViewModel
 	     */
-	    SVGEdgeViewModel.prototype.init = function (edge, graphViewModel) {
-	        if (!edge) {
-	            utils_1.Utils.throwReferenceError('edge');
+	    SVGEdgeViewModel.prototype.initViewModel = function () {
+	        if (this.startNodeViewModel) {
+	            this.startNodeViewModel.dataBinder.subscribe(this.startNodeViewModel.getDataBindChangeMessage(), this.startNodeChangedCallback);
 	        }
-	        else if (!graphViewModel) {
-	            utils_1.Utils.throwReferenceError('graphViewModel');
+	        if (this.endNodeViewModel) {
+	            this.endNodeViewModel.dataBinder.subscribe(this.endNodeViewModel.getDataBindChangeMessage(), this.endNodeChangedCallback);
 	        }
-	        this.model = edge;
-	        this.graphViewModel = graphViewModel;
 	        this.initPoints();
+	    };
+	    /**
+	     * The change callback for the edge's start node.
+	     *
+	     * @private
+	     * @param {string} propertyName
+	     * @param {*} value
+	     * @param {*} initiator
+	     * @memberof SVGEdgeViewModel
+	     */
+	    SVGEdgeViewModel.prototype.startNodeChangedCallback = function (propertyName, value, initiator) {
+	        console.log('start node: ' + propertyName + ': ' + value);
+	    };
+	    /**
+	     * The change callback for the edge's end node.
+	     *
+	     * @private
+	     * @param {string} propertyName
+	     * @param {*} value
+	     * @param {*} initiator
+	     * @memberof SVGEdgeViewModel
+	     */
+	    SVGEdgeViewModel.prototype.endNodeChangedCallback = function (propertyName, value, initiator) {
+	        console.log('end node: ' + propertyName + ': ' + value);
 	    };
 	    /**
 	     * Sets the edge router.
@@ -1345,11 +1722,11 @@
 	    SVGEdgeViewModel.prototype.initPoints = function () {
 	        var _this = this;
 	        var startPoint = new models_1.Point();
-	        startPoint.x = this.model.sourceNode.position.x + this.model.sourceNode.size.width * 0.5;
-	        startPoint.y = this.model.sourceNode.position.y + this.model.sourceNode.size.height * 0.5;
+	        startPoint.x = this.startNodeViewModel.position.x + this.startNodeViewModel.size.width * 0.5;
+	        startPoint.y = this.startNodeViewModel.position.y + this.startNodeViewModel.height * 0.5;
 	        var endPoint = new models_1.Point();
-	        endPoint.x = this.model.targetNode.position.x + this.model.targetNode.size.width * 0.5;
-	        endPoint.y = this.model.targetNode.position.y + this.model.targetNode.size.height * 0.5;
+	        endPoint.x = this.endNodeViewModel.position.x + this.endNodeViewModel.size.width * 0.5;
+	        endPoint.y = this.endNodeViewModel.position.y + this.endNodeViewModel.size.height * 0.5;
 	        if (!this.edgeRouter) {
 	            utils_1.Utils.throwReferenceError('No edge router was set. Call setEdgeRouter() before!');
 	            return;
@@ -1370,7 +1747,7 @@
 
 
 /***/ }),
-/* 28 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1391,7 +1768,7 @@
 	     *
 	     * @param {Point} startPoint
 	     * @param {Point} endPoint
-	     * @param {IGraphViewModel} graphViewModel
+	     * @param {IGraphViewModel<VisualGraph>} graphViewModel
 	     * @returns {Array<Point>}
 	     * @memberof RectangularEdgeRouter
 	     */
