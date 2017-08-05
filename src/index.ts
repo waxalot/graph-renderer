@@ -39,4 +39,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     graphRenderer.setContainerElement(containerElement);
     graphRenderer.render(graphVM);
 
+
+    console.log(graph.contains(graphNode1.guid));
 });

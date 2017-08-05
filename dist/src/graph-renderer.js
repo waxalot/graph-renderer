@@ -75,6 +75,7 @@
 	    var graphRenderer = renderersFactory.createGraphRenderer();
 	    graphRenderer.setContainerElement(containerElement);
 	    graphRenderer.render(graphVM);
+	    console.log(graph.contains(graphNode1.guid));
 	});
 
 
@@ -129,7 +130,10 @@
 	        this.forEach = function (callback) {
 	            var nodesCount = _this.list.length;
 	            for (var i = 0; i < nodesCount; i++) {
-	                callback(_this.list[i]);
+	                var result = callback(_this.list[i]);
+	                if (result || result === false) {
+	                    return result;
+	                }
 	            }
 	        };
 	        this.list = new Array();
@@ -188,13 +192,17 @@
 	     */
 	    NodeList.prototype.findByGuid = function (guid) {
 	        // Search the list for the value
-	        this.list.forEach(function (item) {
-	            if (item.guid === guid) {
-	                return item;
+	        var result = this.forEach(function (tempNode) {
+	            if (tempNode.guid === guid) {
+	                return tempNode;
 	            }
 	        });
-	        // If we reached here, we didn't find a matching item
-	        return null;
+	        if (result) {
+	            return result;
+	        }
+	        else {
+	            return null;
+	        }
 	    };
 	    /**
 	     * Returns the index of the given node.

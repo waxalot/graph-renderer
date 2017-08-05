@@ -45,10 +45,13 @@ export class NodeList<T> {
      * 
      * @memberof NodeList
      */
-    public forEach = (callback: (node: IGraphNode<T>) => void) => {
+    public forEach = (callback: (node: IGraphNode<T>) => any): any => {
         let nodesCount = this.list.length;
         for (let i = 0; i < nodesCount; i++) {
-            callback(this.list[i]);
+            let result = callback(this.list[i]);
+            if (result || result === false) {
+                return result;
+            }
         }
     }
 
@@ -100,14 +103,17 @@ export class NodeList<T> {
      */
     public findByGuid(guid: string): IGraphNode<T> {
         // Search the list for the value
-        this.list.forEach((item) => {
-            if (item.guid === guid) {
-                return item;
+        let result = this.forEach((tempNode) => {
+            if (tempNode.guid === guid) {
+                return tempNode;
             }
         });
 
-        // If we reached here, we didn't find a matching item
-        return null;
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     }
 
 
