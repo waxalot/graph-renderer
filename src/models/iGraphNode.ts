@@ -1,4 +1,4 @@
-import { NodeList, IGraphItem } from './';
+import { IGraphItem, INodeList } from './';
 
 
 /**
@@ -32,9 +32,9 @@ export interface IGraphNode<T> extends IGraphItem {
      * The node list with all neighbor nodes.
      * 
      * @public
-     * @type {NodeList<T>}
+     * @type {INodeList<T>}
      * @memberof GraphNode
      */
-    neighbors: NodeList<T>;
+    neighbors: INodeList<T>;
 
 }

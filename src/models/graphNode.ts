@@ -1,4 +1,4 @@
-import { GraphItem, NodeList } from "./";
+import { GraphItem, NodeList, INodeList } from "./";
 
 
 /**
@@ -34,10 +34,10 @@ export class GraphNode<T> extends GraphItem {
      * The node list with all neighbor nodes.
      * 
      * @public
-     * @type {NodeList<T>}
+     * @type {INodeList<T>}
      * @memberof GraphNode
      */
-    public neighbors: NodeList<T>;
+    public neighbors: INodeList<T>;
 
 
     /**

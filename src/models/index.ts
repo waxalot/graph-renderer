@@ -1,3 +1,4 @@
+export * from './iNodeList';
 export * from './nodeList';
 export * from './curve';
 export * from './curveSegment';

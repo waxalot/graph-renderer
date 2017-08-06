@@ -1,4 +1,4 @@
-import { IGraphNode, VisualGraphNode } from "./";
+import { IGraphNode, VisualGraphNode, INodeList } from "./";
 
 
 /**
@@ -6,8 +6,10 @@ import { IGraphNode, VisualGraphNode } from "./";
  * 
  * @export
  * @class NodeList
+ * @implements {INodeList<T>}
+ * @template T 
  */
-export class NodeList<T> {
+export class NodeList<T> implements INodeList<T> {
 
     /**
      * The list of nodes.

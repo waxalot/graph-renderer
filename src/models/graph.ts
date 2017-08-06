@@ -1,4 +1,4 @@
-import { GraphNode, NodeList } from "./";
+import { GraphNode, NodeList, INodeList, IGraphNode } from "./";
 
 
 /**
@@ -13,10 +13,10 @@ export class Graph<T> {
      * A collection of all graph nodes.
      * 
      * @private
-     * @type {NodeList<T>}
+     * @type {INodeList<T>}
      * @memberof Graph
      */
-    public nodes: NodeList<T>;
+    public nodes: INodeList<T>;
 
 
     /**
@@ -30,13 +30,13 @@ export class Graph<T> {
 
 
     /**
-     *  Adds a new node with the given value to the graph.
+     * Adds a new node with the given value to the graph.
      * 
-     * @template T 
      * @param {T} value 
+     * @returns {IGraphNode<T>} 
      * @memberof Graph
      */
-    public addNode(value: T): GraphNode<T> {
+    public addNode(value: T): IGraphNode<T> {
         let newNode = new GraphNode<T>();
         newNode.value = value;
 
@@ -49,12 +49,12 @@ export class Graph<T> {
     /**
      * Adds a directed edge to the graph.
      * 
-     * @param {GraphNode<T>} from 
-     * @param {GraphNode<T>} to 
+     * @param {IGraphNode<T>} from 
+     * @param {IGraphNode<T>} to 
      * @param {number} [cost] 
      * @memberof Graph
      */
-    public addDirectedEdge(from: GraphNode<T>, to: GraphNode<T>, cost?: number): void {
+    public addDirectedEdge(from: IGraphNode<T>, to: IGraphNode<T>, cost?: number): void {
         from.neighbors.add(to);
         from.costs.push(cost);
     }
@@ -63,12 +63,12 @@ export class Graph<T> {
     /**
      * Adds an undirected edge to the graph.
      * 
-     * @param {GraphNode<T>} from 
-     * @param {GraphNode<T>} to 
+     * @param {IGraphNode<T>} from 
+     * @param {IGraphNode<T>} to 
      * @param {number} [cost=0] 
      * @memberof Graph
      */
-    public addUndirectedEdge(from: GraphNode<T>, to: GraphNode<T>, cost: number = 0): void {
+    public addUndirectedEdge(from: IGraphNode<T>, to: IGraphNode<T>, cost: number = 0): void {
         from.neighbors.add(to);
         from.costs.push(cost);
 
@@ -107,7 +107,7 @@ export class Graph<T> {
         this.nodes.remove(nodeToRemove);
 
         // Try to remove all edges to this node
-        let tempNode: GraphNode<any>;
+        let tempNode: IGraphNode<any>;
         this.nodes.forEach((tempNode) => {
             let index = tempNode.neighbors.indexOf(nodeToRemove);
             if (index > -1) {
