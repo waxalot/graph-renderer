@@ -1,6 +1,6 @@
 import { Graph, GraphNode, Point, Size, VisualGraphNode, VisualGraph } from "./models";
 import { IRenderersFactory, SVGRenderersFactory, IViewModelsFactory, SVGViewModelsFactory } from "./factories";
-import { IGraphViewModel, IEdgeRouter, RectangularEdgeRouter } from "./viewModels";
+import { IGraphViewModel } from "./viewModels";
 import { IRenderer, IGraphRenderer } from "./renderers";
 
 
@@ -27,11 +27,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Get the view-models factory
     let viewModelsFactory: IViewModelsFactory = new SVGViewModelsFactory();
 
-    // Create the used edge router
-    let edgeRouter: IEdgeRouter = new RectangularEdgeRouter();
-
     // Create the graph's view-model
-    let graphVM = viewModelsFactory.createGraphViewModel(graph, edgeRouter);
+    let graphVM = viewModelsFactory.createGraphViewModel(graph);
 
     // Get the renderers factory
     let renderersFactory: IRenderersFactory = new SVGRenderersFactory();
@@ -39,6 +36,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
     graphRenderer.setContainerElement(containerElement);
     graphRenderer.render(graphVM);
 
-
-    console.log(graph.contains(graphNode1.guid));
 });

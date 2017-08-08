@@ -1,6 +1,6 @@
 import { IViewModelsFactory } from "./";
-import { IGraphViewModel, SVGGraphViewModel, IEdgeRouter } from "../viewModels";
-import { Graph, VisualGraph, VisualGraphNode } from "../models";
+import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
+import { Graph, VisualGraph, VisualGraphNode, IEdgeRouter } from "../models";
 
 
 /**
@@ -12,17 +12,17 @@ import { Graph, VisualGraph, VisualGraphNode } from "../models";
  */
 export class SVGViewModelsFactory implements IViewModelsFactory {
 
+
     /**
-     * Creates an instance of {IGraphViewModel}.
+     * Creates an instance of {IGraphViewModel<VisualGraph, TNode>}.
      * 
      * @template TNode 
      * @param {Graph<TNode>} graph 
-     * @param {IEdgeRouter} edgeRouter 
      * @returns {IGraphViewModel<VisualGraph, TNode>} 
      * @memberof SVGViewModelsFactory
      */
-    public createGraphViewModel<TNode extends VisualGraphNode>(graph: Graph<TNode>, edgeRouter: IEdgeRouter): IGraphViewModel<VisualGraph, TNode> {
-        let graphVM = new SVGGraphViewModel(graph, edgeRouter);
+    public createGraphViewModel<TNode extends VisualGraphNode>(graph: Graph<TNode>): IGraphViewModel<VisualGraph, TNode> {
+        let graphVM = new SVGGraphViewModel(graph);
         return graphVM;
     }
 

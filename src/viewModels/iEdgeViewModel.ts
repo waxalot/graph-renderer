@@ -1,5 +1,5 @@
-import { IEdgeRouter, IViewModel, INodeViewModel } from "./";
-import { Point, VisualGraphNode } from "../models";
+import { IViewModel, INodeViewModel, IGraphViewModel } from "./";
+import { Point, VisualGraphNode, IEdgeRouter, VisualGraph } from "../models";
 
 
 /**
@@ -9,8 +9,9 @@ import { Point, VisualGraphNode } from "../models";
  * @interface IEdgeViewModel
  * @extends {IViewModel<T>}
  * @template T 
+ * @template EdgeRouterType 
  */
-export interface IEdgeViewModel<T extends VisualGraphNode> extends IViewModel<T> {
+export interface IEdgeViewModel<T extends VisualGraphNode, EdgeRouterType extends IEdgeRouter> extends IViewModel<T> {
 
     /**
      * The start node's view-model.
@@ -31,20 +32,20 @@ export interface IEdgeViewModel<T extends VisualGraphNode> extends IViewModel<T>
 
 
     /**
-     * An array with all (start, end, intermediate) points.
+     * The edge router.
      * 
-     * @type {Array<Point>}
+     * @type {EdgeRouterType}
      * @memberof IEdgeViewModel
      */
-    points: Array<Point>;
+    edgeRouter: EdgeRouterType;
 
 
     /**
-     * Sets the edge router.
+     * The graph's view-model.
      * 
-     * @param {IEdgeRouter<T>} edgeRouter 
+     * @type {IGraphViewModel<VisualGraph, T>}
      * @memberof IEdgeViewModel
      */
-    setEdgeRouter(edgeRouter: IEdgeRouter): void;
+    graphViewModel: IGraphViewModel<VisualGraph, T>;
 
 }

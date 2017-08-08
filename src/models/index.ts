@@ -13,3 +13,6 @@ export * from './shapes';
 export * from './guid';
 export * from './visualGraph';
 export * from './visualGraphNode';
+export * from './iGraphLayout';
+export * from './iEdgeRouter';
+export * from './iOrthogonalEdgeRouter';

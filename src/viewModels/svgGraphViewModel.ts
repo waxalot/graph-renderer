@@ -1,4 +1,4 @@
-import { IGraphViewModel, SVGNodeViewModel, SVGViewModel, SVGEdgeViewModel, IEdgeRouter } from "./";
+import { IGraphViewModel, SVGNodeViewModel, SVGViewModel, SVGEdgeViewModel } from "./";
 import { Graph, Size, VisualGraph, VisualGraphNode } from "../models";
 import { Utils } from "../utils";
 
@@ -29,26 +29,7 @@ export class SVGGraphViewModel<T extends VisualGraph, TNode extends VisualGraphN
      * @memberof SVGGraphViewModel
      */
     public nodes: Array<SVGNodeViewModel<TNode>>;
-
-
-    /**
-     * A collection of the graph's edge view-models.
-     * 
-     * @type {Array<SVGEdgeViewModel<VisualGraphNode>>}
-     * @memberof SVGGraphViewModel
-     */
-    public connections: Array<SVGEdgeViewModel<VisualGraphNode>>;
-
-
-    /**
-     * The edge router.
-     * 
-     * @private
-     * @type {IEdgeRouter}
-     * @memberof SVGGraphViewModel
-     */
-    private edgeRouter: IEdgeRouter;
-
+    
 
     /**
      * Creates an instance of SVGGraphViewModel.
@@ -57,15 +38,12 @@ export class SVGGraphViewModel<T extends VisualGraph, TNode extends VisualGraphN
      * @param {IEdgeRouter} edgeRouter 
      * @memberof SVGGraphViewModel
      */
-    public constructor(graph: Graph<TNode>, edgeRouter: IEdgeRouter) {
+    public constructor(graph: Graph<TNode>) {
         super();
 
         this.model = graph;
 
-        this.nodes = new Array<SVGNodeViewModel<TNode>>();
-        this.connections = new Array<SVGEdgeViewModel<TNode>>();
-
-        this.edgeRouter = edgeRouter;
+        this.nodes = new Array<SVGNodeViewModel<TNode>>();       
 
         this.initViewModel();
     }

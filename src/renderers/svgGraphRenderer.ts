@@ -1,7 +1,7 @@
 import { Utils } from "../utils";
 import { IGraphViewModel, SVGGraphViewModel } from "../viewModels";
 import { SVGUtils } from "./svgUtils";
-import { IGraphRenderer, Renderer, SVGRenderer, SVGNodeRenderer, IRenderer, SVGEdgeRenderer } from "./";
+import { IGraphRenderer, Renderer, SVGRenderer, SVGNodeRenderer, IRenderer } from "./";
 import { VisualGraph, VisualGraphNode } from "../models";
 
 
@@ -19,7 +19,7 @@ export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNo
 
     private containerElement: Element;
     private nodeRenderer: SVGNodeRenderer<VisualGraphNode>;
-    private edgeRenderer: SVGEdgeRenderer<VisualGraphNode>;
+    //private edgeRenderer: SVGEdgeRenderer<VisualGraphNode>;
 
 
     /**
@@ -29,17 +29,15 @@ export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNo
      * @param {SVGEdgeRenderer<VisualGraphEdge>} edgeRenderer 
      * @memberof SVGGraphRenderer
      */
-    public constructor(nodeRenderer: SVGNodeRenderer<VisualGraphNode>, edgeRenderer: SVGEdgeRenderer<VisualGraphNode>) {
+    public constructor(nodeRenderer: SVGNodeRenderer<VisualGraphNode>) {
         super();
 
         if (!nodeRenderer) {
             throw new ReferenceError('The argument "nodeRenderer" is null or undefined.');
-        } else if (!edgeRenderer) {
-            throw new ReferenceError('The argument "edgeRenderer" is null or undefined.');
         }
 
         this.nodeRenderer = nodeRenderer;
-        this.edgeRenderer = edgeRenderer;
+        //this.edgeRenderer = edgeRenderer;
     }
 
 
@@ -81,13 +79,13 @@ export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNo
         graphTargetElement.classList.add('graph');
         this.containerElement.appendChild(graphTargetElement);
 
-        // Render all graph edges
-        if (viewModel.connections && viewModel.connections.length > 0) {
-            viewModel.connections.forEach((edgeVM) => {
-                this.edgeRenderer.setContainerElement(graphTargetElement);
-                this.edgeRenderer.render(edgeVM);
-            });
-        }
+        // // Render all graph edges
+        // if (viewModel.connections && viewModel.connections.length > 0) {
+        //     viewModel.connections.forEach((edgeVM) => {
+        //         this.edgeRenderer.setContainerElement(graphTargetElement);
+        //         this.edgeRenderer.render(edgeVM);
+        //     });
+        // }
 
         // Render all graph nodes
         if (viewModel.nodes && viewModel.nodes.length > 0) {

@@ -1,15 +1,15 @@
-import { IEdgeRouter, IGraphViewModel } from "./";
-import { Point, VisualGraph, VisualGraphNode } from "../models";
+import { IGraphLayout, VisualGraph, IEdgeRouter, Point, VisualGraphNode } from "./";
+import { IGraphViewModel } from "../viewModels";
 
 
 /**
- * An implementation of {IEdgeRouter} to create points for rectangular edges.
+ * This class represents an edge router for orthogonal edges.
  * 
  * @export
- * @class RectangularEdgeRouter
+ * @class OrthogonalEdgeRouter
  * @implements {IEdgeRouter}
  */
-export class RectangularEdgeRouter implements IEdgeRouter {
+export class OrthogonalEdgeRouter implements IEdgeRouter {
 
     /**
      * Creates all required points for the visualization of a rectangular edge.
@@ -18,7 +18,7 @@ export class RectangularEdgeRouter implements IEdgeRouter {
      * @param {Point} endPoint 
      * @param {IGraphViewModel<VisualGraph>} graphViewModel 
      * @returns {Array<Point>} 
-     * @memberof RectangularEdgeRouter
+     * @memberof OrthogonalEdgeRouter
      */
     public createEdgePoints(startPoint: Point, endPoint: Point, graphViewModel: IGraphViewModel<VisualGraph, VisualGraphNode>): Array<Point> {
         let result = new Array<Point>();
@@ -36,7 +36,7 @@ export class RectangularEdgeRouter implements IEdgeRouter {
      * @param {Point} point1 
      * @param {Point} point2 
      * @returns {Point} 
-     * @memberof SVGEdgeViewModel
+     * @memberof OrthogonalEdgeRouter
      */
     private createRectangularIntermediatePoint(point1: Point, point2: Point): Point {
 

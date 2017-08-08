@@ -48,7 +48,6 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var models_1 = __webpack_require__(1);
 	var factories_1 = __webpack_require__(14);
-	var viewModels_1 = __webpack_require__(25);
 	document.addEventListener("DOMContentLoaded", function (event) {
 	    // Build nodes
 	    var node1 = new models_1.VisualGraphNode();
@@ -66,16 +65,13 @@
 	    var containerElement = document.getElementById('graph-container');
 	    // Get the view-models factory
 	    var viewModelsFactory = new factories_1.SVGViewModelsFactory();
-	    // Create the used edge router
-	    var edgeRouter = new viewModels_1.RectangularEdgeRouter();
 	    // Create the graph's view-model
-	    var graphVM = viewModelsFactory.createGraphViewModel(graph, edgeRouter);
+	    var graphVM = viewModelsFactory.createGraphViewModel(graph);
 	    // Get the renderers factory
 	    var renderersFactory = new factories_1.SVGRenderersFactory();
 	    var graphRenderer = renderersFactory.createGraphRenderer();
 	    graphRenderer.setContainerElement(containerElement);
 	    graphRenderer.render(graphVM);
-	    console.log(graph.contains(graphNode1.guid));
 	});
 
 
@@ -113,6 +109,8 @@
 	 *
 	 * @export
 	 * @class NodeList
+	 * @implements {INodeList<T>}
+	 * @template T
 	 */
 	var NodeList = (function () {
 	    /**
@@ -329,10 +327,10 @@
 	        this.nodes = new _1.NodeList();
 	    }
 	    /**
-	     *  Adds a new node with the given value to the graph.
+	     * Adds a new node with the given value to the graph.
 	     *
-	     * @template T
 	     * @param {T} value
+	     * @returns {IGraphNode<T>}
 	     * @memberof Graph
 	     */
 	    Graph.prototype.addNode = function (value) {
@@ -344,8 +342,8 @@
 	    /**
 	     * Adds a directed edge to the graph.
 	     *
-	     * @param {GraphNode<T>} from
-	     * @param {GraphNode<T>} to
+	     * @param {IGraphNode<T>} from
+	     * @param {IGraphNode<T>} to
 	     * @param {number} [cost]
 	     * @memberof Graph
 	     */
@@ -356,8 +354,8 @@
 	    /**
 	     * Adds an undirected edge to the graph.
 	     *
-	     * @param {GraphNode<T>} from
-	     * @param {GraphNode<T>} to
+	     * @param {IGraphNode<T>} from
+	     * @param {IGraphNode<T>} to
 	     * @param {number} [cost=0]
 	     * @memberof Graph
 	     */
@@ -563,7 +561,13 @@
 	 * @class VisualGraph
 	 */
 	var VisualGraph = (function () {
+	    /**
+	     * Creates an instance of VisualGraph.
+	     *
+	     * @memberof VisualGraph
+	     */
 	    function VisualGraph() {
+	        this.nodes = new Array();
 	    }
 	    return VisualGraph;
 	}());
@@ -628,8 +632,7 @@
 	     */
 	    SVGRenderersFactory.prototype.createGraphRenderer = function () {
 	        var nodeRenderer = this.createNodeRenderer();
-	        var edgeRenderer = this.createEdgeRenderer();
-	        return new renderers_1.SVGGraphRenderer(nodeRenderer, edgeRenderer);
+	        return new renderers_1.SVGGraphRenderer(nodeRenderer);
 	    };
 	    /**
 	     * Creates the node renderer.
@@ -641,13 +644,13 @@
 	        return new renderers_1.SVGNodeRenderer();
 	    };
 	    /**
-	     * Creates the edge renderer.
+	     * Creates the orthogonal edge renderer.
 	     *
-	     * @returns {SVGEdgeRenderer<VisualGraphNode>}
+	     * @returns {SVGOrthogonalEdgeRenderer<VisualGraphNode, OrthogonalEdgeRouter, SVGOrthogonalEdgeViewModel<VisualGraphNode, OrthogonalEdgeRouter>>}
 	     * @memberof SVGRenderersFactory
 	     */
-	    SVGRenderersFactory.prototype.createEdgeRenderer = function () {
-	        return new renderers_1.SVGEdgeRenderer();
+	    SVGRenderersFactory.prototype.createOrthogonalEdgeRenderer = function () {
+	        return new renderers_1.SVGOrthogonalEdgeRenderer();
 	    };
 	    return SVGRenderersFactory;
 	}());
@@ -947,6 +950,7 @@
 	 */
 	var SVGGraphRenderer = (function (_super) {
 	    __extends(SVGGraphRenderer, _super);
+	    //private edgeRenderer: SVGEdgeRenderer<VisualGraphNode>;
 	    /**
 	     * Creates an instance of SVGGraphRenderer.
 	     *
@@ -954,17 +958,14 @@
 	     * @param {SVGEdgeRenderer<VisualGraphEdge>} edgeRenderer
 	     * @memberof SVGGraphRenderer
 	     */
-	    function SVGGraphRenderer(nodeRenderer, edgeRenderer) {
+	    function SVGGraphRenderer(nodeRenderer) {
 	        var _this = _super.call(this) || this;
 	        if (!nodeRenderer) {
 	            throw new ReferenceError('The argument "nodeRenderer" is null or undefined.');
 	        }
-	        else if (!edgeRenderer) {
-	            throw new ReferenceError('The argument "edgeRenderer" is null or undefined.');
-	        }
 	        _this.nodeRenderer = nodeRenderer;
-	        _this.edgeRenderer = edgeRenderer;
 	        return _this;
+	        //this.edgeRenderer = edgeRenderer;
 	    }
 	    /**
 	     * Sets the graph's container element.
@@ -998,13 +999,13 @@
 	        graphTargetElement.setAttribute('viewbox', '0 0 800, 600');
 	        graphTargetElement.classList.add('graph');
 	        this.containerElement.appendChild(graphTargetElement);
-	        // Render all graph edges
-	        if (viewModel.connections && viewModel.connections.length > 0) {
-	            viewModel.connections.forEach(function (edgeVM) {
-	                _this.edgeRenderer.setContainerElement(graphTargetElement);
-	                _this.edgeRenderer.render(edgeVM);
-	            });
-	        }
+	        // // Render all graph edges
+	        // if (viewModel.connections && viewModel.connections.length > 0) {
+	        //     viewModel.connections.forEach((edgeVM) => {
+	        //         this.edgeRenderer.setContainerElement(graphTargetElement);
+	        //         this.edgeRenderer.render(edgeVM);
+	        //     });
+	        // }
 	        // Render all graph nodes
 	        if (viewModel.nodes && viewModel.nodes.length > 0) {
 	            viewModel.nodes.forEach(function (nodeVM) {
@@ -1037,36 +1038,28 @@
 	var _1 = __webpack_require__(16);
 	var utils_1 = __webpack_require__(20);
 	/**
-	 * The SVG based implementation of an edge renderer.
+	 * The SVG based implementation of an edge renderer for an orthogonal edge.
 	 *
 	 * @export
-	 * @class SVGEdgeRenderer
-	 * @implements {IEdgeRenderer}
+	 * @class SVGOrthogonalEdgeRenderer
+	 * @extends {SVGRenderer<T, SVGEdgeViewModel<T, EdgeRouterType>>}
+	 * @implements {IOrthogonalEdgeRenderer<T, EdgeRouterType, ViewModelType>}
+	 * @template T
+	 * @template EdgeRouterType
+	 * @template ViewModelType
 	 */
-	var SVGEdgeRenderer = (function (_super) {
-	    __extends(SVGEdgeRenderer, _super);
-	    function SVGEdgeRenderer() {
+	var SVGOrthogonalEdgeRenderer = (function (_super) {
+	    __extends(SVGOrthogonalEdgeRenderer, _super);
+	    function SVGOrthogonalEdgeRenderer() {
 	        return _super !== null && _super.apply(this, arguments) || this;
 	    }
-	    /**
-	     * Sets the edge's container element.
-	     *
-	     * @param {SVGSVGElement} containerElement
-	     * @memberof SVGEdgeRenderer
-	     */
-	    SVGEdgeRenderer.prototype.setContainerElement = function (containerElement) {
-	        if (!containerElement) {
-	            utils_1.Utils.throwReferenceError('containerElement');
-	        }
-	        this.containerElement = containerElement;
-	    };
 	    /**
 	     * Renders the edge view-model.
 	     *
 	     * @param {SVGEdgeViewModel} viewModel
 	     * @memberof SVGEdgeRenderer
 	     */
-	    SVGEdgeRenderer.prototype.render = function (viewModel) {
+	    SVGOrthogonalEdgeRenderer.prototype.render = function (viewModel) {
 	        if (!this.containerElement) {
 	            throw new Error('No container element was set. Call setContainerElement() before!');
 	        }
@@ -1081,9 +1074,21 @@
 	        edgeTargetElement.setAttribute('points', pointsAttrValue);
 	        this.containerElement.appendChild(edgeTargetElement);
 	    };
-	    return SVGEdgeRenderer;
+	    /**
+	     * Sets the edge's container element.
+	     *
+	     * @param {SVGSVGElement} containerElement
+	     * @memberof SVGEdgeRenderer
+	     */
+	    SVGOrthogonalEdgeRenderer.prototype.setContainerElement = function (containerElement) {
+	        if (!containerElement) {
+	            utils_1.Utils.throwReferenceError('containerElement');
+	        }
+	        this.containerElement = containerElement;
+	    };
+	    return SVGOrthogonalEdgeRenderer;
 	}(_1.SVGRenderer));
-	exports.SVGEdgeRenderer = SVGEdgeRenderer;
+	exports.SVGOrthogonalEdgeRenderer = SVGOrthogonalEdgeRenderer;
 
 
 /***/ }),
@@ -1104,16 +1109,15 @@
 	    function SVGViewModelsFactory() {
 	    }
 	    /**
-	     * Creates an instance of {IGraphViewModel}.
+	     * Creates an instance of {IGraphViewModel<VisualGraph, TNode>}.
 	     *
 	     * @template TNode
 	     * @param {Graph<TNode>} graph
-	     * @param {IEdgeRouter} edgeRouter
 	     * @returns {IGraphViewModel<VisualGraph, TNode>}
 	     * @memberof SVGViewModelsFactory
 	     */
-	    SVGViewModelsFactory.prototype.createGraphViewModel = function (graph, edgeRouter) {
-	        var graphVM = new viewModels_1.SVGGraphViewModel(graph, edgeRouter);
+	    SVGViewModelsFactory.prototype.createGraphViewModel = function (graph) {
+	        var graphVM = new viewModels_1.SVGGraphViewModel(graph);
 	        return graphVM;
 	    };
 	    return SVGViewModelsFactory;
@@ -1375,12 +1379,10 @@
 	     * @param {IEdgeRouter} edgeRouter
 	     * @memberof SVGGraphViewModel
 	     */
-	    function SVGGraphViewModel(graph, edgeRouter) {
+	    function SVGGraphViewModel(graph) {
 	        var _this = _super.call(this) || this;
 	        _this.model = graph;
 	        _this.nodes = new Array();
-	        _this.connections = new Array();
-	        _this.edgeRouter = edgeRouter;
 	        _this.initViewModel();
 	        return _this;
 	    }
@@ -1650,8 +1652,6 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var _1 = __webpack_require__(25);
-	var models_1 = __webpack_require__(1);
-	var utils_1 = __webpack_require__(20);
 	/**
 	 * The SVG based representation of an edge's view-model.
 	 *
@@ -1666,11 +1666,18 @@
 	    /**
 	     * Creates an instance of SVGEdgeViewModel.
 	     *
+	     * @param {EdgeRouterType} edgeRouter
+	     * @param {SVGNodeViewModel<TNode>} startNodeViewModel
+	     * @param {SVGNodeViewModel<TNode>} endNodeViewModel
+	     * @param {IGraphViewModel<VisualGraph, TNode>} graphViewModel
 	     * @memberof SVGEdgeViewModel
 	     */
-	    function SVGEdgeViewModel() {
+	    function SVGEdgeViewModel(edgeRouter, startNodeViewModel, endNodeViewModel, graphViewModel) {
 	        var _this = _super.call(this) || this;
-	        _this.points = new Array();
+	        _this.edgeRouter = edgeRouter;
+	        _this.startNodeViewModel = startNodeViewModel;
+	        _this.endNodeViewModel = endNodeViewModel;
+	        _this.graphViewModel = graphViewModel;
 	        return _this;
 	    }
 	    /**
@@ -1686,7 +1693,6 @@
 	        if (this.endNodeViewModel) {
 	            this.endNodeViewModel.dataBinder.subscribe(this.endNodeViewModel.getDataBindChangeMessage(), this.endNodeChangedCallback);
 	        }
-	        this.initPoints();
 	    };
 	    /**
 	     * The change callback for the edge's start node.
@@ -1712,17 +1718,65 @@
 	    SVGEdgeViewModel.prototype.endNodeChangedCallback = function (propertyName, value, initiator) {
 	        console.log('end node: ' + propertyName + ': ' + value);
 	    };
+	    return SVGEdgeViewModel;
+	}(_1.SVGViewModel));
+	exports.SVGEdgeViewModel = SVGEdgeViewModel;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var models_1 = __webpack_require__(1);
+	var _1 = __webpack_require__(25);
+	var utils_1 = __webpack_require__(20);
+	/**
+	 * The SVG based representation of an edge's view-model for an orthogonal edge.
+	 *
+	 * @export
+	 * @class SVGOrthogonalEdgeViewModel
+	 * @extends {SVGEdgeViewModel<TNode, EdgeRouterType>}
+	 * @implements {IOrthogonalEdgeViewModel<TNode, EdgeRouterType>}
+	 * @template TNode
+	 * @template EdgeRouterType
+	 */
+	var SVGOrthogonalEdgeViewModel = (function (_super) {
+	    __extends(SVGOrthogonalEdgeViewModel, _super);
 	    /**
-	     * Sets the edge router.
+	     * Creates an instance of SVGOrthogonalEdgeViewModel.
 	     *
-	     * @param {IEdgeRouter} edgeRouter
+	     * @param {EdgeRouterType} edgeRouter
+	     * @param {SVGNodeViewModel<TNode>} startNodeViewModel
+	     * @param {SVGNodeViewModel<TNode>} endNodeViewModel
+	     * @param {IGraphViewModel<VisualGraph, TNode>} graphViewModel
+	     * @memberof SVGOrthogonalEdgeViewModel
+	     */
+	    function SVGOrthogonalEdgeViewModel(edgeRouter, startNodeViewModel, endNodeViewModel, graphViewModel) {
+	        var _this = _super.call(this, edgeRouter, startNodeViewModel, endNodeViewModel, graphViewModel) || this;
+	        _this.points = new Array();
+	        return _this;
+	    }
+	    /**
+	     * Initializes the view-model.
+	     *
+	     * @protected
 	     * @memberof SVGEdgeViewModel
 	     */
-	    SVGEdgeViewModel.prototype.setEdgeRouter = function (edgeRouter) {
-	        if (!edgeRouter) {
-	            utils_1.Utils.throwReferenceError('edgeRouter');
-	        }
-	        this.edgeRouter = edgeRouter;
+	    SVGOrthogonalEdgeViewModel.prototype.initViewModel = function () {
+	        _super.prototype.initViewModel.call(this);
+	        this.initPoints();
 	    };
 	    /**
 	     * Initializes the points array.
@@ -1730,7 +1784,7 @@
 	     * @private
 	     * @memberof SVGEdgeViewModel
 	     */
-	    SVGEdgeViewModel.prototype.initPoints = function () {
+	    SVGOrthogonalEdgeViewModel.prototype.initPoints = function () {
 	        var _this = this;
 	        var startPoint = new models_1.Point();
 	        startPoint.x = this.startNodeViewModel.position.x + this.startNodeViewModel.size.width * 0.5;
@@ -1752,60 +1806,9 @@
 	        // Add the end point
 	        this.points.push(endPoint);
 	    };
-	    return SVGEdgeViewModel;
-	}(_1.SVGViewModel));
-	exports.SVGEdgeViewModel = SVGEdgeViewModel;
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var models_1 = __webpack_require__(1);
-	/**
-	 * An implementation of {IEdgeRouter} to create points for rectangular edges.
-	 *
-	 * @export
-	 * @class RectangularEdgeRouter
-	 * @implements {IEdgeRouter}
-	 */
-	var RectangularEdgeRouter = (function () {
-	    function RectangularEdgeRouter() {
-	    }
-	    /**
-	     * Creates all required points for the visualization of a rectangular edge.
-	     *
-	     * @param {Point} startPoint
-	     * @param {Point} endPoint
-	     * @param {IGraphViewModel<VisualGraph>} graphViewModel
-	     * @returns {Array<Point>}
-	     * @memberof RectangularEdgeRouter
-	     */
-	    RectangularEdgeRouter.prototype.createEdgePoints = function (startPoint, endPoint, graphViewModel) {
-	        var result = new Array();
-	        result.push(this.createRectangularIntermediatePoint(startPoint, endPoint));
-	        return result;
-	    };
-	    /**
-	     * Creates a rectangular intermediate point for two given points.
-	     *
-	     * @private
-	     * @param {Point} point1
-	     * @param {Point} point2
-	     * @returns {Point}
-	     * @memberof SVGEdgeViewModel
-	     */
-	    RectangularEdgeRouter.prototype.createRectangularIntermediatePoint = function (point1, point2) {
-	        var result = new models_1.Point();
-	        result.x = point1.x + (point2.x - point1.x);
-	        result.y = point1.y;
-	        return result;
-	    };
-	    return RectangularEdgeRouter;
-	}());
-	exports.RectangularEdgeRouter = RectangularEdgeRouter;
+	    return SVGOrthogonalEdgeViewModel;
+	}(_1.SVGEdgeViewModel));
+	exports.SVGOrthogonalEdgeViewModel = SVGOrthogonalEdgeViewModel;
 
 
 /***/ })

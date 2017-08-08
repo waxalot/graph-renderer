@@ -1,6 +1,6 @@
 import { IRenderer } from "./";
 import { IEdgeViewModel } from "../viewModels";
-import { VisualGraphNode } from "../models/visualGraphNode";
+import { VisualGraphNode, IEdgeRouter } from "../models";
 
 
 /**
@@ -8,8 +8,10 @@ import { VisualGraphNode } from "../models/visualGraphNode";
  * 
  * @export
  * @interface IEdgeRenderer
- * @extends {IRenderer<IEdgeViewModel<T>>}
+ * @extends {IRenderer<ViewModelType>}
  * @template T 
+ * @template EdgeRouterType 
+ * @template ViewModelType 
  */
-export interface IEdgeRenderer<T extends VisualGraphNode> extends IRenderer<IEdgeViewModel<T>> {
+export interface IEdgeRenderer<T extends VisualGraphNode, EdgeRouterType extends IEdgeRouter, ViewModelType extends IEdgeViewModel<T, EdgeRouterType>> extends IRenderer<ViewModelType> {
 }

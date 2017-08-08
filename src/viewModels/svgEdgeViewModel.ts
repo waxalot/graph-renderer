@@ -1,5 +1,5 @@
-import { SVGViewModel, IEdgeViewModel, IEdgeRouter, SVGGraphViewModel, SVGNodeViewModel } from "./";
-import { Point, VisualGraphNode, VisualGraph } from "../models";
+import { SVGViewModel, IEdgeViewModel, SVGGraphViewModel, SVGNodeViewModel, IGraphViewModel } from "./";
+import { Point, VisualGraphNode, VisualGraph, IEdgeRouter } from "../models";
 import { Utils } from "../utils";
 
 
@@ -12,8 +12,8 @@ import { Utils } from "../utils";
  * @implements {IEdgeViewModel<T>}
  * @template T 
  */
-export class SVGEdgeViewModel<TNode extends VisualGraphNode> extends SVGViewModel<TNode> implements IEdgeViewModel<TNode> {
-
+export class SVGEdgeViewModel<TNode extends VisualGraphNode, EdgeRouterType extends IEdgeRouter> extends SVGViewModel<TNode> implements IEdgeViewModel<TNode, EdgeRouterType> {
+    
     /**
      * The start node's view-model.
      * 
@@ -33,43 +33,40 @@ export class SVGEdgeViewModel<TNode extends VisualGraphNode> extends SVGViewMode
 
 
     /**
-     * An array with all (start, end, intermediate) points.
+     * The edge router.
      * 
-     * @type {Array<Point>}
+     * @public
+     * @type {EdgeRouterType}
      * @memberof SVGEdgeViewModel
      */
-    public points: Array<Point>;
+    public edgeRouter: EdgeRouterType;
 
 
     /**
      * The graph's view-model.
      * 
-     * @private
-     * @type {SVGGraphViewModel<VisualGraph>}
+     * @type {IGraphViewModel<VisualGraph, TNode>}
      * @memberof SVGEdgeViewModel
      */
-    private graphViewModel: SVGGraphViewModel<VisualGraph, TNode>;
-
-
-    /**
-     * The edge router.
-     * 
-     * @private
-     * @type {IEdgeRouter}
-     * @memberof SVGEdgeViewModel
-     */
-    private edgeRouter: IEdgeRouter;
-
+    public graphViewModel: IGraphViewModel<VisualGraph, TNode>;
+    
 
     /**
      * Creates an instance of SVGEdgeViewModel.
      *
+     * @param {EdgeRouterType} edgeRouter 
+     * @param {SVGNodeViewModel<TNode>} startNodeViewModel 
+     * @param {SVGNodeViewModel<TNode>} endNodeViewModel 
+     * @param {IGraphViewModel<VisualGraph, TNode>} graphViewModel 
      * @memberof SVGEdgeViewModel
      */
-    public constructor() {
+    public constructor(edgeRouter: EdgeRouterType, startNodeViewModel: SVGNodeViewModel<TNode>, endNodeViewModel: SVGNodeViewModel<TNode>, graphViewModel: IGraphViewModel<VisualGraph, TNode>) {
         super();
 
-        this.points = new Array<Point>();
+        this.edgeRouter = edgeRouter;
+        this.startNodeViewModel = startNodeViewModel;
+        this.endNodeViewModel = endNodeViewModel;
+        this.graphViewModel = graphViewModel;
     }
 
 
@@ -89,7 +86,6 @@ export class SVGEdgeViewModel<TNode extends VisualGraphNode> extends SVGViewMode
             this.endNodeViewModel.dataBinder.subscribe(this.endNodeViewModel.getDataBindChangeMessage(), this.endNodeChangedCallback);
         }
 
-        this.initPoints();
     }
 
 
@@ -118,57 +114,6 @@ export class SVGEdgeViewModel<TNode extends VisualGraphNode> extends SVGViewMode
      */
     private endNodeChangedCallback(propertyName: string, value: any, initiator: any): void {
         console.log('end node: ' + propertyName + ': ' + value);
-    }
-
-
-    /**
-     * Sets the edge router.
-     * 
-     * @param {IEdgeRouter} edgeRouter 
-     * @memberof SVGEdgeViewModel
-     */
-    public setEdgeRouter(edgeRouter: IEdgeRouter): void {
-        if (!edgeRouter) {
-            Utils.throwReferenceError('edgeRouter');
-        }
-
-        this.edgeRouter = edgeRouter;
-    }
-
-
-    /**
-     * Initializes the points array.
-     * 
-     * @private
-     * @memberof SVGEdgeViewModel
-     */
-    private initPoints() {
-
-        let startPoint = new Point();
-        startPoint.x = this.startNodeViewModel.position.x + this.startNodeViewModel.size.width * 0.5;
-        startPoint.y = this.startNodeViewModel.position.y + this.startNodeViewModel.height * 0.5;
-
-        let endPoint = new Point();
-        endPoint.x = this.endNodeViewModel.position.x + this.endNodeViewModel.size.width * 0.5;
-        endPoint.y = this.endNodeViewModel.position.y + this.endNodeViewModel.size.height * 0.5;
-
-        if (!this.edgeRouter) {
-            Utils.throwReferenceError('No edge router was set. Call setEdgeRouter() before!')
-            return;
-        }
-
-        let intermediatePoints = this.edgeRouter.createEdgePoints(startPoint, endPoint, this.graphViewModel);
-
-        // Add the start point
-        this.points.push(startPoint);
-
-        // Add all found intermediate points
-        intermediatePoints.forEach((tempPoint) => {
-            this.points.push(tempPoint);
-        });
-
-        // Add the end point
-        this.points.push(endPoint);
     }
 
 }

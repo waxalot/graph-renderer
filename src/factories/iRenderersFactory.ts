@@ -1,6 +1,6 @@
 import { IRenderer, INodeRenderer, IEdgeRenderer, IGraphRenderer } from "../renderers";
 import { INodeViewModel, IEdgeViewModel, IGraphViewModel } from "../viewModels";
-import { VisualGraph, VisualGraphNode } from "../models";
+import { VisualGraph, VisualGraphNode, IEdgeRouter, IOrthogonalEdgeRouter } from "../models";
 
 
 /**
@@ -30,11 +30,11 @@ export interface IRenderersFactory {
 
 
     /**
-     * Creates an instance of {IEdgeRenderer<VisualGraphEdge>}.
+     * Creates an instance of {IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>}.
      * 
-     * @returns {IEdgeRenderer<VisualGraphEdge>} 
+     * @returns {IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>} 
      * @memberof IRenderersFactory
      */
-    createEdgeRenderer(): IEdgeRenderer<VisualGraphNode>;
+    createOrthogonalEdgeRenderer(): IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>;
 
 }

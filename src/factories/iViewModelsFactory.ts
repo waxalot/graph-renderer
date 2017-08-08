@@ -1,4 +1,4 @@
-import { IGraphViewModel, IEdgeRouter } from "../viewModels";
+import { IGraphViewModel } from "../viewModels";
 import { Graph, VisualGraph, VisualGraphNode } from "../models";
 
 
@@ -14,11 +14,10 @@ export interface IViewModelsFactory {
      * Creates an instance of {IGraphViewModel<VisualGraph>}.
      * 
      * @template TNode 
-     * @param {Graph<TNode>} graph 
-     * @param {IEdgeRouter} edgeRouter 
+     * @param {Graph<TNode>} graph    
      * @returns {IGraphViewModel<VisualGraph, TNode>} 
      * @memberof IViewModelsFactory
      */
-    createGraphViewModel<TNode extends VisualGraphNode>(graph: Graph<TNode>, edgeRouter: IEdgeRouter): IGraphViewModel<VisualGraph, TNode>;
+    createGraphViewModel<TNode extends VisualGraphNode>(graph: Graph<TNode>): IGraphViewModel<VisualGraph, TNode>;
 
 }

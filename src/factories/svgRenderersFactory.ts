@@ -1,7 +1,8 @@
 import { IRenderersFactory } from "./";
-import { SVGGraphRenderer, SVGNodeRenderer, IGraphRenderer, INodeRenderer, SVGEdgeRenderer } from "../renderers";
-import { IGraphViewModel, INodeViewModel, IEdgeViewModel } from "../viewModels";
+import { SVGGraphRenderer, SVGNodeRenderer, IGraphRenderer, INodeRenderer, SVGOrthogonalEdgeRenderer, IEdgeRenderer } from "../renderers";
+import { IGraphViewModel, INodeViewModel, IEdgeViewModel, SVGOrthogonalEdgeViewModel } from "../viewModels";
 import { VisualGraph, VisualGraphNode } from "../models";
+import { OrthogonalEdgeRouter } from "../models/orthogonalEdgeRouter";
 
 
 /**
@@ -21,8 +22,7 @@ export class SVGRenderersFactory implements IRenderersFactory {
      */
     public createGraphRenderer(): IGraphRenderer<VisualGraph, VisualGraphNode> {
         let nodeRenderer = this.createNodeRenderer();
-        let edgeRenderer = this.createEdgeRenderer();
-        return new SVGGraphRenderer(nodeRenderer, edgeRenderer);
+        return new SVGGraphRenderer(nodeRenderer);
     }
 
 
@@ -36,15 +36,15 @@ export class SVGRenderersFactory implements IRenderersFactory {
         return new SVGNodeRenderer();
     }
 
-
+    
     /**
-     * Creates the edge renderer.
+     * Creates the orthogonal edge renderer.
      * 
-     * @returns {SVGEdgeRenderer<VisualGraphNode>} 
+     * @returns {SVGOrthogonalEdgeRenderer<VisualGraphNode, OrthogonalEdgeRouter, SVGOrthogonalEdgeViewModel<VisualGraphNode, OrthogonalEdgeRouter>>} 
      * @memberof SVGRenderersFactory
      */
-    public createEdgeRenderer(): SVGEdgeRenderer<VisualGraphNode> {
-        return new SVGEdgeRenderer();
+    public createOrthogonalEdgeRenderer(): SVGOrthogonalEdgeRenderer<VisualGraphNode, OrthogonalEdgeRouter, SVGOrthogonalEdgeViewModel<VisualGraphNode, OrthogonalEdgeRouter>> {
+        return new SVGOrthogonalEdgeRenderer<VisualGraphNode, OrthogonalEdgeRouter, SVGOrthogonalEdgeViewModel<VisualGraphNode, OrthogonalEdgeRouter>>();
     }
 
 }
