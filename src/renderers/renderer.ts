@@ -1,4 +1,4 @@
-import { IRenderer } from "./index";
+import { IRenderer } from "./interfaces/iRenderer";
 
 
 /**

@@ -1,5 +1,8 @@
-import { IGraphLayout, VisualGraph, IEdgeRouter, Point, VisualGraphNode } from "./";
-import { IGraphViewModel } from "../viewModels";
+import { IEdgeRouter } from "../interfaces/iEdgeRouter";
+import { Point } from "./point";
+import { IGraphViewModel } from "../viewModels/interfaces/iGraphViewModel";
+import { VisualGraph } from "./visualGraph";
+import { VisualGraphNode } from "./visualGraphNode";
 
 
 /**

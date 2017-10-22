@@ -1,4 +1,4 @@
-import { VisualGraphNode } from "./";
+import { VisualGraphNode } from "./visualGraphNode";
 
 
 /**

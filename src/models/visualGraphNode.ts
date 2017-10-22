@@ -1,4 +1,5 @@
-import { Point, Size } from "./";
+import { Point } from "./point";
+import { Size } from "./size";
 
 
 /**

@@ -1,5 +1,5 @@
-import { GraphNode } from "../../models";
 import { expect } from 'chai';
+import { GraphNode } from '../../models/graphNode';
 
 
 describe('GraphNode', () => {
@@ -13,7 +13,7 @@ describe('GraphNode', () => {
 
             // Act
             graphNode = new GraphNode<string>();
-            
+
             // Assert
             expect(graphNode).to.be.not.null;
         });

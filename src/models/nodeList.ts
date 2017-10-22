@@ -1,4 +1,5 @@
-import { IGraphNode, VisualGraphNode, INodeList } from "./";
+import { INodeList } from "../interfaces/iNodeList";
+import { IGraphNode } from "../interfaces/iGraphNode";
 
 
 /**

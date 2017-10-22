@@ -1,4 +1,4 @@
-import { IDictionary, IPubSubCallback } from "./";
+import { IPubSubCallback } from "./interfaces/iPubSubCallback";
 
 
 /**
@@ -9,7 +9,7 @@ import { IDictionary, IPubSubCallback } from "./";
  */
 export class DataBindPubSub {
 
-    private callbacks: IDictionary<Array<IPubSubCallback>>;
+    private callbacks: Map<string, Array<IPubSubCallback>>;
 
 
     /**
@@ -18,7 +18,7 @@ export class DataBindPubSub {
      * @memberof DataBindPubSub
      */
     public constructor() {
-        this.callbacks = {};
+        this.callbacks = new Map<string, Array<IPubSubCallback>>();
     }
 
 
@@ -30,11 +30,11 @@ export class DataBindPubSub {
      * @memberof DataBindPubSub
      */
     public subscribe(message: string, callback: IPubSubCallback) {
-        if (!this.callbacks[message]) {
-            this.callbacks[message] = new Array<IPubSubCallback>();
+        if (!this.callbacks.has(message)) {
+            this.callbacks.set(message, new Array<IPubSubCallback>());
         }
 
-        this.callbacks[message].push(callback);
+        this.callbacks.get(message).push(callback);
     }
 
 
@@ -48,10 +48,10 @@ export class DataBindPubSub {
      * @memberof DataBindPubSub
      */
     public publish(message: string, propertyName: string, value: any, initiator: any) {
-        if (this.callbacks[message]) {
-            let callbacksCount = this.callbacks[message].length;
+        if (this.callbacks.has(message)) {
+            let callbacksCount = this.callbacks.get(message).length;
             for (let i = 0; i < callbacksCount; i++) {
-                this.callbacks[message][i](propertyName, value, initiator);
+                this.callbacks.get(message)[i](propertyName, value, initiator);
             }
         }
     }

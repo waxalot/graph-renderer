@@ -1,6 +1,7 @@
-import { NodeList, IGraphNode, GraphNode } from "../../models";
 import { expect } from 'chai';
 import * as TypeMoq from 'typemoq';
+import { NodeList } from '../../models/nodeList';
+import { IGraphNode } from '../../interfaces/iGraphNode';
 
 
 describe('NodeList', () => {

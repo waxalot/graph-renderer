@@ -1,4 +1,6 @@
-import { GraphItem, NodeList, INodeList } from "./";
+import { GraphItem } from "./graphItem";
+import { INodeList } from "../interfaces/iNodeList";
+import { NodeList } from './nodeList';
 
 
 /**

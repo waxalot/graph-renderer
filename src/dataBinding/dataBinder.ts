@@ -1,6 +1,5 @@
-import { DataBindPubSub, IDataBindEventTarget } from "./";
-import { IViewModel } from "../viewModels";
-import { IPubSubCallback } from "./iPubSubCallback";
+import { DataBindPubSub } from "./dataBindPubSub";
+import { IPubSubCallback } from "./interfaces/iPubSubCallback";
 
 
 /**

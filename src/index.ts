@@ -1,7 +1,13 @@
-import { Graph, GraphNode, Point, Size, VisualGraphNode, VisualGraph } from "./models";
-import { IRenderersFactory, SVGRenderersFactory, IViewModelsFactory, SVGViewModelsFactory } from "./factories";
-import { IGraphViewModel } from "./viewModels";
-import { IRenderer, IGraphRenderer } from "./renderers";
+import { VisualGraphNode } from "./models/visualGraphNode";
+import { Point } from "./models/point";
+import { Size } from "./models/size";
+import { Graph } from "./models/graph";
+import { IViewModelsFactory } from "./factories/interfaces/iViewModelsFactory";
+import { SVGViewModelsFactory } from "./factories/svg/svgViewModelsFactory";
+import { SVGRenderersFactory } from "./factories/svg/svgRenderersFactory";
+import { IRenderersFactory } from "./factories/interfaces/iRenderersFactory";
+import { VisualGraph } from "./models/visualGraph";
+import { IGraphRenderer } from "./renderers/interfaces/iGraphRenderer";
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
