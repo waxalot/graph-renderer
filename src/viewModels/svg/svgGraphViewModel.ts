@@ -1,9 +1,11 @@
-import { VisualGraph } from "../../models/visualGraph";
-import { VisualGraphNode } from "../../models/visualGraphNode";
-import { SVGViewModel } from "./svgViewModel";
+import { SVGGraphItemViewModel } from "./svgGraphItemViewModel";
 import { IGraphViewModel } from "../interfaces/iGraphViewModel";
-import { Graph } from "../../models/graph";
-import { SVGNodeViewModel } from "./svgNodeViewModel";
+import { IVisualGraph } from "../../interfaces/iVisualGraph";
+import { Point } from "../../models/point";
+import { SVGUtils } from "../../renderers/svg/svgUtils";
+import { ISVGGraphViewModel } from "./interfaces/iSVGGraphViewModel";
+import { ISVGGraphNodeViewModel } from "./interfaces/iSVGGraphNodeViewModel";
+import { SVGGraphNodeViewModel } from "./svgGraphNodeViewModel";
 
 
 /**
@@ -11,44 +13,123 @@ import { SVGNodeViewModel } from "./svgNodeViewModel";
  * 
  * @export
  * @class SVGGraphViewModel
- * @extends {SVGViewModel}
- * @implements {IGraphViewModel}
+ * @extends {SVGGraphItemViewModel<IVisualGraph>}
+ * @implements {ISVGGraphViewModel}
  */
-export class SVGGraphViewModel<T extends VisualGraph, TNode extends VisualGraphNode> extends SVGViewModel<T> implements IGraphViewModel<T, TNode> {
-
-    /**
-     * The graph model.
-     * 
-     * @type {TNode}
-     * @memberof SVGGraphViewModel
-     */
-    public model: Graph<TNode>;
-
+export class SVGGraphViewModel extends SVGGraphItemViewModel<IVisualGraph> implements ISVGGraphViewModel {
 
     /**
      * A collection of the graph's node view-models.
      * 
-     * @type {Array<SVGNodeViewModel<TNode>>}
+     * @type {Array<ISVGGraphNodeViewModel>}
      * @memberof SVGGraphViewModel
      */
-    public nodes: Array<SVGNodeViewModel<TNode>>;
+    public nodes: Array<ISVGGraphNodeViewModel>;
+
+
+    private _currentMovePosition: Point;
+
+    /**
+     * Gets the node's current move position x coordinate.
+     * 
+     * @type {Point}
+     * @memberof SVGGraphViewModel
+     */
+    get currentMoveX(): number {
+        return this._currentMovePosition.x;
+    }
+
+    /**
+     * Sets the node's current move position x coordinate.
+     * 
+     * @memberof SVGGraphViewModel
+     */
+    set currentMoveX(value: number) {
+        this._currentMovePosition.x = value;
+    }
+
+    /**
+     * Gets the node's current move position y coordinate.
+     * 
+     * @type {Point}
+     * @memberof SVGGraphViewModel
+     */
+    get currentMoveY(): number {
+        return this._currentMovePosition.y;
+    }
+
+    /**
+     * Sets the node's current move position y coordinate.
+     * 
+     * @memberof SVGGraphViewModel
+     */
+    set currentMoveY(value: number) {
+        this._currentMovePosition.y = value;
+    }
 
 
     /**
      * Creates an instance of SVGGraphViewModel.
-     * 
-     * @param {Graph<TNode>} graph 
-     * @param {IEdgeRouter} edgeRouter 
+     *
+     * @param {IVisualGraph} model 
      * @memberof SVGGraphViewModel
      */
-    public constructor(graph: Graph<TNode>) {
-        super();
+    public constructor(model: IVisualGraph) {
+        super(model);
 
-        this.model = graph;
-
-        this.nodes = new Array<SVGNodeViewModel<TNode>>();
+        this.nodes = new Array<ISVGGraphNodeViewModel>();
+        this._currentMovePosition = new Point();
 
         this.initViewModel();
+    }
+
+
+    public mouseDownHandler = (e: MouseEvent) => {
+
+        // Get the current selected graph element.
+        let selectedElement = <SVGElement>e.srcElement;
+
+        let elementGuid = SVGUtils.getGuid(selectedElement);
+        if (elementGuid && elementGuid === this.guid) {
+            // The graph was selected
+
+        } else {
+
+        }
+
+        this.currentMoveX = e.clientX;
+        this.currentMoveY = e.clientY;
+
+        // Set drag handler
+        // selectedElement.onmousemove = (e: MouseEvent) => {
+
+        //     let dx = e.clientX - this.currentMoveX;
+        //     let dy = e.clientY - this.currentMoveY;
+        //     this.currentTransformMatrix[4] += dx;
+        //     this.currentTransformMatrix[5] += dy;
+
+        //     let newMatrix = 'matrix(' + this.currentTransformMatrix.join(' ') + ')';
+        //     selectedElement.setAttributeNS(null, 'transform', newMatrix);
+
+        //     this.currentMoveX = e.clientX;
+        //     this.currentMoveY = e.clientY;
+        // };
+
+        // // Set drop handler
+        // selectedElement.onmouseup = (e: MouseEvent) => {
+
+        //     selectedElement.onmousemove = null;
+        //     selectedElement.onmouseout = null;
+        //     selectedElement.onmouseup = null;
+        // };
+
+        // // Set leave handler
+        // selectedElement.onmouseout = (e: MouseEvent) => {
+
+        //     selectedElement.onmousemove = null;
+        //     selectedElement.onmouseout = null;
+        //     selectedElement.onmouseup = null;
+        // }
     }
 
 
@@ -79,7 +160,7 @@ export class SVGGraphViewModel<T extends VisualGraph, TNode extends VisualGraphN
             graphNodes.forEach((tempNode) => {
 
                 // Create the graph node view-model
-                let newNodeVM = new SVGNodeViewModel(tempNode);
+                let newNodeVM = new SVGGraphNodeViewModel(this.model, tempNode);
                 this.nodes.push(newNodeVM);
             });
 

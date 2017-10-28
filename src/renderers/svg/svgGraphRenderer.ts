@@ -1,10 +1,10 @@
-import { VisualGraph } from "../../models/visualGraph";
-import { VisualGraphNode } from "../../models/visualGraphNode";
-import { SVGRenderer } from "./svgRenderer";
-import { SVGNodeRenderer } from "./svgNodeRenderer";
-import { IGraphRenderer } from "../interfaces/iGraphRenderer";
-import { Utils } from "../../utils";
 import { SVGGraphViewModel } from "../../viewModels/svg/svgGraphViewModel";
+import { SVGGraphItemRenderer } from "./svgGraphItemRenderer";
+import { SVGGraphNodeRenderer } from "./svgGraphNodeRenderer";
+import { Utils } from "../../utils";
+import { ISVGGraphRenderer } from "./interfaces/iSVGGraphRenderer";
+import { ISVGGraphViewModel } from "../../viewModels/svg/interfaces/iSVGGraphViewModel";
+import { ISVGGraphNodeRenderer } from "./interfaces/iSVGGraphNodeRenderer";
 
 
 /**
@@ -12,26 +12,23 @@ import { SVGGraphViewModel } from "../../viewModels/svg/svgGraphViewModel";
  * 
  * @export
  * @class SVGGraphRenderer
- * @extends {SVGRenderer<T, SVGGraphViewModel<T, TNode>>}
- * @implements {IGraphRenderer<T, TNode>}
- * @template T 
- * @template TNode 
+ * @extends {SVGGraphItemRenderer<ISVGGraphViewModel>}
+ * @implements {ISVGGraphRenderer}
  */
-export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNode> extends SVGRenderer<T, SVGGraphViewModel<T, TNode>> implements IGraphRenderer<T, TNode> {
+export class SVGGraphRenderer extends SVGGraphItemRenderer<ISVGGraphViewModel> implements ISVGGraphRenderer {
 
     private containerElement: Element;
-    private nodeRenderer: SVGNodeRenderer<VisualGraphNode>;
+    private nodeRenderer: ISVGGraphNodeRenderer;
     //private edgeRenderer: SVGEdgeRenderer<VisualGraphNode>;
 
 
     /**
      * Creates an instance of SVGGraphRenderer.
      *
-     * @param {SVGNodeRenderer<VisualGraphNode>} nodeRenderer 
-     * @param {SVGEdgeRenderer<VisualGraphEdge>} edgeRenderer 
+     * @param {SVGGraphNodeRenderer} nodeRenderer 
      * @memberof SVGGraphRenderer
      */
-    public constructor(nodeRenderer: SVGNodeRenderer<VisualGraphNode>) {
+    public constructor(nodeRenderer: ISVGGraphNodeRenderer) {
         super();
 
         if (!nodeRenderer) {
@@ -64,7 +61,7 @@ export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNo
      * @param {SVGGraphViewModel} viewModel 
      * @memberof SVGGraphRenderer
      */
-    public render(viewModel: SVGGraphViewModel<T, TNode>): void {
+    public render(viewModel: SVGGraphViewModel): void {
         if (!this.containerElement) {
             throw new Error('No container element was set. Call setContainerElement() before!')
         }
@@ -79,9 +76,13 @@ export class SVGGraphRenderer<T extends VisualGraph, TNode extends VisualGraphNo
         // Define the user coordinate system.
         graphTargetElement.setAttribute('viewbox', '0 0 800, 600');
 
+        // Set selection handler
+        graphTargetElement.onmousedown = viewModel.mouseDownHandler;
+
         // Render all graph nodes
         if (viewModel.nodes && viewModel.nodes.length > 0) {
             viewModel.nodes.forEach((nodeVM) => {
+
                 this.nodeRenderer.setContainerElement(graphTargetElement);
                 this.nodeRenderer.render(nodeVM);
             });

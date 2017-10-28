@@ -1,7 +1,6 @@
-import { VisualGraphNode } from "../../models/visualGraphNode";
-import { Graph } from "../../models/graph";
+import { IGraphNodeViewModel } from "../../viewModels/interfaces/iGraphNodeViewModel";
 import { IGraphViewModel } from "../../viewModels/interfaces/iGraphViewModel";
-import { VisualGraph } from "../../models/visualGraph";
+import { IVisualGraph } from "../../interfaces/iVisualGraph";
 
 
 /**
@@ -13,13 +12,13 @@ import { VisualGraph } from "../../models/visualGraph";
 export interface IViewModelsFactory {
 
     /**
-     * Creates an instance of {IGraphViewModel<VisualGraph>}.
+     * Creates an instance of {IGraphViewModel<TNodeViewModel>}.
      * 
-     * @template TNode 
-     * @param {Graph<TNode>} graph    
-     * @returns {IGraphViewModel<VisualGraph, TNode>} 
+     * @template TNodeViewModel 
+     * @param {IVisualGraph} graph 
+     * @returns {IGraphViewModel} 
      * @memberof IViewModelsFactory
      */
-    createGraphViewModel<TNode extends VisualGraphNode>(graph: Graph<TNode>): IGraphViewModel<VisualGraph, TNode>;
+    createGraphViewModel<TNodeViewModel extends IGraphNodeViewModel>(graph: IVisualGraph): IGraphViewModel;
 
 }

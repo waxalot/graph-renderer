@@ -2,7 +2,7 @@ import { VisualGraph } from "../models/visualGraph";
 
 
 /**
- * This interface describes a visual graph layout.
+ * The interface for a graph layout.
  * 
  * @export
  * @interface IGraphLayout

@@ -1,8 +1,13 @@
 svg.graph .graph-draggable {
   cursor: move; }
 
-svg.graph .graph-node.disabled {
-  opacity: 0.2; }
+svg.graph .graph-node {
+  fill: #000000; }
+  svg.graph .graph-node.graph-node-selected {
+    stroke: #FF0000;
+    stroke-width: 5; }
+  svg.graph .graph-node .disabled {
+    opacity: 0.2; }
 
 svg .graph-edge {
   stroke-width: 9;

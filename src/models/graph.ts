@@ -1,7 +1,10 @@
-import { INodeList } from "../interfaces/iNodeList";
 import { IGraphNode } from "../interfaces/iGraphNode";
 import { GraphNode } from "./graphNode";
-import { NodeList } from './nodeList';
+import { IGraph } from "../interfaces/iGraph";
+import { Utils } from "../utils";
+import { GraphItem } from "./graphItem";
+import { IItemList } from "../interfaces/iItemList";
+import { ItemList } from "./ItemList";
 
 
 /**
@@ -10,16 +13,24 @@ import { NodeList } from './nodeList';
  * @export
  * @class Graph
  */
-export class Graph<T> {
+export class Graph extends GraphItem implements IGraph {
 
     /**
-     * A collection of all graph nodes.
+     * The graph's identifier.
      * 
-     * @private
-     * @type {INodeList<T>}
+     * @type {string}
      * @memberof Graph
      */
-    public nodes: INodeList<T>;
+    public guid: string;
+
+
+    /**
+     * A list of all graph nodes.
+     * 
+     * @type {IItemList<IGraphNode>}
+     * @memberof Graph
+     */
+    public nodes: IItemList<IGraphNode>;
 
 
     /**
@@ -28,99 +39,69 @@ export class Graph<T> {
      * @memberof Graph
      */
     public constructor() {
-        this.nodes = new NodeList();
+        super();
+
+        this.nodes = new ItemList<IGraphNode>();
     }
 
 
     /**
-     * Adds a new node with the given value to the graph.
+     * Adds the given node to the graph.
      * 
-     * @param {T} value 
-     * @returns {IGraphNode<T>} 
+     * @param {TNode} value 
+     * @returns {IGraphNode<TNode>} 
      * @memberof Graph
      */
-    public addNode(value: T): IGraphNode<T> {
-        let newNode = new GraphNode<T>();
-        newNode.value = value;
-
-        this.nodes.add(newNode);
-
-        return newNode;
-    }
-
-
-    /**
-     * Adds a directed edge to the graph.
-     * 
-     * @param {IGraphNode<T>} from 
-     * @param {IGraphNode<T>} to 
-     * @param {number} [cost] 
-     * @memberof Graph
-     */
-    public addDirectedEdge(from: IGraphNode<T>, to: IGraphNode<T>, cost?: number): void {
-        from.neighbors.add(to);
-        from.costs.push(cost);
-    }
-
-
-    /**
-     * Adds an undirected edge to the graph.
-     * 
-     * @param {IGraphNode<T>} from 
-     * @param {IGraphNode<T>} to 
-     * @param {number} [cost=0] 
-     * @memberof Graph
-     */
-    public addUndirectedEdge(from: IGraphNode<T>, to: IGraphNode<T>, cost: number = 0): void {
-        from.neighbors.add(to);
-        from.costs.push(cost);
-
-        to.neighbors.add(from);
-        from.costs.push(cost);
-    }
-
-
-    /**
-     * Determines whether the graph contains a node with the given guid.
-     * 
-     * @param {strig} guid
-     * @returns {boolean} 
-     * @memberof Graph
-     */
-    public contains(guid: string): boolean {
-        return this.nodes.findByGuid(guid) != null;
-    }
-
-
-    /**
-     * Removes the node with the given guid from the graph.
-     * 
-     * @param {string} guid 
-     * @returns {boolean} 
-     * @memberof Graph
-     */
-    public remove(guid: string): boolean {
-        // First remove the node from the nodeset
-        let nodeToRemove = this.nodes.findByGuid(guid);
-        if (!nodeToRemove) {
-            // Node was not found
-            return false;
+    public addNode(node: IGraphNode): void {
+        if (!node) {
+            Utils.throwReferenceError('node');
         }
 
-        this.nodes.remove(nodeToRemove);
-
-        // Try to remove all edges to this node
-        let tempNode: IGraphNode<any>;
-        this.nodes.forEach((tempNode) => {
-            let index = tempNode.neighbors.indexOf(nodeToRemove);
-            if (index > -1) {
-                // Remove the reference to the node and associated cost
-                tempNode.neighbors.removeAt(index);
-                tempNode.costs.splice(index, 1);
-            }
-        });
-
-        return true;
+        this.nodes.add(node);
     }
+
+
+    // /**
+    //  * Determines whether the graph contains a node with the given guid.
+    //  * 
+    //  * @param {strig} guid
+    //  * @returns {boolean} 
+    //  * @memberof Graph
+    //  */
+    // public contains(guid: string): boolean {
+    //     return this.nodes.findByGuid(guid) != null;
+    // }
+
+
+    // /**
+    //  * Removes the node with the given guid from the graph.
+    //  * 
+    //  * @param {string} guid 
+    //  * @returns {boolean} 
+    //  * @memberof Graph
+    //  */
+    // public remove(guid: string): boolean {
+    //     // First remove the node from the nodeset
+    //     let nodeToRemove = this.nodes.findByGuid(guid);
+    //     if (!nodeToRemove) {
+    //         // Node was not found
+    //         return false;
+    //     }
+
+    //     this.nodes.remove(nodeToRemove);
+
+    //     // Try to remove all edges to this node
+    //     let tempNode: IGraphNode<any>;
+    //     this.nodes.forEach((tempNode) => {
+    //         let index = tempNode.neighbors.indexOf(nodeToRemove);
+    //         if (index > -1) {
+    //             // Remove the reference to the node and associated cost
+    //             tempNode.neighbors.removeAt(index);
+    //             tempNode.costs.splice(index, 1);
+    //         }
+    //     });
+
+    //     return true;
+    // }
 
 }

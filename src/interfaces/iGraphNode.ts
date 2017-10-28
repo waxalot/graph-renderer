@@ -1,5 +1,6 @@
 import { IGraphItem } from "./iGraphItem";
-import { INodeList } from "./iNodeList";
+import { IItemList } from "./iItemList";
+import { IGraphEdge } from "./iGraphEdge";
 
 
 /**
@@ -8,34 +9,32 @@ import { INodeList } from "./iNodeList";
  * @export
  * @interface IGraphNode
  */
-export interface IGraphNode<T> extends IGraphItem {
+export interface IGraphNode extends IGraphItem {
 
     /**
      * The node's value.
      * 
-     * @type {T}
-     * @memberof GraphNode
+     * @type {*}
+     * @memberof IGraphNode
      */
-    value: T;
+    value: any;
 
 
     /**
-     * The costs of the node.
+     * The list of the node's edges.
      * 
-     * @public
-     * @type {Array<number>}
-     * @memberof GraphNode
+     * @type {IItemList<IGraphEdge>}
+     * @memberof IGraphNode
      */
-    costs: Array<number>;
+    edges: IItemList<IGraphEdge>;
 
 
     /**
-     * The node list with all neighbor nodes.
+     * Adds the given edge to the node.
      * 
-     * @public
-     * @type {INodeList<T>}
-     * @memberof GraphNode
+     * @param {IGraphEdge} edge 
+     * @memberof IGraphNode
      */
-    neighbors: INodeList<T>;
+    addEdge(edge: IGraphEdge): void;
 
 }

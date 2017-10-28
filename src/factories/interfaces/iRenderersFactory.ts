@@ -1,10 +1,5 @@
-import { VisualGraphNode } from "../../models/visualGraphNode";
-import { VisualGraph } from "../../models/visualGraph";
 import { IGraphRenderer } from "../../renderers/interfaces/iGraphRenderer";
-import { INodeRenderer } from "../../renderers/interfaces/iNodeRenderer";
-import { IEdgeRenderer } from "../../renderers/interfaces/iEdgeRenderer";
-import { IOrthogonalEdgeRouter } from "../../interfaces/iOrthogonalEdgeRouter";
-import { IEdgeViewModel } from "../../viewModels/interfaces/iEdgeViewModel";
+import { IGraphNodeRenderer } from "../../renderers/interfaces/iGraphNodeRenderer";
 
 
 /**
@@ -16,29 +11,29 @@ import { IEdgeViewModel } from "../../viewModels/interfaces/iEdgeViewModel";
 export interface IRenderersFactory {
 
     /**
-     * Creates an instance of {IGraphRenderer<VisualGraph>}.
+     * Creates an instance of {IGraphRenderer}.
      * 
-     * @returns {IGraphRenderer<VisualGraph>} 
+     * @returns {IGraphRenderer} 
      * @memberof IRenderersFactory
      */
-    createGraphRenderer(): IGraphRenderer<VisualGraph, VisualGraphNode>;
+    createGraphRenderer(): IGraphRenderer;
 
 
     /**
-     * Creates an instance of {INodeRenderer<VisualGraphNode>}.
+     * Creates an instance of {IGraphNodeRenderer}.
      * 
-     * @returns {INodeRenderer<VisualGraphNode>} 
+     * @returns {IGraphNodeRenderer} 
      * @memberof IRenderersFactory
      */
-    createNodeRenderer(): INodeRenderer<VisualGraphNode>;
+    createNodeRenderer(): IGraphNodeRenderer;
 
 
-    /**
-     * Creates an instance of {IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>}.
-     * 
-     * @returns {IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>} 
-     * @memberof IRenderersFactory
-     */
-    createOrthogonalEdgeRenderer(): IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>;
+    // /**
+    //  * Creates an instance of {IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>}.
+    //  * 
+    //  * @returns {IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>} 
+    //  * @memberof IRenderersFactory
+    //  */
+    // createOrthogonalEdgeRenderer(): IEdgeRenderer<VisualGraphNode, IOrthogonalEdgeRouter, IEdgeViewModel<VisualGraphNode, IOrthogonalEdgeRouter>>;
 
 }

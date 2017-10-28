@@ -1,29 +1,31 @@
-import { VisualGraphNode } from "../../models/visualGraphNode";
-import { SVGViewModel } from "./svgViewModel";
-import { INodeViewModel } from "../interfaces/iNodeViewModel";
-import { IGraphNode } from "../../interfaces/iGraphNode";
+import { IVisualGraphNode } from "../../interfaces/iVisualGraphNode";
+import { SVGGraphItemViewModel } from "./svgGraphItemViewModel";
+import { IGraphEvent } from "../../events/interfaces/iGraphEvent";
 import { Size } from "../../models/size";
 import { Point } from "../../models/point";
-
+import { IVisualGraph } from "../../interfaces/iVisualGraph";
+import { GraphEvent } from "../../events/graphEvent";
+import { ISVGGraphNodeViewModel } from "./interfaces/iSVGGraphNodeViewModel";
+import { IGraphNodeViewModel } from "../interfaces/iGraphNodeViewModel";
 
 
 /**
- * The SVG based representation of a node's view-model.
+ * The SVG based representation of a graph node's view-model.
  * 
  * @export
- * @class SVGNodeViewModel
- * @extends {SVGViewModel}
- * @implements {INodeViewModel}
+ * @class SVGGraphNodeViewModel
+ * @extends {SVGGraphItemViewModel<IVisualGraphNode>}
+ * @implements {IGraphNodeViewModel}
  */
-export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T> implements INodeViewModel<T> {
+export class SVGGraphNodeViewModel extends SVGGraphItemViewModel<IVisualGraphNode> implements ISVGGraphNodeViewModel {
 
     /**
-     * The graph node model.
+     * The selection changed event.
      * 
-     * @type {IGraphNode<T>}
-     * @memberof SVGViewModel
+     * @type {IGraphEvent<IGraphNodeViewModel, boolean>}
+     * @memberof SVGGraphNodeViewModel
      */
-    public model: IGraphNode<T>;
+    public selectionChangedEvent: IGraphEvent<IGraphNodeViewModel, boolean>;
 
 
     /**
@@ -31,52 +33,10 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * 
      * @readonly
      * @type {Size}
-     * @memberof SVGNodeViewModel
+     * @memberof SVGGraphNodeViewModel
      */
     get size(): Size {
-        return this.model.value.size;
-    }
-
-
-    /**
-     * Gets the node's width.
-     * 
-     * @readonly
-     * @type {number}
-     * @memberof SVGViewModel
-     */
-    get width(): number {
-        return this.model.value.size.width;
-    }
-
-    /**
-     * Sets the node's width.
-     * 
-     * @memberof SVGViewModel
-     */
-    set width(value: number) {
-        this.model.value.size.width = value;
-    }
-
-
-    /**
-     * Gets the node's height.
-     * 
-     * @readonly
-     * @type {number}
-     * @memberof SVGViewModel
-     */
-    get height(): number {
-        return this.model.value.size.height;
-    }
-
-    /**
-     * Sets the node's height.
-     * 
-     * @memberof SVGViewModel
-     */
-    set height(value: number) {
-        this.model.value.size.height = value;
+        return this.model.size;
     }
 
 
@@ -84,19 +44,19 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      * Gets the node's position.
      * 
      * @type {Point}
-     * @memberof SVGNodeViewModel
+     * @memberof SVGGraphNodeViewModel
      */
     get position(): Point {
-        return this.model.value.position;
+        return this.model.position;
     }
 
     /**
      * Sets the node's position.
      * 
-     * @memberof SVGNodeViewModel
+     * @memberof SVGGraphNodeViewModel
      */
     set position(value: Point) {
-        this.model.value.position = value;
+        this.model.position = value;
     }
 
 
@@ -128,7 +88,6 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
      */
     set currentMoveX(value: number) {
         this._currentMovePosition.x = value;
-        this.triggerDataBinder('currentMoveX', this._currentMovePosition.x);
     }
 
 
@@ -153,26 +112,69 @@ export class SVGNodeViewModel<T extends VisualGraphNode> extends SVGViewModel<T>
 
 
     /**
-     * Creates an instance of SVGNodeViewModel.
-     *
-     * @memberof SVGNodeViewModel
+     * The parent graph.
+     * 
+     * @private
+     * @type {IVisualGraph}
+     * @memberof SVGGraphNodeViewModel
      */
-    public constructor(graphNode: IGraphNode<T>) {
-        super();
+    private parentGraph: IVisualGraph;
 
-        this.model = graphNode;
+
+    /**
+     * Creates an instance of SVGGraphNodeViewModel.
+     *
+     * @param {IVisualGraph} parentGraph 
+     * @param {IVisualGraphNode} graphNode 
+     * @memberof SVGGraphNodeViewModel
+     */
+    public constructor(parentGraph: IVisualGraph, graphNode: IVisualGraphNode) {
+        super(graphNode);
+
+        this.parentGraph = parentGraph;
+
+        this.selectionChangedEvent = new GraphEvent<SVGGraphNodeViewModel, boolean>();
+
+        this.model.selectionChangedEvent.addEventListener(this.selectionChangedEventListener);
 
         this._currentMovePosition = new Point();
         this.currentTransformMatrix = new Array<number>();
     }
 
-    protected initViewModel(): void {
 
+    /**
+     * Triggers the selection changed event.
+     * 
+     * @param {boolean} selected 
+     * @memberof SVGGraphNodeViewModel
+     */
+    public onSelectionChanged(selected: boolean): void {
+        if (this.selectionChangedEvent) {
+            this.selectionChangedEvent.invoke(this, selected);
+        }
+    }
+
+
+    private selectionChangedEventListener = (node: IVisualGraphNode, selected: boolean): void => {
+        this.onSelectionChanged(selected);
+    }
+
+
+    protected initViewModel(): void {
     }
 
 
     public mouseDownHandler = (e: MouseEvent) => {
         let selectedElement = <SVGRectElement>e.srcElement;
+
+        if (!selectedElement) {
+            return;
+        }
+
+        if (this.model && this.parentGraph) {
+            this.parentGraph.handleGraphNodeSelection(this.model, e.ctrlKey);
+        }
+
         this.currentMoveX = e.clientX;
         this.currentMoveY = e.clientY;
 

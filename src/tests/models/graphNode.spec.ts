@@ -8,11 +8,10 @@ describe('GraphNode', () => {
 
         it('should be creatable', () => {
             // Arrange
-            let expectedValue: string = 'foobar';
-            let graphNode: GraphNode<string>;
+            let graphNode: GraphNode;
 
             // Act
-            graphNode = new GraphNode<string>();
+            graphNode = new GraphNode();
 
             // Assert
             expect(graphNode).to.be.not.null;

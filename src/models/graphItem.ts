@@ -2,7 +2,7 @@ import { Guid } from "./guid";
 
 
 /**
- * The base class for all graph related models.
+ * The base class for all graph items.
  * 
  * @export
  * @abstract

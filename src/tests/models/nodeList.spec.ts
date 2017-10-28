@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 import * as TypeMoq from 'typemoq';
-import { NodeList } from '../../models/nodeList';
 import { IGraphNode } from '../../interfaces/iGraphNode';
+import { ItemList } from '../../models/ItemList';
 
 
 describe('NodeList', () => {
 
-    let nodeList: NodeList<string>;
+    let nodeList: ItemList<IGraphNode>;
 
     beforeEach('Setup test', () => {
-        nodeList = new NodeList<string>();
+        nodeList = new ItemList<IGraphNode>();
     });
 
 
@@ -28,8 +28,8 @@ describe('NodeList', () => {
     describe('add', () => {
         it('should be able to add nodes to the list', () => {
             // Arrange
-            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode<string>>();
-            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode>();
+            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode>();
 
             // Act
             nodeList.add(graphNodeMock.object);
@@ -45,10 +45,10 @@ describe('NodeList', () => {
     describe('remove', () => {
         it('should be able to remove a given node from the list', () => {
             // Arrange
-            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode>();
             nodeList.add(graphNodeMock.object);
 
-            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode>();
             nodeList.add(graphNodeMock2.object);
 
             // Act
@@ -64,11 +64,11 @@ describe('NodeList', () => {
     describe('removeAt', () => {
         it('should be able to remove a node by a given node\'s index from the list', () => {
             // Arrange
-            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock.setup((graphNode) => graphNode.value).returns(() => 'item1');
             nodeList.add(graphNodeMock.object);
 
-            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock2.setup((graphNode) => graphNode.value).returns(() => 'item2');
             nodeList.add(graphNodeMock2.object);
 
@@ -93,17 +93,17 @@ describe('NodeList', () => {
             let expectedGuid2 = 'B';
             let expectedGuid3 = 'C';
 
-            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock.setup((graphNode) => graphNode.guid).returns(() => expectedGuid1);
             graphNodeMock.setup((graphNode) => graphNode.value).returns(() => 'item1');
             nodeList.add(graphNodeMock.object);
 
-            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock2.setup((graphNode) => graphNode.guid).returns(() => expectedGuid2);
             graphNodeMock2.setup((graphNode) => graphNode.value).returns(() => 'item2');
             nodeList.add(graphNodeMock2.object);
 
-            let graphNodeMock3 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock3 = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock3.setup((graphNode) => graphNode.guid).returns(() => expectedGuid3);
             graphNodeMock3.setup((graphNode) => graphNode.value).returns(() => 'item2');
             nodeList.add(graphNodeMock3.object);
@@ -120,10 +120,10 @@ describe('NodeList', () => {
     describe('forEach', () => {
         it('should be able to provide the contained nodes in an iteratable way.', () => {
             // Arrange
-            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock.setup((graphNode) => graphNode.value).returns(() => 'item1');
 
-            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode>();
             graphNodeMock2.setup((graphNode) => graphNode.value).returns(() => 'item2');
 
             nodeList.add(graphNodeMock.object);
@@ -143,8 +143,8 @@ describe('NodeList', () => {
     describe('indexOf', () => {
         it('should be able to return the index of a given node', () => {
             // Arrange
-            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode<string>>();
-            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode<string>>();
+            let graphNodeMock = TypeMoq.Mock.ofType<IGraphNode>();
+            let graphNodeMock2 = TypeMoq.Mock.ofType<IGraphNode>();
 
             nodeList.add(graphNodeMock.object);
             nodeList.add(graphNodeMock2.object);

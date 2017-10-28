@@ -1,6 +1,8 @@
 import { GraphItem } from "./graphItem";
-import { INodeList } from "../interfaces/iNodeList";
-import { NodeList } from './nodeList';
+import { IGraphNode } from "../interfaces/iGraphNode";
+import { IItemList } from "../interfaces/iItemList";
+import { IGraphEdge } from "../interfaces/iGraphEdge";
+import { ItemList } from "./ItemList";
 
 
 /**
@@ -9,37 +11,25 @@ import { NodeList } from './nodeList';
  * @export
  * @class GraphNode
  * @extends {GraphItem}
- * @template T 
  */
-export class GraphNode<T> extends GraphItem {
+export class GraphNode extends GraphItem implements IGraphNode {
 
     /**
      * The node's value.
      * 
-     * @type {T}
+     * @type {*}
      * @memberof GraphNode
      */
-    public value: T;
+    public value: any;
 
 
     /**
-     * The costs of the node.
+     * The list of the node's edges.
      * 
-     * @public
-     * @type {Array<number>}
+     * @type {IItemList<IGraphEdge>}
      * @memberof GraphNode
      */
-    public costs: Array<number>;
-
-
-    /**
-     * The node list with all neighbor nodes.
-     * 
-     * @public
-     * @type {INodeList<T>}
-     * @memberof GraphNode
-     */
-    public neighbors: INodeList<T>;
+    public edges: IItemList<IGraphEdge>;
 
 
     /**
@@ -50,8 +40,19 @@ export class GraphNode<T> extends GraphItem {
     public constructor() {
         super();
 
-        this.costs = new Array<number>();
-        this.neighbors = new NodeList<T>();
+        this.edges = new ItemList<IGraphEdge>();
+    }
+
+
+    /**
+     * Adds the given edge to the node.
+     * 
+     * @param {IGraphEdge} edge 
+     * @memberof GraphNode
+     */
+    public addEdge(edge: IGraphEdge): void {
+        edge.from = this;
+        this.edges.add(edge);
     }
 
 }

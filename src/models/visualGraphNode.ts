@@ -1,30 +1,49 @@
-import { Point } from "./point";
-import { Size } from "./size";
+import { VisualGraphItem } from "./visualGraphItem";
+import { IVisualGraphNode } from "../interfaces/iVisualGraphNode";
+import { IGraphEvent } from "../events/interfaces/iGraphEvent";
+import { IVisualGraphEdge } from "../interfaces/iVisualGraphEdge";
+import { IItemList } from "../interfaces/iItemList";
+import { IGraphNode } from "../interfaces/iGraphNode";
+import { ItemList } from "./ItemList";
 
 
 /**
- * The visual representation of a graph's node.
+ * The implementation of a visual graph node.
  * 
  * @export
  * @class VisualGraphNode
+ * @extends {VisualGraphItem}
+ * @implements {IVisualGraphNode}
  */
-export class VisualGraphNode {
+export class VisualGraphNode extends VisualGraphItem implements IVisualGraphNode {
 
     /**
-     * The node's position.
+     * A list of all visual graph edges.
      * 
-     * @type {Point}
+     * @type {IItemList<IVisualGraphEdge>}
      * @memberof VisualGraphNode
      */
-    public position: Point;
+    public edges: IItemList<IVisualGraphEdge>;
 
 
     /**
-     * The node's size.
+     * The related graph node.
      * 
-     * @type {Size}
+     * @type {IGraphNode}
      * @memberof VisualGraphNode
      */
-    public size: Size;
+    public node: IGraphNode;
+
+
+    /**
+     * Creates an instance of VisualGraphNode.
+     *
+     * @memberof VisualGraphNode
+     */
+    public constructor() {
+        super();
+
+        this.edges = new ItemList<IVisualGraphEdge>();
+    }
 
 }

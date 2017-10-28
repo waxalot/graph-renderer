@@ -1,5 +1,6 @@
 import { Utils } from "../../utils";
-import { IViewModel } from "../../viewModels/interfaces/iViewModel";
+import { IGraphItemViewModel } from "../../viewModels/interfaces/iGraphItemViewModel";
+import { IVisualGraphItem } from "../../interfaces/iVisualGraphItem";
 
 /**
  * A collection of SVG related util methods.
@@ -10,15 +11,14 @@ import { IViewModel } from "../../viewModels/interfaces/iViewModel";
 export class SVGUtils {
 
     /**
-     * Sets the Guid attribute.
+     * Sets the guid attribute.
      * 
      * @static
-     * @template T 
-     * @param {Element} targetElement 
-     * @param {IViewModel<T>} viewModel 
+     * @param {SVGElement} targetElement 
+     * @param {IGraphItemViewModel<IVisualGraphItem>} viewModel 
      * @memberof SVGUtils
      */
-    public static setGuidAttribute<T>(targetElement: Element, viewModel: IViewModel<T>): void {
+    public static setGuidAttribute(targetElement: SVGElement, viewModel: IGraphItemViewModel<IVisualGraphItem>): void {
         if (!targetElement) {
             Utils.throwReferenceError('targetElement');
         } else if (!viewModel) {
@@ -26,6 +26,49 @@ export class SVGUtils {
         }
 
         targetElement.setAttribute('data-graph-guid', viewModel.guid);
+    }
+
+
+    /**
+     * Gets the element, which is related with the given guid.
+     * 
+     * @static
+     * @param {Document} documentRef 
+     * @param {string} guid 
+     * @returns {(SVGElement | null)} 
+     * @memberof SVGUtils
+     */
+    public static getElementByGuid(documentRef: Document, guid: string): SVGElement | null {
+        if (!guid) {
+            return null;
+        }
+
+        let result: SVGElement = null;
+
+        result = documentRef.querySelector('[data-graph-guid=\"' + guid + '\"]') as SVGElement;
+
+        return result;
+    }
+
+
+    /**
+     * Gets the guid from an element.
+     * 
+     * @static
+     * @param {SVGElement} targetElement 
+     * @returns {(string | null)} 
+     * @memberof SVGUtils
+     */
+    public static getGuid(targetElement: SVGElement): string | null {
+        if (!targetElement) {
+            Utils.throwReferenceError('targetElement');
+        }
+
+        if (targetElement.hasAttribute('data-graph-guid')) {
+            return targetElement.getAttribute('data-graph-guid');
+        } else {
+            return null;
+        }
     }
 
 }
