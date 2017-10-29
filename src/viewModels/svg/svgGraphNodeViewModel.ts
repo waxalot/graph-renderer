@@ -20,47 +20,6 @@ import { IGraphNodeViewModel } from "../interfaces/iGraphNodeViewModel";
 export class SVGGraphNodeViewModel extends SVGGraphItemViewModel<IVisualGraphNode> implements ISVGGraphNodeViewModel {
 
     /**
-     * The selection changed event.
-     * 
-     * @type {IGraphEvent<IGraphNodeViewModel, boolean>}
-     * @memberof SVGGraphNodeViewModel
-     */
-    public selectionChangedEvent: IGraphEvent<IGraphNodeViewModel, boolean>;
-
-
-    /**
-     * Gets the node's size.
-     * 
-     * @readonly
-     * @type {Size}
-     * @memberof SVGGraphNodeViewModel
-     */
-    get size(): Size {
-        return this.model.size;
-    }
-
-
-    /**
-     * Gets the node's position.
-     * 
-     * @type {Point}
-     * @memberof SVGGraphNodeViewModel
-     */
-    get position(): Point {
-        return this.model.position;
-    }
-
-    /**
-     * Sets the node's position.
-     * 
-     * @memberof SVGGraphNodeViewModel
-     */
-    set position(value: Point) {
-        this.model.position = value;
-    }
-
-
-    /**
      * The current transform matrix.
      * 
      * @type {Array<number>}
@@ -133,30 +92,8 @@ export class SVGGraphNodeViewModel extends SVGGraphItemViewModel<IVisualGraphNod
 
         this.parentGraph = parentGraph;
 
-        this.selectionChangedEvent = new GraphEvent<SVGGraphNodeViewModel, boolean>();
-
-        this.model.selectionChangedEvent.addEventListener(this.selectionChangedEventListener);
-
         this._currentMovePosition = new Point();
         this.currentTransformMatrix = new Array<number>();
-    }
-
-
-    /**
-     * Triggers the selection changed event.
-     * 
-     * @param {boolean} selected 
-     * @memberof SVGGraphNodeViewModel
-     */
-    public onSelectionChanged(selected: boolean): void {
-        if (this.selectionChangedEvent) {
-            this.selectionChangedEvent.invoke(this, selected);
-        }
-    }
-
-
-    private selectionChangedEventListener = (node: IVisualGraphNode, selected: boolean): void => {
-        this.onSelectionChanged(selected);
     }
 
 

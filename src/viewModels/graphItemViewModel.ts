@@ -3,6 +3,9 @@ import { Utils } from "../utils";
 import { IVisualGraphItem } from "../interfaces/iVisualGraphItem";
 import { Point } from "../models/point";
 import { Size } from "../models/size";
+import { IGraphEvent } from "../events/interfaces/iGraphEvent";
+import { IViewModelEventAdapter } from "./events/interfaces/iViewModelEventAdapter";
+import { ViewModelEventAdapter } from "./events/viewModelEventAdapter";
 
 
 /**
@@ -35,6 +38,15 @@ export abstract class GraphItemViewModel<TModel extends IVisualGraphItem> implem
      * @memberof GraphItemViewModel
      */
     public readonly model: TModel;
+
+
+    /**
+     * The selection changed event.
+     * 
+     * @type {IViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>}
+     * @memberof GraphItemViewModel
+     */
+    public selectionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>;
 
 
     /**
@@ -73,6 +85,7 @@ export abstract class GraphItemViewModel<TModel extends IVisualGraphItem> implem
         }
 
         this.model = model;
+        this.selectionChangedEvent = new ViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>(this, this.model.selectionChangedEvent);
     }
 
 }

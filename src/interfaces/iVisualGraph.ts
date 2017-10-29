@@ -31,6 +31,23 @@ export interface IVisualGraph extends IVisualGraphItem {
 
 
     /**
+     * Adds the given node to the graph.
+     * 
+     * @param {IVisualGraphNode} node
+     * @memberof IVisualGraph
+     */
+    addNode(node: IVisualGraphNode): void;
+
+
+    /**
+     * Deselects all graph nodes.
+     * 
+     * @memberof IVisualGraph
+     */
+    deselectAllNodes(): void;
+
+
+    /**
      * Handles the selection intent of a node.
      * 
      * @param {IVisualGraphNode} node 

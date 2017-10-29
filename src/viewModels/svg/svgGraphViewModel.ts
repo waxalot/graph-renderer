@@ -92,9 +92,8 @@ export class SVGGraphViewModel extends SVGGraphItemViewModel<IVisualGraph> imple
         let elementGuid = SVGUtils.getGuid(selectedElement);
         if (elementGuid && elementGuid === this.guid) {
             // The graph was selected
-
-        } else {
-
+            this.model.deselectAllNodes();
+            return;
         }
 
         this.currentMoveX = e.clientX;

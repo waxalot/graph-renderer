@@ -6,6 +6,7 @@ import { IGraph } from "../interfaces/iGraph";
 import { IVisualGraphNode } from "../interfaces/iVisualGraphNode";
 import { IItemList } from "../interfaces/iItemList";
 import { ItemList } from "./ItemList";
+import { Utils } from "../utils";
 
 
 /**
@@ -43,6 +44,21 @@ export class VisualGraph extends VisualGraphItem implements IVisualGraph {
         super();
 
         this.nodes = new ItemList<IVisualGraphNode>();
+    }
+
+
+    /**
+     * Adds the given node to the graph.
+     * 
+     * @param {IVisualGraphNode} node 
+     * @memberof VisualGraph
+     */
+    public addNode(node: IVisualGraphNode): void {
+        if (!node) {
+            Utils.throwReferenceError('node');
+        }
+
+        this.nodes.add(node);
     }
 
 

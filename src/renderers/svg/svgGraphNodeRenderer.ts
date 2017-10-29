@@ -5,6 +5,8 @@ import { Utils } from "../../utils";
 import { SVGUtils } from "./svgUtils";
 import { ISVGGraphNodeRenderer } from "./interfaces/iSVGGraphNodeRenderer";
 import { ISVGGraphNodeViewModel } from "../../viewModels/svg/interfaces/iSVGGraphNodeViewModel";
+import { IVisualGraphNode } from "../../interfaces/iVisualGraphNode";
+import { IGraphItemViewModel } from "../../viewModels/interfaces/iGraphItemViewModel";
 
 
 /**
@@ -82,15 +84,8 @@ export class SVGGraphNodeRenderer extends SVGGraphItemRenderer<ISVGGraphNodeView
     }
 
 
-    /**
-     * The selection changed listener
-     * 
-     * @private
-     * @param {SVGGraphNodeViewModel} source 
-     * @param {boolean} selected 
-     * @memberof SVGGraphNodeRenderer
-     */
-    private selectionChangedListener(source: SVGGraphNodeViewModel, selected: boolean): void {
+
+    private selectionChangedListener(source: ISVGGraphNodeViewModel, selected: boolean): void {
         if (!source) {
             return;
         }

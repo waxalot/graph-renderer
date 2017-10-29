@@ -21,11 +21,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     graph.addNode(graphNode1);
     graph.addNode(graphNode2);
 
-    // Build the visual graph
-    let visualGraph = new VisualGraph();
-    visualGraph.graph = graph;
-
-    // Build nodes
+    // Build visual graph nodes
     let visualGraphNode1 = new VisualGraphNode();
     visualGraphNode1.node = graphNode1;
     visualGraphNode1.position = new Point(100, 100);
@@ -36,6 +32,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
     visualGraphNode2.position = new Point(400, 300);
     visualGraphNode2.size = new Size(50, 50);
 
+    // Build the visual graph
+    let visualGraph = new VisualGraph();
+    visualGraph.graph = graph;
+    visualGraph.addNode(visualGraphNode1);
+    visualGraph.addNode(visualGraphNode2);
+
+    
     // Get the graph's target element
     let containerElement = document.getElementById('graph-container');
 

@@ -48,7 +48,7 @@ export class VisualGraphItem extends GraphItem implements IVisualGraphItem {
      * @type {boolean}
      * @memberof VisualGraphItem
      */
-    private selected: boolean;
+    private _isSelected: boolean;
 
     /**
      * Gets the selection state.
@@ -58,7 +58,7 @@ export class VisualGraphItem extends GraphItem implements IVisualGraphItem {
      * @memberof VisualGraphItem
      */
     get isSelected(): boolean {
-        return this.isSelected;
+        return this._isSelected;
     }
 
     /**
@@ -67,14 +67,13 @@ export class VisualGraphItem extends GraphItem implements IVisualGraphItem {
      * @memberof VisualGraphItem
      */
     set isSelected(value: boolean) {
-        let hasChanged = this.isSelected !== value;
+        let hasChanged = this._isSelected !== value;
 
-        this.isSelected = value;
+        this._isSelected = value;
         if (hasChanged) {
-            this.onSelectionChanged(this.isSelected);
+            this.onSelectionChanged(this._isSelected);
         }
     }
-
 
     /**
      * Triggers the selection changed event.
@@ -98,6 +97,7 @@ export class VisualGraphItem extends GraphItem implements IVisualGraphItem {
     public constructor() {
         super();
 
+        this._isSelected = false;
         this.selectionChangedEvent = new GraphEvent<IVisualGraphItem, boolean>();
     }
 

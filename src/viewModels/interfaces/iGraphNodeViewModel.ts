@@ -12,12 +12,4 @@ import { IGraphEvent } from "../../events/interfaces/iGraphEvent";
  */
 export interface IGraphNodeViewModel extends IGraphItemViewModel<IVisualGraphNode> {
 
-    /**
-     * The selection changed event.
-     * 
-     * @type {IGraphEvent<IGraphNodeViewModel, boolean>}
-     * @memberof IGraphNodeViewModel
-     */
-    selectionChangedEvent: IGraphEvent<IGraphNodeViewModel, boolean>;
-
 }

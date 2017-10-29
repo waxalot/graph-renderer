@@ -53,7 +53,7 @@
 	var size_1 = __webpack_require__(11);
 	var point_1 = __webpack_require__(12);
 	var svgViewModelsFactory_1 = __webpack_require__(13);
-	var svgRenderersFactory_1 = __webpack_require__(19);
+	var svgRenderersFactory_1 = __webpack_require__(20);
 	document.addEventListener("DOMContentLoaded", function (event) {
 	    // Build the graph nodes
 	    var graphNode1 = new graphNode_1.GraphNode();
@@ -62,10 +62,7 @@
 	    var graph = new graph_1.Graph();
 	    graph.addNode(graphNode1);
 	    graph.addNode(graphNode2);
-	    // Build the visual graph
-	    var visualGraph = new visualGraph_1.VisualGraph();
-	    visualGraph.graph = graph;
-	    // Build nodes
+	    // Build visual graph nodes
 	    var visualGraphNode1 = new visualGraphNode_1.VisualGraphNode();
 	    visualGraphNode1.node = graphNode1;
 	    visualGraphNode1.position = new point_1.Point(100, 100);
@@ -74,6 +71,11 @@
 	    visualGraphNode2.node = graphNode2;
 	    visualGraphNode2.position = new point_1.Point(400, 300);
 	    visualGraphNode2.size = new size_1.Size(50, 50);
+	    // Build the visual graph
+	    var visualGraph = new visualGraph_1.VisualGraph();
+	    visualGraph.graph = graph;
+	    visualGraph.addNode(visualGraphNode1);
+	    visualGraph.addNode(visualGraphNode2);
 	    // Get the graph's target element
 	    var containerElement = document.getElementById('graph-container');
 	    // Get the view-models factory
@@ -424,6 +426,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var visualGraphItem_1 = __webpack_require__(8);
 	var ItemList_1 = __webpack_require__(4);
+	var utils_1 = __webpack_require__(6);
 	/**
 	 * The implementation of a visual graph.
 	 *
@@ -442,6 +445,18 @@
 	        _this.nodes = new ItemList_1.ItemList();
 	        return _this;
 	    }
+	    /**
+	     * Adds the given node to the graph.
+	     *
+	     * @param {IVisualGraphNode} node
+	     * @memberof VisualGraph
+	     */
+	    VisualGraph.prototype.addNode = function (node) {
+	        if (!node) {
+	            utils_1.Utils.throwReferenceError('node');
+	        }
+	        this.nodes.add(node);
+	    };
 	    /**
 	     * Handles the selection intent of a node.
 	     *
@@ -513,6 +528,7 @@
 	     */
 	    function VisualGraphItem() {
 	        var _this = _super.call(this) || this;
+	        _this._isSelected = false;
 	        _this.selectionChangedEvent = new graphEvent_1.GraphEvent();
 	        return _this;
 	    }
@@ -525,7 +541,7 @@
 	         * @memberof VisualGraphItem
 	         */
 	        get: function () {
-	            return this.isSelected;
+	            return this._isSelected;
 	        },
 	        /**
 	         * Sets the selection state.
@@ -533,10 +549,10 @@
 	         * @memberof VisualGraphItem
 	         */
 	        set: function (value) {
-	            var hasChanged = this.isSelected !== value;
-	            this.isSelected = value;
+	            var hasChanged = this._isSelected !== value;
+	            this._isSelected = value;
 	            if (hasChanged) {
-	                this.onSelectionChanged(this.isSelected);
+	                this.onSelectionChanged(this._isSelected);
 	            }
 	        },
 	        enumerable: true,
@@ -561,10 +577,11 @@
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
+	var utils_1 = __webpack_require__(6);
 	/**
 	 * The representation of an event.
 	 *
@@ -580,6 +597,25 @@
 	    function GraphEvent() {
 	        this.eventListeners = new Array();
 	    }
+	    Object.defineProperty(GraphEvent.prototype, "count", {
+	        /**
+	         * Gets the number of added event listeners.
+	         *
+	         * @readonly
+	         * @type {number}
+	         * @memberof GraphEvent
+	         */
+	        get: function () {
+	            if (this.eventListeners) {
+	                return this.eventListeners.length;
+	            }
+	            else {
+	                return 0;
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    /**
 	     * Adds a listener to the event.
 	     *
@@ -589,7 +625,7 @@
 	     */
 	    GraphEvent.prototype.addEventListener = function (listener) {
 	        if (!listener) {
-	            return;
+	            utils_1.Utils.throwReferenceError('listener');
 	        }
 	        this.eventListeners.push(listener);
 	    };
@@ -769,8 +805,8 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var svgGraphItemViewModel_1 = __webpack_require__(15);
 	var point_1 = __webpack_require__(12);
-	var svgUtils_1 = __webpack_require__(17);
-	var svgGraphNodeViewModel_1 = __webpack_require__(18);
+	var svgUtils_1 = __webpack_require__(18);
+	var svgGraphNodeViewModel_1 = __webpack_require__(19);
 	/**
 	 * The SVG based representation of a graph's view-model.
 	 *
@@ -795,8 +831,8 @@
 	            var elementGuid = svgUtils_1.SVGUtils.getGuid(selectedElement);
 	            if (elementGuid && elementGuid === _this.guid) {
 	                // The graph was selected
-	            }
-	            else {
+	                _this.model.deselectAllNodes();
+	                return;
 	            }
 	            _this.currentMoveX = e.clientX;
 	            _this.currentMoveY = e.clientY;
@@ -966,6 +1002,7 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var utils_1 = __webpack_require__(6);
+	var viewModelEventAdapter_1 = __webpack_require__(17);
 	/**
 	 * The abstract base class for all graph item view-models.
 	 *
@@ -987,6 +1024,7 @@
 	            utils_1.Utils.throwReferenceError('model');
 	        }
 	        this.model = model;
+	        this.selectionChangedEvent = new viewModelEventAdapter_1.ViewModelEventAdapter(this, this.model.selectionChangedEvent);
 	    }
 	    Object.defineProperty(GraphItemViewModel.prototype, "guid", {
 	        /**
@@ -1036,6 +1074,56 @@
 
 /***/ }),
 /* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var utils_1 = __webpack_require__(6);
+	/**
+	 * An adapter class which can connect model events to view-model events.
+	 *
+	 * @export
+	 * @class ViewModelEventAdapter
+	 */
+	var ViewModelEventAdapter = /** @class */ (function () {
+	    /**
+	     * Creates an instance of ViewModelEventAdapter.
+	     *
+	     * @param {TViewModelSource} viewModel
+	     * @param {IGraphEvent<TModelSource, TModelValue>} modelEvent
+	     * @memberof ViewModelEventAdapter
+	     */
+	    function ViewModelEventAdapter(viewModel, modelEvent) {
+	        if (!viewModel) {
+	            utils_1.Utils.throwReferenceError('viewModel');
+	        }
+	        else if (!modelEvent) {
+	            utils_1.Utils.throwReferenceError('modelEvent');
+	        }
+	        this.viewModel = viewModel;
+	        this.modelEvent = modelEvent;
+	    }
+	    /**
+	     * Adds a listener to the event.
+	     *
+	     * @param {IGraphEventListener<TViewModelSource, TModelValue>} listener
+	     * @memberof ViewModelEventAdapter
+	     */
+	    ViewModelEventAdapter.prototype.addEventListener = function (listener) {
+	        var _this = this;
+	        // Create the new event listener, which delegates the invocation to the model event listener.
+	        var viewModelEventListener = function (source, value) {
+	            listener(_this.viewModel, value);
+	        };
+	        this.modelEvent.addEventListener(viewModelEventListener);
+	    };
+	    return ViewModelEventAdapter;
+	}());
+	exports.ViewModelEventAdapter = ViewModelEventAdapter;
+
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1109,7 +1197,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1126,7 +1214,6 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var svgGraphItemViewModel_1 = __webpack_require__(15);
 	var point_1 = __webpack_require__(12);
-	var graphEvent_1 = __webpack_require__(9);
 	/**
 	 * The SVG based representation of a graph node's view-model.
 	 *
@@ -1146,9 +1233,6 @@
 	     */
 	    function SVGGraphNodeViewModel(parentGraph, graphNode) {
 	        var _this = _super.call(this, graphNode) || this;
-	        _this.selectionChangedEventListener = function (node, selected) {
-	            _this.onSelectionChanged(selected);
-	        };
 	        _this.mouseDownHandler = function (e) {
 	            var selectedElement = e.srcElement;
 	            if (!selectedElement) {
@@ -1189,47 +1273,10 @@
 	            };
 	        };
 	        _this.parentGraph = parentGraph;
-	        _this.selectionChangedEvent = new graphEvent_1.GraphEvent();
-	        _this.model.selectionChangedEvent.addEventListener(_this.selectionChangedEventListener);
 	        _this._currentMovePosition = new point_1.Point();
 	        _this.currentTransformMatrix = new Array();
 	        return _this;
 	    }
-	    Object.defineProperty(SVGGraphNodeViewModel.prototype, "size", {
-	        /**
-	         * Gets the node's size.
-	         *
-	         * @readonly
-	         * @type {Size}
-	         * @memberof SVGGraphNodeViewModel
-	         */
-	        get: function () {
-	            return this.model.size;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(SVGGraphNodeViewModel.prototype, "position", {
-	        /**
-	         * Gets the node's position.
-	         *
-	         * @type {Point}
-	         * @memberof SVGGraphNodeViewModel
-	         */
-	        get: function () {
-	            return this.model.position;
-	        },
-	        /**
-	         * Sets the node's position.
-	         *
-	         * @memberof SVGGraphNodeViewModel
-	         */
-	        set: function (value) {
-	            this.model.position = value;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
 	    Object.defineProperty(SVGGraphNodeViewModel.prototype, "currentMoveX", {
 	        /**
 	         * Gets the node's current move position x coordinate.
@@ -1272,17 +1319,6 @@
 	        enumerable: true,
 	        configurable: true
 	    });
-	    /**
-	     * Triggers the selection changed event.
-	     *
-	     * @param {boolean} selected
-	     * @memberof SVGGraphNodeViewModel
-	     */
-	    SVGGraphNodeViewModel.prototype.onSelectionChanged = function (selected) {
-	        if (this.selectionChangedEvent) {
-	            this.selectionChangedEvent.invoke(this, selected);
-	        }
-	    };
 	    SVGGraphNodeViewModel.prototype.initViewModel = function () {
 	    };
 	    return SVGGraphNodeViewModel;
@@ -1291,13 +1327,13 @@
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var svgGraphNodeRenderer_1 = __webpack_require__(20);
-	var svgGraphRenderer_1 = __webpack_require__(23);
+	var svgGraphNodeRenderer_1 = __webpack_require__(21);
+	var svgGraphRenderer_1 = __webpack_require__(24);
 	/**
 	 * The SVG based representation of a renderers factory.
 	 *
@@ -1333,7 +1369,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1348,9 +1384,9 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var svgGraphItemRenderer_1 = __webpack_require__(21);
+	var svgGraphItemRenderer_1 = __webpack_require__(22);
 	var utils_1 = __webpack_require__(6);
-	var svgUtils_1 = __webpack_require__(17);
+	var svgUtils_1 = __webpack_require__(18);
 	/**
 	 * The SVG based implementation of a graph node renderer.
 	 *
@@ -1407,14 +1443,6 @@
 	        viewModel.selectionChangedEvent.addEventListener(this.selectionChangedListener);
 	        this.containerElement.appendChild(nodeTargetElement);
 	    };
-	    /**
-	     * The selection changed listener
-	     *
-	     * @private
-	     * @param {SVGGraphNodeViewModel} source
-	     * @param {boolean} selected
-	     * @memberof SVGGraphNodeRenderer
-	     */
 	    SVGGraphNodeRenderer.prototype.selectionChangedListener = function (source, selected) {
 	        if (!source) {
 	            return;
@@ -1431,7 +1459,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1446,9 +1474,9 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var graphItemRenderer_1 = __webpack_require__(22);
+	var graphItemRenderer_1 = __webpack_require__(23);
 	var utils_1 = __webpack_require__(6);
-	var svgUtils_1 = __webpack_require__(17);
+	var svgUtils_1 = __webpack_require__(18);
 	/**
 	 * The abstract base class for SVG based renderers.
 	 *
@@ -1497,7 +1525,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -1520,7 +1548,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1535,7 +1563,7 @@
 	    };
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var svgGraphItemRenderer_1 = __webpack_require__(21);
+	var svgGraphItemRenderer_1 = __webpack_require__(22);
 	var utils_1 = __webpack_require__(6);
 	/**
 	 * The SVG based implementation of a graph renderer.

@@ -1,5 +1,6 @@
 import { IGraphEventListener } from "./interfaces/iGraphEventListener";
 import { IGraphEvent } from "./interfaces/iGraphEvent";
+import { Utils } from "../utils";
 
 
 /**
@@ -11,6 +12,22 @@ import { IGraphEvent } from "./interfaces/iGraphEvent";
 export class GraphEvent<TSource, UValue> implements IGraphEvent<TSource, UValue> {
 
     private eventListeners: Array<IGraphEventListener<TSource, UValue>>;
+
+
+    /**
+     * Gets the number of added event listeners.
+     * 
+     * @readonly
+     * @type {number}
+     * @memberof GraphEvent
+     */
+    get count(): number {
+        if (this.eventListeners) {
+            return this.eventListeners.length;
+        } else {
+            return 0;
+        }
+    }
 
 
     /**
@@ -32,7 +49,7 @@ export class GraphEvent<TSource, UValue> implements IGraphEvent<TSource, UValue>
      */
     public addEventListener(listener: IGraphEventListener<TSource, UValue>) {
         if (!listener) {
-            return;
+            Utils.throwReferenceError('listener');
         }
 
         this.eventListeners.push(listener);

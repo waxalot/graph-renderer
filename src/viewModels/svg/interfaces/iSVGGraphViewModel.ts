@@ -11,4 +11,11 @@ import { IGraphViewModel } from "../../interfaces/iGraphViewModel";
  */
 export interface ISVGGraphViewModel extends IGraphViewModel {
 
+    /**
+     * The mouse down event handler.
+     * 
+     * @memberof ISVGGraphViewModel
+     */
+    mouseDownHandler: (e: MouseEvent) => void;
+
 }
