@@ -7,6 +7,9 @@ import { ISVGGraphNodeRenderer } from "./interfaces/iSVGGraphNodeRenderer";
 import { ISVGGraphNodeViewModel } from "../../viewModels/svg/interfaces/iSVGGraphNodeViewModel";
 import { IVisualGraphNode } from "../../interfaces/iVisualGraphNode";
 import { IGraphItemViewModel } from "../../viewModels/interfaces/iGraphItemViewModel";
+import { ChangedEventValuePair } from "../../models/changedEventValues";
+import { Point } from "../../models/point";
+import { Size } from "../../models/size";
 
 
 /**
@@ -66,26 +69,71 @@ export class SVGGraphNodeRenderer extends SVGGraphItemRenderer<ISVGGraphNodeView
         // Set the initial transform matrix (identity matrix)
         nodeTargetElement.setAttribute('transform', 'matrix(1 0 0 1 0 0)');
 
-        // Set the position
-        if (viewModel.position) {
-            nodeTargetElement.setAttribute('x', viewModel.position.x.toFixed());
-            nodeTargetElement.setAttribute('y', viewModel.position.y.toFixed());
-        }
-
-        // Set the size
-        if (viewModel.size) {
-            nodeTargetElement.setAttribute('width', viewModel.size.width.toFixed());
-            nodeTargetElement.setAttribute('height', viewModel.size.height.toFixed());
-        }
-
+        // Set all property changed handler
         viewModel.selectionChangedEvent.addEventListener(this.selectionChangedListener);
+        viewModel.positionChangedEvent.addEventListener(this.positionChangedListener);
+        viewModel.sizeChangedEvent.addEventListener(this.sizeChangedListener);
 
+        // Append the new element to the container element.
         this.containerElement.appendChild(nodeTargetElement);
     }
 
+    /**
+     * The position changed event listener.
+     * 
+     * @private
+     * @param {ISVGGraphNodeViewModel} source 
+     * @param {ChangedEventValuePair<Point>} values 
+     * @returns {void} 
+     * @memberof SVGGraphNodeRenderer
+     */
+    private positionChangedListener(source: ISVGGraphNodeViewModel, values: ChangedEventValuePair<Point>): void {
+        if (!source) {
+            return;
+        }
+
+        // Find the target element by the guid.
+        let targetElement = SVGUtils.getElementByGuid(document, source.guid);
+        if (targetElement) {
+            targetElement.setAttribute('x', values.newValue.x.toFixed());
+            targetElement.setAttribute('y', values.newValue.y.toFixed());
+        }
+    }
 
 
-    private selectionChangedListener(source: ISVGGraphNodeViewModel, selected: boolean): void {
+    /**
+     * The size changed event listener.
+     * 
+     * @private
+     * @param {ISVGGraphNodeViewModel} source 
+     * @param {ChangedEventValuePair<Size>} values 
+     * @returns {void} 
+     * @memberof SVGGraphNodeRenderer
+     */
+    private sizeChangedListener(source: ISVGGraphNodeViewModel, values: ChangedEventValuePair<Size>): void {
+        if (!source) {
+            return;
+        }
+
+        // Find the target element by the guid.
+        let targetElement = SVGUtils.getElementByGuid(document, source.guid);
+        if (targetElement) {
+            targetElement.setAttribute('width', values.newValue.width.toFixed());
+            targetElement.setAttribute('height', values.newValue.height.toFixed());
+        }
+    }
+
+
+    /**
+     * The selection changed event listener.
+     * 
+     * @private
+     * @param {ISVGGraphNodeViewModel} source 
+     * @param {ChangedEventValuePair<boolean>} values 
+     * @returns {void} 
+     * @memberof SVGGraphNodeRenderer
+     */
+    private selectionChangedListener(source: ISVGGraphNodeViewModel, values: ChangedEventValuePair<boolean>): void {
         if (!source) {
             return;
         }

@@ -6,6 +6,7 @@ import { Size } from "../models/size";
 import { IGraphEvent } from "../events/interfaces/iGraphEvent";
 import { IViewModelEventAdapter } from "./events/interfaces/iViewModelEventAdapter";
 import { ViewModelEventAdapter } from "./events/viewModelEventAdapter";
+import { ChangedEventValuePair } from "../models/changedEventValues";
 
 
 /**
@@ -39,38 +40,29 @@ export abstract class GraphItemViewModel<TModel extends IVisualGraphItem> implem
      */
     public readonly model: TModel;
 
-
     /**
      * The selection changed event.
      * 
-     * @type {IViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>}
+     * @type {IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<boolean>, IGraphItemViewModel<IVisualGraphItem>>}
      * @memberof GraphItemViewModel
      */
-    public selectionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>;
-
+    public selectionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<boolean>, IGraphItemViewModel<IVisualGraphItem>>;
 
     /**
-     * Gets the model's position.
+     * The position changed event.
      * 
-     * @readonly
-     * @type {Point}
+     * @type {IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Point>, IGraphItemViewModel<IVisualGraphItem>>}
      * @memberof GraphItemViewModel
      */
-    get position(): Point {
-        return this.model.position;
-    }
-
+    public positionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Point>, IGraphItemViewModel<IVisualGraphItem>>;
 
     /**
-     * Gets the model's size.
+     * The size changed event. 
      * 
-     * @readonly
-     * @type {Size}
+     * @type {IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Size>, IGraphItemViewModel<IVisualGraphItem>>}
      * @memberof GraphItemViewModel
      */
-    get size(): Size {
-        return this.model.size;
-    }
+    public sizeChangedEvent: IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Size>, IGraphItemViewModel<IVisualGraphItem>>;
 
 
     /**
@@ -85,7 +77,9 @@ export abstract class GraphItemViewModel<TModel extends IVisualGraphItem> implem
         }
 
         this.model = model;
-        this.selectionChangedEvent = new ViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>(this, this.model.selectionChangedEvent);
+        this.selectionChangedEvent = new ViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<boolean>, IGraphItemViewModel<IVisualGraphItem>>(this, this.model.isSelected.valueChangedEvent);
+        this.positionChangedEvent = new ViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Point>, IGraphItemViewModel<IVisualGraphItem>>(this, this.model.position.valueChangedEvent);
+        this.sizeChangedEvent = new ViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Size>, IGraphItemViewModel<IVisualGraphItem>>(this, this.model.size.valueChangedEvent);
     }
 
 }

@@ -1,7 +1,7 @@
 import { Point } from "../models/point";
 import { Size } from "../models/size";
 import { IGraphItem } from "./iGraphItem";
-import { IGraphEvent } from "../events/interfaces/iGraphEvent";
+import { ObservableProperty } from "../models/observableProperty";
 
 
 /**
@@ -13,38 +13,29 @@ import { IGraphEvent } from "../events/interfaces/iGraphEvent";
 export interface IVisualGraphItem extends IGraphItem {
 
     /**
-     * The selection changed event.
-     * 
-     * @type {IGraphEvent<IVisualGraphItem, boolean>}
-     * @memberof IVisualGraphItem
-     */
-    selectionChangedEvent: IGraphEvent<IVisualGraphItem, boolean>;
-
-    
-    /**
      * The position.
      * 
-     * @type {Point}
+     * @type {ObservableProperty<IVisualGraphItem, Point>}
      * @memberof IVisualGraphItem
      */
-    position: Point;
+    position: ObservableProperty<IVisualGraphItem, Point>;
 
 
     /**
      * The size.
      * 
-     * @type {Size}
+     * @type {ObservableProperty<IVisualGraphItem, Size>}
      * @memberof IVisualGraphItem
      */
-    size: Size;
+    size: ObservableProperty<IVisualGraphItem, Size>;
 
 
     /**
      * Determines whether this instance is selected.
      * 
-     * @type {boolean}
+     * @type {ObservableProperty<IVisualGraphItem, boolean>}
      * @memberof IVisualGraphItem
      */
-    isSelected: boolean;
+    isSelected: ObservableProperty<IVisualGraphItem, boolean>;
 
 }

@@ -74,11 +74,11 @@ export class VisualGraph extends VisualGraphItem implements IVisualGraph {
         }
 
         if (ctrlKey) {
-            node.isSelected = !node.isSelected;
+            node.isSelected.value = !node.isSelected.value;
         } else {
             this.deselectAllNodes();
 
-            node.isSelected = true;
+            node.isSelected.value = true;
         }
     }
 
@@ -95,7 +95,7 @@ export class VisualGraph extends VisualGraphItem implements IVisualGraph {
         }
 
         this.nodes.forEach((node) => {
-            node.isSelected = false;
+            node.isSelected.value = false;
         });
     }
 

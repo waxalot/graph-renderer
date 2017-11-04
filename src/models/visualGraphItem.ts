@@ -2,8 +2,7 @@ import { Size } from "./size";
 import { Point } from "./point";
 import { IVisualGraphItem } from "../interfaces/iVisualGraphItem";
 import { GraphItem } from "./graphItem";
-import { IGraphEvent } from "../events/interfaces/iGraphEvent";
-import { GraphEvent } from "../events/graphEvent";
+import { ObservableProperty } from "./observableProperty";
 
 
 /**
@@ -18,75 +17,26 @@ export class VisualGraphItem extends GraphItem implements IVisualGraphItem {
     /**
      * The position.
      * 
-     * @type {Point}
+     * @type {ObservableProperty<Point>}
      * @memberof VisualGraphItem
      */
-    public position: Point;
-
+    public position: ObservableProperty<IVisualGraphItem, Point>;
 
     /**
      * The size.
      * 
-     * @type {Size}
+     * @type {ObservableProperty<Size>}
      * @memberof VisualGraphItem
      */
-    public size: Size;
-
-
-    /**
-     * The selection changed event.
-     * 
-     * @type {IGraphEvent<IVisualGraphItem, boolean>}
-     * @memberof VisualGraphItem
-     */
-    public selectionChangedEvent: IGraphEvent<IVisualGraphItem, boolean>;
+    public size: ObservableProperty<IVisualGraphItem, Size>;
 
     /**
      * The selection state.
      * 
-     * @private
-     * @type {boolean}
+     * @type {ObservableProperty<boolean>}
      * @memberof VisualGraphItem
      */
-    private _isSelected: boolean;
-
-    /**
-     * Gets the selection state.
-     * 
-     * @readonly
-     * @type {boolean}
-     * @memberof VisualGraphItem
-     */
-    get isSelected(): boolean {
-        return this._isSelected;
-    }
-
-    /**
-     * Sets the selection state.
-     * 
-     * @memberof VisualGraphItem
-     */
-    set isSelected(value: boolean) {
-        let hasChanged = this._isSelected !== value;
-
-        this._isSelected = value;
-        if (hasChanged) {
-            this.onSelectionChanged(this._isSelected);
-        }
-    }
-
-    /**
-     * Triggers the selection changed event.
-     * 
-     * @private
-     * @param {boolean} selected 
-     * @memberof VisualGraphNode
-     */
-    private onSelectionChanged(selected: boolean): void {
-        if (this.selectionChangedEvent) {
-            this.selectionChangedEvent.invoke(this, selected);
-        }
-    }
+    public isSelected: ObservableProperty<IVisualGraphItem, boolean>;
 
 
     /**
@@ -97,8 +47,9 @@ export class VisualGraphItem extends GraphItem implements IVisualGraphItem {
     public constructor() {
         super();
 
-        this._isSelected = false;
-        this.selectionChangedEvent = new GraphEvent<IVisualGraphItem, boolean>();
+        this.position = new ObservableProperty<IVisualGraphItem, Point>(this);
+        this.size = new ObservableProperty<IVisualGraphItem, Size>(this);
+        this.isSelected = new ObservableProperty<IVisualGraphItem, boolean>(this);
     }
 
 }

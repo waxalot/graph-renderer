@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Build visual graph nodes
     let visualGraphNode1 = new VisualGraphNode();
     visualGraphNode1.node = graphNode1;
-    visualGraphNode1.position = new Point(100, 100);
-    visualGraphNode1.size = new Size(50, 50);
+    visualGraphNode1.position.value = new Point(100, 100);
+    visualGraphNode1.size.value = new Size(50, 50);
 
     let visualGraphNode2 = new VisualGraphNode();
     visualGraphNode2.node = graphNode2;
-    visualGraphNode2.position = new Point(400, 300);
-    visualGraphNode2.size = new Size(50, 50);
+    visualGraphNode2.position.value = new Point(400, 300);
+    visualGraphNode2.size.value = new Size(50, 50);
 
     // Build the visual graph
     let visualGraph = new VisualGraph();

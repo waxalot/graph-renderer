@@ -1,8 +1,8 @@
 import { IVisualGraphItem } from "../../interfaces/iVisualGraphItem";
 import { Point } from "../../models/point";
 import { Size } from "../../models/size";
-import { IGraphEvent } from "../../events/interfaces/iGraphEvent";
 import { IViewModelEventAdapter } from "../events/interfaces/iViewModelEventAdapter";
+import { ChangedEventValuePair } from "../../models/changedEventValues";
 
 
 /**
@@ -31,31 +31,30 @@ export interface IGraphItemViewModel<TModel extends IVisualGraphItem> {
      */
     model: TModel
 
-
     /**
      * The selection changed event.
      * 
-     * @type {IGraphEvent<IVisualGraphItem, boolean>}
+     * @type {IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<boolean>, IGraphItemViewModel<IVisualGraphItem>>}
      * @memberof IGraphItemViewModel
      */
-    selectionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, boolean, IGraphItemViewModel<IVisualGraphItem>>;
+    selectionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<boolean>, IGraphItemViewModel<IVisualGraphItem>>;
 
 
     /**
-     * The position.
+     * The position changed event.
      * 
-     * @type {Point}
+     * @type {IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Point>, IGraphItemViewModel<IVisualGraphItem>>}
      * @memberof IGraphItemViewModel
      */
-    position: Point;
+    positionChangedEvent: IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Point>, IGraphItemViewModel<IVisualGraphItem>>;
 
 
     /**
-     * The size.
+     * The size changed event.
      * 
-     * @type {Size}
+     * @type {IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Size>, IGraphItemViewModel<IVisualGraphItem>>}
      * @memberof IGraphItemViewModel
      */
-    size: Size;
+    sizeChangedEvent: IViewModelEventAdapter<IVisualGraphItem, ChangedEventValuePair<Size>, IGraphItemViewModel<IVisualGraphItem>>;
 
 }
